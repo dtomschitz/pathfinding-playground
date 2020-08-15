@@ -1,33 +1,27 @@
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { Node } from 'src/app/models';
-import { NodeType } from 'src/app/models/node-type';
+import { Component, Input, OnInit } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { Node, NodeType, Grid } from '../../models';
+import { BoardActions } from '../../store/actions';
+
+import * as fromRoot from '../../store/reducers';
 
 @Component({
   selector: 'grid',
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.scss'],
 })
-export class GridComponent implements AfterViewInit {
-  height: number;
-  width: number;
+export class GridComponent implements OnInit {
+  @Input() height: number;
+  @Input() width: number;
 
-  nodes: Node[][];
+  grid$: Observable<Grid>;
 
-  ngAfterViewInit() {}
+  constructor(private store: Store<fromRoot.State>) {
+    this.grid$ = this.store.pipe(select(fromRoot.selectGrid));
+  }
 
-  createGrid() {
-    for (let row = 0; row < this.height; row++) {
-      const columns: Node[] = [];
-      for (let column = 0; column < this.width; column++) {
-        columns.push({
-          id: `${row}-${column}`,
-          row,
-          column,
-          type: this.getNodeType(row, column),
-        });
-      }
-      this.nodes.push(columns);
-    }
+  ngOnInit() {
+    this.store.dispatch(BoardActions.generateGrid({ height: this.height, width: this.width }));
   }
 
   getNodeType(row: number, column: number) {

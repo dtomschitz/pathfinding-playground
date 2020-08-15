@@ -44,10 +44,15 @@ mat-sidenav {
 }
 
 grid {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: 100%;
   width: 100%;
-  background-color: red;
+
+  .row {
+    display: flex;
+  }
 }
 
 nav-item {

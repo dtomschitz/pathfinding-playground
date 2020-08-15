@@ -1,5 +1,7 @@
-<div *ngFor="let row of nodes; let i = index" class="row">
-  <div *ngFor="let column of nodes[i]; let j = index" class="column">
-    <node [node]="column"></node>
+<ng-container *ngIf="grid$ | async as grid">
+  <div *ngFor="let row of grid; let i = index" class="row">
+    <div *ngFor="let column of grid[i]; let j = index" class="column">
+      <node [node]="grid[i][j]"></node>
+    </div>
   </div>
-</div>
+</ng-container>

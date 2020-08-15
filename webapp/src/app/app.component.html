@@ -7,7 +7,7 @@
 </mat-toolbar>
 <mat-divider></mat-divider>
 <mat-sidenav-container>
-  <mat-sidenav #sidenav mode="side" [opened]="showSidenav$ | async" [fixedInViewport]="true" [fixedTopGap]="64"
+  <mat-sidenav #sidenav mode="over1" [opened]="showSidenav$ | async" [fixedInViewport]="true" [fixedTopGap]="64"
     [fixedBottomGap]="0" (keydown.escape)="sidenav.close()">
     <div class="sidenav">
       <h3 matSubheader>HISTORY</h3>
@@ -16,7 +16,7 @@
 
   <mat-sidenav-content>
     <div class="content">
-      <grid></grid>
+      <grid [height]="50" [width]="50"></grid>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
