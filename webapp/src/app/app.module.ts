@@ -1,14 +1,34 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CoreModule } from './core';
-import { AppComponent } from './core/containers';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from 'src/environments/environment';
+import { MaterialModule } from './material';
+import { ROOT_REDUCERS } from './store/reducers';
+import { GridComponent, NodeComponent, NavItemComponent } from './components';
+import { AppComponent } from './app.component';
 
-import { MaterialModule } from './material.module';
+const COMPONENTS = [AppComponent, GridComponent, NavItemComponent, NodeComponent];
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, BrowserAnimationsModule, MaterialModule, CoreModule],
+  declarations: [COMPONENTS],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    MaterialModule,
+    StoreModule.forRoot(ROOT_REDUCERS, {
+      runtimeChecks: {
+        strictStateSerializability: true,
+        strictActionSerializability: true,
+        strictActionWithinNgZone: true,
+      },
+    }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

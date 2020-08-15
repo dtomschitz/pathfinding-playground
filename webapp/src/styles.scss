@@ -1,4 +1,68 @@
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+mat-toolbar {
+  &.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    .title {
+      padding: 0 16px;
+    }
+  }
+}
+
+mat-sidenav-container {
+  position: absolute;
+  top: 60px;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+}
+
+mat-sidenav {
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+
+  .sidenav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
+grid {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background-color: red;
+}
+
+nav-item {
+  display: block;
+  height: 72px;
+
+  &.dense {
+    height: 48px !important;
+  }
+
+  a {
+    height: inherit !important;
+  }
+}
+
+.flex-spacer {
+  flex: 1 1 auto;
+}

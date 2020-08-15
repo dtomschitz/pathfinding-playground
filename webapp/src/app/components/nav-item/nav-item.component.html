@@ -1,0 +1,6 @@
+<a (click)="navigate.emit()" mat-list-item>
+  <mat-icon *ngIf="icon" mat-list-icon>{{ icon }}</mat-icon>
+  <span mat-line>
+    <ng-content></ng-content>
+  </span>
+</a>

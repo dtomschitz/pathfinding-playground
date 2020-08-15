@@ -1,0 +1,5 @@
+<div *ngFor="let row of nodes; let i = index" class="row">
+  <div *ngFor="let column of nodes[i]; let j = index" class="column">
+    <node [node]="column"></node>
+  </div>
+</div>
