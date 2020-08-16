@@ -1,0 +1,8 @@
+<ng-container *ngIf="!(hidden$ | async)">
+  <button mat-fab color="primary" (click)="setPaintingModeToCreate()">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-fab color="primary" (click)="setPaintingModeToErase()">
+    <mat-icon>clear</mat-icon>
+  </button> 
+</ng-container>

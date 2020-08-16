@@ -39,7 +39,9 @@ import { BoardActions } from '../actions';
 
 export const featureKey = 'board';
 
-export const adapter = createEntityAdapter<Node>();
+export const adapter = createEntityAdapter<Node>({
+  selectId: (node) => node.id,
+});
 
 export interface State extends EntityState<Node> {
   height: number;

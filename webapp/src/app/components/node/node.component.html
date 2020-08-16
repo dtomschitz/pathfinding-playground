@@ -1,1 +1,1 @@
-<div class="node" (click)="onClick()"></div>
+<div class="node" [ngClass]="{ wall: node.isWall }" (click)="onClick()" (mouseover)="onMouseOver()"></div>

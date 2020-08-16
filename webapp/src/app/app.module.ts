@@ -6,12 +6,13 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { MaterialModule } from './material';
+import { PaintingService } from './services';
 import { ROOT_REDUCERS } from './store/reducers';
 import { GridEffects } from './store/effects';
-import { GridComponent, NodeComponent, NavItemComponent } from './components';
+import { BoardComponent, BoardToolsComponent, GridComponent, NodeComponent, NavItemComponent } from './components';
 import { AppComponent } from './app.component';
 
-const COMPONENTS = [AppComponent, GridComponent, NavItemComponent, NodeComponent];
+const COMPONENTS = [AppComponent, BoardComponent, BoardToolsComponent, GridComponent, NavItemComponent, NodeComponent];
 
 @NgModule({
   declarations: [COMPONENTS],
@@ -19,20 +20,14 @@ const COMPONENTS = [AppComponent, GridComponent, NavItemComponent, NodeComponent
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    StoreModule.forRoot(ROOT_REDUCERS, {
-      runtimeChecks: {
-        strictStateSerializability: true,
-        strictActionSerializability: true,
-        strictActionWithinNgZone: true,
-      },
-    }),
+    StoreModule.forRoot(ROOT_REDUCERS),
     EffectsModule.forRoot([GridEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
     }),
   ],
-  providers: [],
+  providers: [PaintingService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

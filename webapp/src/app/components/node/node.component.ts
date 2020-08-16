@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Node } from 'src/app/models';
+import { Node, PaintingMode } from 'src/app/models';
+import { PaintingService } from 'src/app/services';
 
 @Component({
   selector: 'node',
@@ -8,13 +9,20 @@ import { Node } from 'src/app/models';
 })
 export class NodeComponent implements OnInit {
   @Input() node: Node;
-  @Output() selectionChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  constructor() {}
 
-  ngOnInit(): void {}
+  constructor(private paintingService: PaintingService) {}
+
+  ngOnInit() {
+  }
 
   onClick() {
-    this.selectionChange.emit(!this.node.isWall);
+    this.node.isWall = this.paintingService.mode === PaintingMode.CREATE;
+  }
+
+  onMouseOver() {
+    if (this.paintingService.isMousePressed) {
+      this.node.isWall = this.paintingService.mode === PaintingMode.CREATE;
+    }
   }
 }

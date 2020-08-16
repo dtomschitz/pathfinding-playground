@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewChecked, OnChanges, SimpleChanges } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { NodeType, Grid } from '../../models';
+import { NodeType, Grid, Node } from '../../models';
 import { BoardActions } from '../../store/actions';
 
 import * as fromRoot from '../../store/reducers';
+import { PaintingService } from 'src/app/services';
 
 @Component({
   selector: 'grid',
@@ -14,18 +15,43 @@ export class GridComponent implements OnInit {
   @Input() height: number;
   @Input() width: number;
 
-  grid$: Observable<Grid>;
+  grid: Grid = [];
 
-  constructor(private store: Store<fromRoot.State>) {
-    this.grid$ = this.store.pipe(select(fromRoot.selectGrid));
+  constructor(private store: Store<fromRoot.State>, private mouseService: PaintingService) {
+    //this.grid$ = this.store.pipe(select(fromRoot.selectGrid));
   }
 
   ngOnInit() {
-    this.store.dispatch(BoardActions.generateGrid({ height: this.height, width: this.width }));
+    this.createGrid();
+    // this.store.dispatch(BoardActions.generateGrid({ height: this.height, width: this.width }));
   }
 
-  onSelectionChange(isWall: boolean) {
-    // this.store.dispatch(BoardActions.updateNode({ node: { isWall } }));
+  onMouseDown(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.mouseService.click();
+  }
+
+  onMouseUp(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.mouseService.release();
+  }
+
+  createGrid() {
+    for (let row = 0; row < this.height; row++) {
+      const columns: Node[] = [];
+      for (let column = 0; column < this.width; column++) {
+        columns.push({
+          id: `${row}-${column}`,
+          row,
+          column,
+          type: this.getNodeType(row, column),
+          isWall: false,
+        });
+      }
+      this.grid.push(columns);
+    }
   }
 
   getNodeType(row: number, column: number) {

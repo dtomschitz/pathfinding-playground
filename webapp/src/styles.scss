@@ -43,6 +43,22 @@ mat-sidenav {
   }
 }
 
+board {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+board-tools {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+
+  button.mat-fab {
+    margin: 5px;
+  }
+}
+
 grid {
   display: flex;
   flex-direction: column;
