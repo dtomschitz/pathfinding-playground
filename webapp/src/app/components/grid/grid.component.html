@@ -1,7 +1,7 @@
 <ng-container *ngIf="grid$ | async as grid">
   <div *ngFor="let row of grid; let i = index" class="row">
     <div *ngFor="let column of grid[i]; let j = index" class="column">
-      <node [node]="grid[i][j]"></node>
+      <node [node]="grid[i][j]" (selectionChange)="onSelectionChange($event)"></node>
     </div>
   </div>
 </ng-container>

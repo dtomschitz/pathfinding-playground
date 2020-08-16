@@ -1,4 +1,4 @@
-import { createReducer, on } from '@ngrx/store';
+import { createReducer, on, Action } from '@ngrx/store';
 import { LayoutActions } from '../actions';
 
 export const featureKey = 'layout';
@@ -11,7 +11,7 @@ const initialState: State = {
   showSidenav: false,
 };
 
-export const reducer = createReducer(
+const layoutReducer = createReducer(
   initialState,
   on(LayoutActions.closeSidenav, () => ({ showSidenav: false })),
   on(LayoutActions.openSidenav, () => ({ showSidenav: true })),
@@ -19,5 +19,9 @@ export const reducer = createReducer(
     showSidenav: !state.showSidenav,
   }))
 );
+
+export function reducer(state: State | undefined, action: Action) {
+  return layoutReducer(state, action);
+}
 
 export const selectShowSidenav = (state: State) => state.showSidenav;

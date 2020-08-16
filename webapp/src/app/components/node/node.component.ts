@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Node } from 'src/app/models';
 
 @Component({
@@ -8,8 +8,13 @@ import { Node } from 'src/app/models';
 })
 export class NodeComponent implements OnInit {
   @Input() node: Node;
+  @Output() selectionChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor() {}
 
   ngOnInit(): void {}
+
+  onClick() {
+    this.selectionChange.emit(!this.node.isWall);
+  }
 }

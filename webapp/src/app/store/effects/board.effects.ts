@@ -10,7 +10,7 @@ export class GridEffects {
     this.actions$.pipe(
       ofType(BoardActions.generateGrid),
       map((dimension) => {
-        const grid: Node[][] = [];
+        /*const grid: Node[][] = [];
 
         for (let row = 0; row < dimension.height; row++) {
           const columns: Node[] = [];
@@ -20,12 +20,31 @@ export class GridEffects {
               row,
               column,
               type: this.getNodeType(row, column, dimension),
+              isWall: false,
             });
           }
           grid.push(columns);
         }
 
-        return BoardActions.updateGrid({ grid });
+        return BoardActions.updateGrid({ grid });*/
+
+        const nodes: Node[] = [];
+
+        for (let row = 0; row < dimension.height; row++) {
+          //const columns: Node[] = [];
+          for (let column = 0; column < dimension.width; column++) {
+            nodes.push({
+              id: `${row}-${column}`,
+              row,
+              column,
+              type: this.getNodeType(row, column, dimension),
+              isWall: false,
+            });
+          }
+          //grid.push(columns);
+        }
+
+        return BoardActions.updateGrid({ nodes });
       })
     )
   );

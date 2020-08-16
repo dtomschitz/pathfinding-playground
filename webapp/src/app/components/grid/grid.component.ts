@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Node, NodeType, Grid } from '../../models';
+import { NodeType, Grid } from '../../models';
 import { BoardActions } from '../../store/actions';
 
 import * as fromRoot from '../../store/reducers';
@@ -22,6 +22,10 @@ export class GridComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(BoardActions.generateGrid({ height: this.height, width: this.width }));
+  }
+
+  onSelectionChange(isWall: boolean) {
+    // this.store.dispatch(BoardActions.updateNode({ node: { isWall } }));
   }
 
   getNodeType(row: number, column: number) {

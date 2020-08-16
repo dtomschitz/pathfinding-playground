@@ -5,4 +5,5 @@ export interface Node {
   row: number;
   column: number;
   type: NodeType;
+  isWall: boolean;
 }
