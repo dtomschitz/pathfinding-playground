@@ -2,21 +2,14 @@ import {
   Component,
   Input,
   OnInit,
-  AfterViewChecked,
-  OnChanges,
-  SimpleChanges,
-  ElementRef,
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { NodeType, Grid, Node, NodeDroppedEvent } from '../../models';
-import { BoardActions } from '../../store/actions';
-
-import * as fromRoot from '../../store/reducers';
 import { PaintingService } from 'src/app/services';
+import { NodeComponent } from '../node';
 
 @Component({
   selector: 'grid',
@@ -28,6 +21,9 @@ export class GridComponent implements OnInit {
   // @Input() width: number;
   @Input() rows: number;
   @Input() columns: number;
+
+  @ViewChildren(NodeComponent) nodes: QueryList<NodeComponent>;
+
   grid: Grid = [];
 
   constructor(private changeDetection: ChangeDetectorRef, private mouseService: PaintingService) {}
@@ -59,7 +55,7 @@ export class GridComponent implements OnInit {
     this.grid[newNode.row][newNode.column].type = previouseNodeType;
     this.grid[previouseNode.row][previouseNode.column].type = NodeType.DEFAULT;
 
-    this.changeDetection.detectChanges();
+    this.runChangeDetection();
   }
 
   createGrid() {
@@ -84,6 +80,16 @@ export class GridComponent implements OnInit {
         node.isWall = false;
       }
     }
+  }
+
+  runChangeDetection() {
+    for (const component of this.nodes) {
+      component.markForCheck();
+    }
+  }
+
+  trackByFn(node: Node) {
+    return node.id;
   }
 
   getNodeType(row: number, column: number) {

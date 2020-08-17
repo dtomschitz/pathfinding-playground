@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { Node, NodeDroppedEvent, PaintingMode, NodeType } from 'src/app/models';
 import { PaintingService, NodeDraggingService } from 'src/app/services';
 
@@ -15,7 +15,11 @@ export class NodeComponent {
   isStartNodePreview: boolean;
   isTargetNodePreview: boolean;
 
-  constructor(private nodeDraggingService: NodeDraggingService, private paintingService: PaintingService) {}
+  constructor(
+    private changeDetection: ChangeDetectorRef,
+    private nodeDraggingService: NodeDraggingService,
+    private paintingService: PaintingService
+  ) {}
 
   onMouseDown(event: MouseEvent) {
     if (this.isStartNode || this.isTargetNode) {
@@ -57,6 +61,10 @@ export class NodeComponent {
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
+  }
+
+  markForCheck() {
+    this.changeDetection.markForCheck();
   }
 
   get isWall() {

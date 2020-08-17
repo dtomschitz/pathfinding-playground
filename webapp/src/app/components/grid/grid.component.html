@@ -1,7 +1,7 @@
 <ng-container *ngIf="grid.length !== 0">
   <div class="wrapper" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)">
-    <div *ngFor="let row of grid; let i = index" class="row">
-      <div *ngFor="let column of grid[i]; let j = index" class="column">
+    <div *ngFor="let row of grid; trackBy: trackByFn, let i = index" class="row">
+      <div *ngFor="let column of grid[i]; trackBy: trackByFn; let j = index" class="column">
         <node [node]="grid[i][j]" (dropped)="onNodeDropped($event)"></node>
       </div>
     </div>
