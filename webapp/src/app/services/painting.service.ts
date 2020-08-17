@@ -13,10 +13,12 @@ export class PaintingService {
   lockMouse() {
     this.isMouseLocked = true;
     this.isMouseLocked$.next(true);
+    console.log('locked');
   }
 
   releaseMouse() {
     this.isMouseLocked = false;
     this.isMouseLocked$.next(false);
+    console.log('released');
   }
 }

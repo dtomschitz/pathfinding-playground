@@ -15,12 +15,11 @@
   justify-content: center;
 
   &.start,
-  &.startPreview,
-  &.target,
-  &.targetPreview {
+  &.target {
     cursor: pointer;
     border: 1px solid gray;
     border-radius: 100px;
+    background-color: gray;
 
     mat-icon {
       cursor: pointer;
@@ -29,16 +28,6 @@
       width: 18px;
       font-size: 18px;
     }
-  }
-
-  &.start,
-  &.target {
-    background-color: gray;
-  }
-
-  &.startPreview,
-  &.targetPreview {
-    background-color: lightgray;
   }
 }
 

@@ -12,9 +12,6 @@ export class NodeComponent {
   @Input() node: Node;
   @Output() dropped: EventEmitter<NodeDroppedEvent> = new EventEmitter<NodeDroppedEvent>();
 
-  isStartNodePreview: boolean;
-  isTargetNodePreview: boolean;
-
   constructor(
     private changeDetection: ChangeDetectorRef,
     private nodeDraggingService: NodeDraggingService,
@@ -22,26 +19,40 @@ export class NodeComponent {
   ) {}
 
   onMouseDown(event: MouseEvent) {
+    console.log('down', event);
+
     if (this.isStartNode || this.isTargetNode) {
-      this.paintingService.releaseMouse();
       event.stopPropagation();
+      this.paintingService.releaseMouse();
       return;
     }
 
-    this.node.isWall = this.paintingService.mode === PaintingMode.CREATE;
+    this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
   }
 
-  onMouseUp(event: MouseEvent) {}
-
-  createWall() {
+  onMouseOver() {
     if (this.paintingService.isMouseLocked && !this.isStartNode && !this.isTargetNode) {
-      this.node.isWall = this.paintingService.mode === PaintingMode.CREATE;
+      this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
     }
   }
 
-  onDragStart(event: DragEvent) {
+  onContextMenu(event: MouseEvent) {
+    event.preventDefault();
+
+    if (this.isStartNode || this.isTargetNode) {
+      return;
+    }
+
+    this.paintingService.mode = PaintingMode.ERASE;
+    this.node.type = NodeType.DEFAULT;
+  }
+
+  onMouseUp() {
+    this.paintingService.mode = PaintingMode.CREATE;
+  }
+
+  onDragStart() {
     this.nodeDraggingService.setNode(this.node);
-    console.log('D');
   }
 
   onDragEnter(event: DragEvent) {
@@ -68,7 +79,7 @@ export class NodeComponent {
   }
 
   get isWall() {
-    return this.node.isWall;
+    return this.node.type === NodeType.WALL;
   }
 
   get isStartNode() {

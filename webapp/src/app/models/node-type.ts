@@ -1,6 +1,6 @@
 export enum NodeType {
-  DEFAULT,
-  WALL,
-  START,
-  TARGET,
+  DEFAULT = 'default',
+  WALL = 'wall',
+  START = 'start',
+  TARGET = 'target',
 }

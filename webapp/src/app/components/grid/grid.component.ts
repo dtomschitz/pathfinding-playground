@@ -47,15 +47,13 @@ export class GridComponent implements OnInit {
   onNodeDropped(event: NodeDroppedEvent) {
     const previouseNode = event.previousNode;
     const newNode = event.newNode;
-    const previouseNodeType = previouseNode.type;
 
-    console.log(previouseNode);
-    console.log(newNode);
+    if (newNode.type !== NodeType.START && newNode.type !== NodeType.TARGET) {
+      this.grid[newNode.row][newNode.column].type = previouseNode.type;
+      this.grid[previouseNode.row][previouseNode.column].type = NodeType.DEFAULT;
 
-    this.grid[newNode.row][newNode.column].type = previouseNodeType;
-    this.grid[previouseNode.row][previouseNode.column].type = NodeType.DEFAULT;
-
-    this.runChangeDetection();
+      this.runChangeDetection();
+    }
   }
 
   createGrid() {
