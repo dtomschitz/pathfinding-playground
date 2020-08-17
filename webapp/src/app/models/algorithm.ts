@@ -1,4 +1,6 @@
 export interface Algorithm {
-  id: string;
+  id: Algorithms;
   name: string;
 }
+
+export type Algorithms = 'astar';

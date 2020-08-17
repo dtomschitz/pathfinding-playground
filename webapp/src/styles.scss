@@ -81,9 +81,20 @@ settings-card {
     border-radius: 16px;
     z-index: 999;
 
+    .mat-card-title {
+      margin-bottom: 16px;
+    }
+
     .mat-card-content {
       display: flex;
       flex-direction: column;
+    }
+  }
+
+  .mat-button-toggle-group {
+    margin-bottom: 8px;
+    .mat-button-toggle {
+      width: 100%;
     }
   }
 }

@@ -8,7 +8,7 @@ import {
   QueryList,
 } from '@angular/core';
 import { NodeType, Grid, Node, NodeDroppedEvent } from '../../models';
-import { PaintingService } from 'src/app/services';
+import { PaintingService, SettingsService } from 'src/app/services';
 import { NodeComponent } from '../node';
 
 @Component({
@@ -25,23 +25,34 @@ export class GridComponent implements OnInit {
   @ViewChildren(NodeComponent) nodes: QueryList<NodeComponent>;
 
   grid: Grid = [];
+  isMouseEnabled = true;
 
-  constructor(private changeDetection: ChangeDetectorRef, private mouseService: PaintingService) {}
+  constructor(private settingsService: SettingsService, private mouseService: PaintingService) {}
 
   ngOnInit() {
     this.createGrid();
   }
 
+  visualize() {
+    this.isMouseEnabled = false;
+    console.log(this.settingsService.settings);
+    this.isMouseEnabled = true;
+  }
+
   onMouseDown(event: MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.mouseService.lockMouse();
+    if (this.isMouseEnabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.mouseService.lockMouse();
+    }
   }
 
   onMouseUp(event: MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.mouseService.releaseMouse();
+    if (this.isMouseEnabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.mouseService.releaseMouse();
+    }
   }
 
   onNodeDropped(event: NodeDroppedEvent) {

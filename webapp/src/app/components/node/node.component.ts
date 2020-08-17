@@ -10,6 +10,7 @@ import { PaintingService, NodeDraggingService } from 'src/app/services';
 })
 export class NodeComponent {
   @Input() node: Node;
+  @Input() isMouseEnabled: boolean;
   @Output() dropped: EventEmitter<NodeDroppedEvent> = new EventEmitter<NodeDroppedEvent>();
 
   constructor(
@@ -19,59 +20,63 @@ export class NodeComponent {
   ) {}
 
   onMouseDown(event: MouseEvent) {
-    console.log('down', event);
+    if (this.isMouseEnabled) {
+      if (this.isStartNode || this.isTargetNode) {
+        event.stopPropagation();
+        this.paintingService.releaseMouse();
+        return;
+      }
 
-    if (this.isStartNode || this.isTargetNode) {
-      event.stopPropagation();
-      this.paintingService.releaseMouse();
-      return;
-    }
-
-    this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
-  }
-
-  onMouseOver() {
-    if (this.paintingService.isMouseLocked && !this.isStartNode && !this.isTargetNode) {
       this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
     }
   }
 
-  onContextMenu(event: MouseEvent) {
-    event.preventDefault();
-
-    if (this.isStartNode || this.isTargetNode) {
-      return;
+  onMouseOver() {
+    if (this.isMouseEnabled) {
+      if (this.paintingService.isMouseLocked && !this.isStartNode && !this.isTargetNode) {
+        this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
+      }
     }
+  }
 
-    this.paintingService.mode = PaintingMode.ERASE;
-    this.node.type = NodeType.DEFAULT;
+  onContextMenu(event: MouseEvent) {
+    if (this.isMouseEnabled) {
+      event.preventDefault();
+
+      if (this.isStartNode || this.isTargetNode) {
+        return;
+      }
+
+      this.paintingService.updateMode(PaintingMode.ERASE);
+      this.node.type = NodeType.DEFAULT;
+    }
   }
 
   onMouseUp() {
-    this.paintingService.mode = PaintingMode.CREATE;
+    if (this.isMouseEnabled) {
+      this.paintingService.updateMode(PaintingMode.CREATE);
+    }
   }
 
   onDragStart() {
-    this.nodeDraggingService.setNode(this.node);
-  }
-
-  onDragEnter(event: DragEvent) {
-    event.preventDefault();
+    if (this.isMouseEnabled) {
+      this.nodeDraggingService.setNode(this.node);
+    }
   }
 
   onDrop() {
-    this.dropped.emit({
-      previousNode: this.nodeDraggingService.node,
-      newNode: this.node,
-    });
+    if (this.isMouseEnabled) {
+      this.dropped.emit({
+        previousNode: this.nodeDraggingService.node,
+        newNode: this.node,
+      });
+    }
   }
 
-  onDragLeave(event: DragEvent) {
-    event.preventDefault();
-  }
-
-  onDragOver(event: DragEvent) {
-    event.preventDefault();
+  preventDefault(event: DragEvent) {
+    if (this.isMouseEnabled) {
+      event.preventDefault();
+    }
   }
 
   markForCheck() {

@@ -1,4 +1,5 @@
-import { Component, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ChangeDetectorRef, ViewChildren, ViewChild } from '@angular/core';
+import { GridComponent } from '../grid';
 
 @Component({
   selector: 'board',
@@ -6,6 +7,8 @@ import { Component, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angula
   styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements AfterViewInit {
+  @ViewChild(GridComponent) gridComponent: GridComponent;
+
   rows: number;
   columns: number;
 
@@ -15,5 +18,9 @@ export class BoardComponent implements AfterViewInit {
     this.rows = Math.floor((this.host.nativeElement.clientHeight - 64) / 30);
     this.columns = Math.floor(this.host.nativeElement.clientWidth / 30);
     this.changeDetector.detectChanges();
+  }
+
+  onVisualizePath() {
+    this.gridComponent.visualize();
   }
 }

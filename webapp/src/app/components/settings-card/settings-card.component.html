@@ -25,10 +25,16 @@
         <mat-option *ngFor="let algorithm of algorithms" [value]="algorithm.id">{{ algorithm.name }}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-slider formControlName="speed" thumbLabel [min]="0" [max]="100" [thumbLabel]="true" [step]="1" [displayWith]="formatSpeedLabel"></mat-slider>
+    <mat-form-field appearance="fill">
+      <mat-label>Maze & Patterns</mat-label>
+      <mat-select>
+      </mat-select>
+    </mat-form-field>
+    <mat-slider formControlName="speed" thumbLabel [min]="0" [max]="100" [thumbLabel]="true" [step]="1"
+      [displayWith]="formatSpeedLabel"></mat-slider>
   </mat-card-content>
   <mat-card-actions align="end">
-    <button color="primary" mat-flat-button>Start</button>
+    <button color="primary" (click)="visualize()" mat-flat-button>Visualize</button>
   </mat-card-actions>
 </mat-card>
 <button *ngIf="isHidden" @showHideButton (click)="showChard()" mat-fab>

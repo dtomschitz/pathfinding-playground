@@ -1,5 +1,4 @@
 <ng-container *ngIf="rows && columns">
-  <board-tools></board-tools>
-  <settings-card></settings-card>
+  <settings-card (visualizePath)="onVisualizePath()"></settings-card>
   <grid [rows]="rows" [columns]="columns"></grid>
 </ng-container>

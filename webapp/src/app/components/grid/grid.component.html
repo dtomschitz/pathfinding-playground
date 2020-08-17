@@ -2,7 +2,7 @@
   <div class="wrapper" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)">
     <div *ngFor="let row of grid; trackBy: trackByFn, let i = index" class="row">
       <div *ngFor="let column of grid[i]; trackBy: trackByFn; let j = index" class="column">
-        <node [node]="grid[i][j]" (dropped)="onNodeDropped($event)"></node>
+        <node [node]="grid[i][j]" [isMouseEnabled]="isMouseEnabled" (dropped)="onNodeDropped($event)"></node>
       </div>
     </div>
   </div>

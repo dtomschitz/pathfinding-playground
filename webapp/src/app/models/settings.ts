@@ -1,6 +1,6 @@
-import { Algorithm } from './algorithm';
+import { Algorithms } from './algorithm';
 
 export interface Settings {
-  algoritm: Algorithm;
+  algorithm: Algorithms;
   speed: number;
 }

@@ -10,20 +10,12 @@ import { MaterialModule } from './material';
 import { SettingsService, PaintingService, NodeDraggingService } from './services';
 import { ROOT_REDUCERS } from './store/reducers';
 import { GridEffects } from './store/effects';
-import {
-  BoardComponent,
-  BoardToolsComponent,
-  SettingsCardComponent,
-  GridComponent,
-  NodeComponent,
-  NavItemComponent,
-} from './components';
+import { BoardComponent, SettingsCardComponent, GridComponent, NodeComponent, NavItemComponent } from './components';
 import { AppComponent } from './app.component';
 
 const COMPONENTS = [
   AppComponent,
   BoardComponent,
-  BoardToolsComponent,
   SettingsCardComponent,
   GridComponent,
   NavItemComponent,

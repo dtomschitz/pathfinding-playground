@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PaintingService, SettingsService } from '../../services';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil, take } from 'rxjs/operators';
-import { trigger, state, style, transition, animate, keyframes, stagger, query } from '@angular/animations';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { trigger, style, transition, animate } from '@angular/animations';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Algorithm, Settings } from 'src/app/models';
+import { Subject } from 'rxjs';
+import { takeUntil, take } from 'rxjs/operators';
+import { PaintingService, SettingsService } from '../../services';
+import { Algorithm, PaintingMode } from '../../models';
 
 @Component({
   selector: 'settings-card',
@@ -58,6 +58,8 @@ import { Algorithm, Settings } from 'src/app/models';
 export class SettingsCardComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<void> = new Subject<void>();
 
+  @Output() visualizePath: EventEmitter<void> = new EventEmitter<void>();
+
   settingsForm: FormGroup;
   algorithms: Algorithm[];
 
@@ -69,8 +71,8 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
     private paintingService: PaintingService
   ) {
     this.settingsForm = this.formBuilder.group({
-      algorithm: [this.settingsSerice.settings?.algoritm.id ?? ''],
-      speed: [this.settingsSerice.settings?.speed ?? 50],
+      algorithm: [this.settingsSerice.settings.algorithm],
+      speed: [this.settingsSerice.settings.speed],
     });
     this.algorithms = this.settingsSerice.algorithms;
   }
@@ -94,6 +96,15 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
 
   showChard() {
     this.isHidden = false;
+  }
+
+  visualize() {
+    this.isHidden = true;
+    this.visualizePath.emit();
+  }
+
+  switchPaintingMode(mode: keyof typeof PaintingMode) {
+    this.paintingService.updateMode(PaintingMode[mode]);
   }
 
   formatSpeedLabel(value: number) {

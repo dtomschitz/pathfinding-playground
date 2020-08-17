@@ -20,16 +20,16 @@
   class="node"
   dropzone="copy"
   [ngClass]="{ wall: isWall, start: isStartNode, target: isTargetNode }"
-  [draggable]="isStartNode || isTargetNode"
+  [draggable]="(isStartNode || isTargetNode) && isMouseEnabled"
   (mouseover)="onMouseOver()"
   (mouseup)="onMouseUp()"
   (mousedown)="onMouseDown($event)"
   (contextmenu)="onContextMenu($event)"
   (dragstart)="onDragStart()"
   (drop)="onDrop()"
-  (dragenter)="onDragEnter($event)"
-  (dragleave)="onDragLeave($event)"
-  (dragover)="onDragOver($event)">
+  (dragenter)="preventDefault($event)"
+  (dragleave)="preventDefault($event)"
+  (dragover)="preventDefault($event)">
   <mat-icon *ngIf="isStartNode">edit</mat-icon>
   <mat-icon *ngIf="isTargetNode">place</mat-icon>
 </div>

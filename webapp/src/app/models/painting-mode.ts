@@ -1,4 +1,4 @@
 export enum PaintingMode {
-  CREATE,
-  ERASE,
+  CREATE = 'create',
+  ERASE = 'erase',
 }

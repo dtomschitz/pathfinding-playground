@@ -14,9 +14,15 @@ export class SettingsService {
 
   private currentSettings: Settings;
 
+  constructor() {
+    this.currentSettings = {
+      algorithm: 'astar',
+      speed: 50,
+    };
+  }
+
   updateSettings(changes: Partial<Settings>) {
     this.currentSettings = { ...this.currentSettings, ...changes };
-    console.log(this.currentSettings);
   }
 
   get settings() {

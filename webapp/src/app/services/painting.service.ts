@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 export class PaintingService {
   isMouseLocked = false;
   isMouseLocked$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  mode = PaintingMode.CREATE;
+  private currentMode = PaintingMode.CREATE;
 
   lockMouse() {
     this.isMouseLocked = true;
@@ -20,5 +20,15 @@ export class PaintingService {
     this.isMouseLocked = false;
     this.isMouseLocked$.next(false);
     console.log('released');
+  }
+
+  updateMode(mode: PaintingMode) {
+    console.log(mode);
+
+    this.currentMode = mode;
+  }
+
+  get mode() {
+    return this.currentMode;
   }
 }
