@@ -1,2 +1,4 @@
-<board-tools></board-tools>
-<grid [height]="50" [width]="50"></grid>
+<ng-container *ngIf="rows && columns">
+  <board-tools></board-tools>
+  <grid [rows]="rows" [columns]="columns"></grid>
+</ng-container>

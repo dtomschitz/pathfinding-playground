@@ -11,6 +11,7 @@ import { ROOT_REDUCERS } from './store/reducers';
 import { GridEffects } from './store/effects';
 import { BoardComponent, BoardToolsComponent, GridComponent, NodeComponent, NavItemComponent } from './components';
 import { AppComponent } from './app.component';
+import { NodeDraggingService } from './services/node-dragging.service';
 
 const COMPONENTS = [AppComponent, BoardComponent, BoardToolsComponent, GridComponent, NavItemComponent, NodeComponent];
 
@@ -27,7 +28,7 @@ const COMPONENTS = [AppComponent, BoardComponent, BoardToolsComponent, GridCompo
       logOnly: environment.production,
     }),
   ],
-  providers: [PaintingService],
+  providers: [PaintingService, NodeDraggingService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

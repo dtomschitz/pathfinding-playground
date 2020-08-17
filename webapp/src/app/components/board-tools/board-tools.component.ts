@@ -9,11 +9,7 @@ import { PaintingMode } from '../../models';
   styleUrls: ['./board-tools.component.scss'],
 })
 export class BoardToolsComponent {
-  hidden$: BehaviorSubject<boolean>;
-
-  constructor(private mouseService: PaintingService) {
-    this.hidden$ = this.mouseService.isMousePressed$;
-  }
+  constructor(private mouseService: PaintingService) {}
 
   setPaintingModeToCreate() {
     this.mouseService.mode = PaintingMode.CREATE;

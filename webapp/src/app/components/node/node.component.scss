@@ -1,7 +1,45 @@
-.node {
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 30px;
   width: 30px;
-  border: 1px solid gray;
+  border: 1px solid lightgray;
+}
+
+.node {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.start,
+  &.startPreview,
+  &.target,
+  &.targetPreview {
+    cursor: pointer;
+    border: 1px solid gray;
+    border-radius: 100px;
+
+    mat-icon {
+      cursor: pointer;
+      color: white;
+      height: 18px;
+      width: 18px;
+      font-size: 18px;
+    }
+  }
+
+  &.start,
+  &.target {
+    background-color: gray;
+  }
+
+  &.startPreview,
+  &.targetPreview {
+    background-color: lightgray;
+  }
 }
 
 .wall {

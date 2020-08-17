@@ -7,3 +7,8 @@ export interface Node {
   type: NodeType;
   isWall: boolean;
 }
+
+export interface NodeDroppedEvent {
+  previousNode: Node;
+  newNode: Node;
+}

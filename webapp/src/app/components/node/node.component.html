@@ -1,1 +1,16 @@
-<div class="node" [ngClass]="{ wall: node.isWall }" (click)="onClick()" (mouseover)="onMouseOver()"></div>
+<div 
+  class="node"
+  dropzone="copy"
+  [ngClass]="{ wall: isWall, start: isStartNode, target: isTargetNode, startPreview: isStartNodePreview, targetPreview: isTargetNodePreview }"
+  [draggable]="isStartNode || isTargetNode"
+  (mouseover)="createWall()"
+  (mousedown)="onMouseDown($event)"
+  (mouseup)="onMouseUp($event)"
+  (dragstart)="onDragStart($event)"
+  (drop)="onDrop()"
+  (dragenter)="onDragEnter($event)"
+  (dragleave)="onDragLeave($event)"
+  (dragover)="onDragOver($event)">
+  <mat-icon *ngIf="isStartNode">edit</mat-icon>
+  <mat-icon *ngIf="isTargetNode">place</mat-icon>
+</div>

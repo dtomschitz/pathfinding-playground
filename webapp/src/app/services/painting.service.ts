@@ -6,17 +6,17 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class PaintingService {
-  isMousePressed = false;
-  isMousePressed$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isMouseLocked = false;
+  isMouseLocked$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   mode = PaintingMode.CREATE;
 
-  click() {
-    this.isMousePressed = true;
-    this.isMousePressed$.next(true);
+  lockMouse() {
+    this.isMouseLocked = true;
+    this.isMouseLocked$.next(true);
   }
 
-  release() {
-    this.isMousePressed = false;
-    this.isMousePressed$.next(false);
+  releaseMouse() {
+    this.isMouseLocked = false;
+    this.isMouseLocked$.next(false);
   }
 }
