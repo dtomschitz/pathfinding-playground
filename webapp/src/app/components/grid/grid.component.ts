@@ -1,14 +1,6 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  ViewChildren,
-  QueryList,
-} from '@angular/core';
-import { NodeType, Grid, Node, NodeDroppedEvent } from '../../models';
-import { PaintingService, SettingsService } from 'src/app/services';
+import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
+import { NodeType, Grid, Node, NodeDroppedEvent, Settings, Mazes, Maze } from '../../models';
+import { PaintingService } from '../../services';
 import { NodeComponent } from '../node';
 
 @Component({
@@ -17,8 +9,6 @@ import { NodeComponent } from '../node';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridComponent implements OnInit {
-  // @Input() height: number;
-  // @Input() width: number;
   @Input() rows: number;
   @Input() columns: number;
 
@@ -27,15 +17,15 @@ export class GridComponent implements OnInit {
   grid: Grid = [];
   isMouseEnabled = true;
 
-  constructor(private settingsService: SettingsService, private mouseService: PaintingService) {}
+  constructor(private mouseService: PaintingService) {}
 
   ngOnInit() {
     this.createGrid();
   }
 
-  visualize() {
+  visualize(settings: Settings) {
     this.isMouseEnabled = false;
-    console.log(this.settingsService.settings);
+    console.log(settings);
     this.isMouseEnabled = true;
   }
 
@@ -65,6 +55,12 @@ export class GridComponent implements OnInit {
 
       this.runChangeDetection();
     }
+  }
+
+  createMaze(maze: Maze) {
+    maze.generatorFn(this.grid);
+    this.runChangeDetection();
+    console.log('dadw');
   }
 
   createGrid() {

@@ -1,6 +1,7 @@
 export * from './algorithm';
 export * from './dimension';
 export * from './grid';
+export * from './maze';
 export * from './node';
 export * from './node-type';
 export * from './painting-mode';

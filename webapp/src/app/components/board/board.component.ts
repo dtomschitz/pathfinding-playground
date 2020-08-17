@@ -1,4 +1,6 @@
-import { Component, ElementRef, AfterViewInit, ChangeDetectorRef, ViewChildren, ViewChild } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { SettingsService } from '../../services';
+import { getMaze } from '../../mazes';
 import { GridComponent } from '../grid';
 
 @Component({
@@ -12,7 +14,11 @@ export class BoardComponent implements AfterViewInit {
   rows: number;
   columns: number;
 
-  constructor(private host: ElementRef, private changeDetector: ChangeDetectorRef) {}
+  constructor(
+    private host: ElementRef,
+    private changeDetector: ChangeDetectorRef,
+    private settingsService: SettingsService
+  ) {}
 
   ngAfterViewInit() {
     this.rows = Math.floor((this.host.nativeElement.clientHeight - 64) / 30);
@@ -21,6 +27,11 @@ export class BoardComponent implements AfterViewInit {
   }
 
   onVisualizePath() {
-    this.gridComponent.visualize();
+    this.gridComponent.visualize(this.settingsService.settings);
+  }
+
+  onGenerateMaze() {
+    this.gridComponent.createMaze(getMaze(this.settingsService.settings.maze));
+    this.settingsService.settings.maze = undefined;
   }
 }

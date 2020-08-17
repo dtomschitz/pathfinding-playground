@@ -4,7 +4,9 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, take } from 'rxjs/operators';
 import { PaintingService, SettingsService } from '../../services';
-import { Algorithm, PaintingMode } from '../../models';
+import { Algorithm, PaintingMode, Maze } from '../../models';
+import { mazes } from '../../mazes';
+import { algorithms } from '../../algorithms';
 
 @Component({
   selector: 'settings-card',
@@ -59,22 +61,24 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<void> = new Subject<void>();
 
   @Output() visualizePath: EventEmitter<void> = new EventEmitter<void>();
+  @Output() generateMaze: EventEmitter<void> = new EventEmitter<void>();
 
   settingsForm: FormGroup;
-  algorithms: Algorithm[];
+  algorithms: Algorithm[] = algorithms;
+  mazes: Maze[] = mazes;
 
   isHidden = true;
 
   constructor(
     private formBuilder: FormBuilder,
-    private settingsSerice: SettingsService,
+    private settingsService: SettingsService,
     private paintingService: PaintingService
   ) {
     this.settingsForm = this.formBuilder.group({
-      algorithm: [this.settingsSerice.settings.algorithm],
-      speed: [this.settingsSerice.settings.speed],
+      algorithm: [this.settingsService.settings.algorithm],
+      maze: [this.settingsService.settings.maze],
+      speed: [this.settingsService.settings.speed],
     });
-    this.algorithms = this.settingsSerice.algorithms;
   }
 
   ngOnInit() {
@@ -84,9 +88,9 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.settingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((changes) => {
-      this.settingsSerice.updateSettings(changes);
-    });
+    this.settingsForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((changes) => this.settingsService.updateSettings(changes));
   }
 
   ngOnDestroy() {
@@ -98,9 +102,13 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
     this.isHidden = false;
   }
 
-  visualize() {
+  onVisualize() {
     this.isHidden = true;
     this.visualizePath.emit();
+  }
+
+  onGenerateMaze() {
+    this.generateMaze.emit();
   }
 
   switchPaintingMode(mode: keyof typeof PaintingMode) {
