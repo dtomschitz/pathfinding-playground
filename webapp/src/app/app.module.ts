@@ -31,7 +31,6 @@ const COMPONENTS = [
     ReactiveFormsModule,
     MaterialModule,
     StoreModule.forRoot(ROOT_REDUCERS),
-    EffectsModule.forRoot([GridEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,

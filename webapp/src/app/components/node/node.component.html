@@ -19,7 +19,7 @@
 <div 
   class="node"
   dropzone="copy"
-  [ngClass]="{ wall: isWall, start: isStartNode, target: isTargetNode }"
+  [ngClass]="{ wall: isWall, start: isStartNode, target: isTargetNode, visited: isVisited }"
   [draggable]="(isStartNode || isTargetNode) && isMouseEnabled"
   (mouseover)="onMouseOver()"
   (mouseup)="onMouseUp()"

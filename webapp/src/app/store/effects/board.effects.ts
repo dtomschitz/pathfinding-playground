@@ -6,27 +6,6 @@ import { BoardActions } from '../actions';
 
 @Injectable()
 export class GridEffects {
-  generateGrid$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(BoardActions.generateGrid),
-      map((dimension) => {
-        const nodes: Node[] = [];
-
-        for (let row = 0; row < dimension.height; row++) {
-          for (let column = 0; column < dimension.width; column++) {
-            nodes.push({
-              id: `${row}-${column}`,
-              row,
-              column,
-              type: this.getNodeType(row, column, dimension),
-            });
-          }
-        }
-
-        return BoardActions.updateGrid({ nodes });
-      })
-    )
-  );
 
   constructor(private actions$: Actions) {}
 

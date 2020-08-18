@@ -1,5 +1,6 @@
 import { Component, ElementRef, AfterViewInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SettingsService } from '../../services';
+import { getAlgorithm } from '../../algorithms';
 import { getMaze } from '../../mazes';
 import { GridComponent } from '../grid';
 
@@ -27,7 +28,7 @@ export class BoardComponent implements AfterViewInit {
   }
 
   onVisualizePath() {
-    this.gridComponent.visualize(this.settingsService.settings);
+    this.gridComponent.visualize(getAlgorithm(this.settingsService.settings.algorithm));
   }
 
   onGenerateMaze() {

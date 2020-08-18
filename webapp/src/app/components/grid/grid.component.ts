@@ -1,7 +1,8 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
-import { NodeType, Grid, Node, NodeDroppedEvent, Settings, Mazes, Maze } from '../../models';
+import { NodeType, Grid, Node, NodeDroppedEvent, Settings, Maze, Algorithm } from '../../models';
 import { PaintingService } from '../../services';
 import { NodeComponent } from '../node';
+import { algorithms } from 'src/app/algorithms';
 
 @Component({
   selector: 'grid',
@@ -26,9 +27,10 @@ export class GridComponent implements OnInit {
     this.createGrid();
   }
 
-  visualize(settings: Settings) {
+  visualize(algorithm: Algorithm) {
     this.isMouseEnabled = false;
-    console.log(settings);
+    algorithm.fn(this.grid, this.startNode, this.targetNode, undefined);
+    this.runChangeDetection();
     this.isMouseEnabled = true;
   }
 
@@ -80,6 +82,13 @@ export class GridComponent implements OnInit {
           row,
           column,
           type: this.getNodeType(row, column),
+          direction: undefined,
+          distance: Infinity,
+          totalDistance: Infinity,
+          heuristicDistance: undefined,
+          weight: 0,
+          path: undefined,
+          previousNode: undefined,
         };
 
         columns.push(node);

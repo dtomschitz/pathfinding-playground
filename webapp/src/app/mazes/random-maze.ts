@@ -1,6 +1,6 @@
 import { Grid, Node, NodeType } from '../models';
 
-export function generateRandomMaze(grid: Grid) {
+export function randomMaze(grid: Grid) {
   const nodes: Node[] = [].concat(...grid);
   for (const node of nodes) {
     if (node.type === NodeType.START || node.type === NodeType.TARGET) {

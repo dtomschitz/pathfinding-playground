@@ -87,6 +87,10 @@ export class NodeComponent {
     return this.node.type === NodeType.WALL;
   }
 
+  get isVisited() {
+    return this.node.type === NodeType.VISITED;
+  }
+
   get isStartNode() {
     return this.node.type === NodeType.START;
   }

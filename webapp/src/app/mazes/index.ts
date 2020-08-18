@@ -1,12 +1,12 @@
 import { Maze, Mazes } from '../models';
-import { generateRandomMaze } from './random-maze';
+import { randomMaze } from './random-maze';
 import { recursiveDivisionMaze } from './recursive-division-maze';
 
 export const mazes: Maze[] = [
   {
     id: 'randomMaze',
     name: 'Random Maze',
-    generatorFn: generateRandomMaze,
+    generatorFn: randomMaze,
   },
   {
     id: 'recursiveDivision',
