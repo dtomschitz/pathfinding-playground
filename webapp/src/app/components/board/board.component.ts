@@ -21,8 +21,8 @@ export class BoardComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    this.rows = Math.floor((this.host.nativeElement.clientHeight - 64) / 30);
-    this.columns = Math.floor(this.host.nativeElement.clientWidth / 30);
+    this.rows = Math.floor((this.host.nativeElement.clientHeight - 64) / 30) - 1;
+    this.columns = Math.floor(this.host.nativeElement.clientWidth / 30) - 5;
     this.changeDetector.detectChanges();
   }
 

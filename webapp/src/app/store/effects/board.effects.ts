@@ -19,7 +19,6 @@ export class GridEffects {
               row,
               column,
               type: this.getNodeType(row, column, dimension),
-              isWall: false,
             });
           }
         }

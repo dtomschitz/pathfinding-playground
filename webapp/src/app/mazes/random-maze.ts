@@ -10,7 +10,6 @@ export function generateRandomMaze(grid: Grid) {
     const random = Math.random();
     if (random < 0.25) {
       node.type = NodeType.WALL;
-      console.log('åƒ');
     }
   }
 }

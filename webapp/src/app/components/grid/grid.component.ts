@@ -15,6 +15,9 @@ export class GridComponent implements OnInit {
   @ViewChildren(NodeComponent) nodes: QueryList<NodeComponent>;
 
   grid: Grid = [];
+  startNode: Node;
+  targetNode: Node;
+
   isMouseEnabled = true;
 
   constructor(private mouseService: PaintingService) {}
@@ -45,35 +48,47 @@ export class GridComponent implements OnInit {
     }
   }
 
-  onNodeDropped(event: NodeDroppedEvent) {
-    const previouseNode = event.previousNode;
-    const newNode = event.newNode;
-
+  onNodeDropped({ previousNode, newNode }: NodeDroppedEvent) {
     if (newNode.type !== NodeType.START && newNode.type !== NodeType.TARGET) {
-      this.grid[newNode.row][newNode.column].type = previouseNode.type;
-      this.grid[previouseNode.row][previouseNode.column].type = NodeType.DEFAULT;
+      this.grid[newNode.row][newNode.column].type = previousNode.type;
+      this.grid[previousNode.row][previousNode.column].type = NodeType.DEFAULT;
+
+      const node = this.grid[newNode.row][newNode.column];
+
+      if (node.type === NodeType.START) {
+        this.startNode = node;
+      } else if (node.type === NodeType.TARGET) {
+        this.targetNode = node;
+      }
 
       this.runChangeDetection();
     }
   }
 
   createMaze(maze: Maze) {
-    maze.generatorFn(this.grid);
+    this.resetGrid();
+    maze.generatorFn(this.grid, this.startNode, this.targetNode, this.rows, this.columns);
     this.runChangeDetection();
-    console.log('dadw');
   }
 
   createGrid() {
     for (let row = 0; row < this.rows; row++) {
       const columns: Node[] = [];
       for (let column = 0; column < this.columns; column++) {
-        columns.push({
+        const node: Node = {
           id: `${row}-${column}`,
           row,
           column,
           type: this.getNodeType(row, column),
-          isWall: false,
-        });
+        };
+
+        columns.push(node);
+
+        if (node.type === NodeType.START) {
+          this.startNode = node;
+        } else if (node.type === NodeType.TARGET) {
+          this.targetNode = node;
+        }
       }
       this.grid.push(columns);
     }
@@ -82,7 +97,9 @@ export class GridComponent implements OnInit {
   resetGrid() {
     for (const rows of this.grid) {
       for (const node of rows) {
-        node.isWall = false;
+        if (node.type !== NodeType.START && node.type !== NodeType.TARGET) {
+          node.type = NodeType.DEFAULT;
+        }
       }
     }
   }
