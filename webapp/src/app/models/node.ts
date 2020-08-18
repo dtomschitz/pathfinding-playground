@@ -1,3 +1,5 @@
+import { Point } from './point';
+
 export interface Node {
   id: string;
   row: number;
@@ -21,6 +23,7 @@ export enum NodeType {
   DEFAULT = 'default',
   WALL = 'wall',
   VISITED = 'visited',
+  PATH = 'path',
   START = 'start',
   TARGET = 'target',
 }

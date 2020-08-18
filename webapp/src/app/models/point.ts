@@ -1,4 +1,4 @@
 export interface Point {
-  row: number;
-  column: number;
+  x: number;
+  y: number;
 }

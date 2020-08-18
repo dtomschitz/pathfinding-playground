@@ -1,5 +1,5 @@
-import { Algorithms, Algorithm } from './algorithm';
-import { Maze, Mazes } from './maze';
+import { Algorithms } from './algorithm';
+import { Mazes } from './maze';
 
 export interface Settings {
   algorithm: Algorithms;

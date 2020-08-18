@@ -1,4 +1,4 @@
-import { Maze, Mazes } from '../models';
+import { Maze } from '../models';
 import { randomMaze } from './random-maze';
 import { recursiveDivisionMaze } from './recursive-division-maze';
 
@@ -28,6 +28,6 @@ export const mazes: Maze[] = [
   },
 ];
 
-export function getMaze(id: Mazes) {
+export function getMaze(id: string) {
   return mazes.find((maze) => maze.id === id);
 }

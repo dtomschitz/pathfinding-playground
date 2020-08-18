@@ -87,6 +87,10 @@ export class NodeComponent {
     return this.node.type === NodeType.WALL;
   }
 
+  get isPath() {
+    return this.node.type === NodeType.PATH;
+  }
+
   get isVisited() {
     return this.node.type === NodeType.VISITED;
   }

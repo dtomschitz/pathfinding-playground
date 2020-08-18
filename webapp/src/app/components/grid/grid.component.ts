@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
 import { NodeType, Grid, Node, NodeDroppedEvent, Settings, Maze, Algorithm } from '../../models';
-import { PaintingService } from '../../services';
+import { PaintingService, SettingsService } from '../../services';
 import { NodeComponent } from '../node';
 import { algorithms } from 'src/app/algorithms';
 
@@ -18,10 +18,11 @@ export class GridComponent implements OnInit {
   grid: Grid = [];
   startNode: Node;
   targetNode: Node;
+  middleNode: Node;
 
   isMouseEnabled = true;
 
-  constructor(private mouseService: PaintingService) {}
+  constructor(private settingsService: SettingsService, private mouseService: PaintingService) {}
 
   ngOnInit() {
     this.createGrid();
@@ -30,6 +31,7 @@ export class GridComponent implements OnInit {
   visualize(algorithm: Algorithm) {
     this.isMouseEnabled = false;
     algorithm.fn(this.grid, this.startNode, this.targetNode, undefined);
+    this.drawShortestPath();
     this.runChangeDetection();
     this.isMouseEnabled = true;
   }
@@ -64,6 +66,25 @@ export class GridComponent implements OnInit {
       }
 
       this.runChangeDetection();
+    }
+  }
+
+  drawShortestPath() {
+    const currentAlgorithm = this.settingsService.settings.algorithm;
+    let currentNode: Node;
+
+    const coordinates = this.targetNode.previousNode.split('-');
+    const x = parseInt(coordinates[0]);
+    const y = parseInt(coordinates[1]);
+
+    currentNode = this.grid[x][y];
+
+    while (currentNode.id !== this.startNode.id) {
+      currentNode.type = NodeType.PATH;
+      const coordinates = currentNode.previousNode.split('-');
+      const x = parseInt(coordinates[0]);
+      const y = parseInt(coordinates[1]);
+      currentNode = this.grid[x][y];
     }
   }
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Settings, Algorithm, Algorithms } from '../models';
-import { Mazes } from '../models/maze';
+import { Settings, Mazes } from '../models';
 
 @Injectable({
   providedIn: 'root',

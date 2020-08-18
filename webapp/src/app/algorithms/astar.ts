@@ -1,4 +1,4 @@
-import { Grid, Node, NodeType, NodeDirection, Distance } from '../models';
+import { Grid, Node, NodeType, Distance } from '../models';
 
 export function astar(grid: Grid, startNode: Node, targetNode: Node) {
   if (!startNode || !targetNode || startNode === targetNode) {
@@ -23,17 +23,21 @@ export function astar(grid: Grid, startNode: Node, targetNode: Node) {
     console.log('d');
 
     let currentNode = closestNode(grid, unvisitedNodes);
+    console.log(currentNode);
+    
     while (currentNode.type === NodeType.WALL && unvisitedNodes.length) {
       currentNode = closestNode(grid, unvisitedNodes);
     }
 
     if (currentNode.distance === Infinity) {
+      console.log('dadadaD');
+
       return false;
     }
 
     currentNode.type = NodeType.VISITED;
     if (currentNode.id === targetNode.id) {
-      return true;
+      return 'success';
     }
 
     updateNeighbors(grid, currentNode, targetNode);
