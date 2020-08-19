@@ -4,14 +4,25 @@ export interface Node {
   id: string;
   row: number;
   column: number;
-  distance: number;
-  totalDistance: number;
-  heuristicDistance: number;
-  weight: number;
-  previousNode: string;
-  path: string[];
-  direction: NodeDirection;
+  distance?: number;
+  totalDistance?: number;
+  heuristicDistance?: number;
+  weight?: number;
+  previousNode?: string;
+  path?: string[];
+  direction?: NodeDirection;
   type: NodeType;
+
+  otherId?: string;
+  otherType?: NodeType;
+  otherPreviousNode?: string;
+  otherPath?: string[];
+  otherDirection?: NodeDirection;
+  otherStoredDirection?: any;
+  otherDistance?: number;
+  otherWeight?: number;
+  // otherRelatesToObject = false;
+  // otheroverwriteObjectRelation = false;
 }
 
 export interface NodeDroppedEvent {

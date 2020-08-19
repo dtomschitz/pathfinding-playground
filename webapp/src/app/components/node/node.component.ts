@@ -21,6 +21,8 @@ export class NodeComponent {
   @Input() isMouseEnabled: boolean;
   @Output() dropped: EventEmitter<NodeDroppedEvent> = new EventEmitter<NodeDroppedEvent>();
 
+  @HostBinding('class.no-border') noBorder = true;
+
   constructor(
     private changeDetection: ChangeDetectorRef,
     private nodeDraggingService: NodeDraggingService,
@@ -88,7 +90,7 @@ export class NodeComponent {
   }
 
   markForCheck() {
-    this.changeDetection.markForCheck();
+    this.changeDetection.detectChanges();
   }
 
   get isWall() {

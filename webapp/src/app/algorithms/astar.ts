@@ -1,43 +1,37 @@
-import { Grid, Node, NodeType, Distance } from '../models';
+import { Grid, Node, NodeType, Distance, getNodeCoordinatesById } from '../models';
 
 export function astar(grid: Grid, startNode: Node, targetNode: Node) {
   if (!startNode || !targetNode || startNode === targetNode) {
     return false;
   }
 
-  console.log('d');
-
-  startNode.distance = 0;
-  startNode.totalDistance = 0;
-  startNode.direction = 'up';
+  const { x, y } = getNodeCoordinatesById(startNode.id);
+  grid[x][y].distance = 0;
+  grid[x][y].totalDistance = 0;
+  grid[x][y].direction = 'up';
 
   const nodes: Node[] = ([] as Node[])
     .concat(...grid)
     .filter((node) => node.type !== NodeType.START && node.type !== NodeType.TARGET);
 
   const unvisitedNodes = [...nodes];
-
-  console.log(unvisitedNodes);
-
   while (unvisitedNodes.length) {
-    console.log('d');
+    console.log(unvisitedNodes);
 
     let currentNode = closestNode(grid, unvisitedNodes);
-    console.log(currentNode);
-    
     while (currentNode.type === NodeType.WALL && unvisitedNodes.length) {
+      console.log('dadadad');
+
       currentNode = closestNode(grid, unvisitedNodes);
     }
 
     if (currentNode.distance === Infinity) {
-      console.log('dadadaD');
-
       return false;
     }
 
     currentNode.type = NodeType.VISITED;
     if (currentNode.id === targetNode.id) {
-      return 'success';
+      return true;
     }
 
     updateNeighbors(grid, currentNode, targetNode);
@@ -67,8 +61,8 @@ function closestNode(grid: Grid, unvisitedNodes: Node[]): Node {
   return currentClosest;
 }
 
-function updateNeighbors(grid: Grid, node: Node, targetNode: Node) {
-  const neighbors = getNeighbors(node.id, grid);
+function updateNeighbors(grid: Grid, node: Node, targetNode?: Node) {
+  const neighbors = getNeighbors(grid, node);
   for (const neighbor of neighbors) {
     if (targetNode) {
       updateNode(node, grid[neighbor.row][neighbor.column], targetNode);
@@ -94,10 +88,8 @@ function updateNode(currentNode: Node, targetNode: Node, actualTargetNode?: Node
   }
 }
 
-function getNeighbors(id: string, grid: Grid): Node[] {
-  const coordinates = id.split('-');
-  const x = parseInt(coordinates[0]);
-  const y = parseInt(coordinates[1]);
+function getNeighbors(grid: Grid, node: Node): Node[] {
+  const { x, y } = getNodeCoordinatesById(node.id);
   const neighbors: Node[] = [];
   let potentialNeighbor: Node;
 
@@ -130,12 +122,9 @@ function getNeighbors(id: string, grid: Grid): Node[] {
 }
 
 function getDistance(nodeOne: Node, nodeTwo: Node): Distance {
-  const currentCoordinates = nodeOne.id.split('-');
-  const targetCoordinates = nodeTwo.id.split('-');
-  const x1 = parseInt(currentCoordinates[0]);
-  const y1 = parseInt(currentCoordinates[1]);
-  const x2 = parseInt(targetCoordinates[0]);
-  const y2 = parseInt(targetCoordinates[1]);
+  const { x: x1, y: y1 } = getNodeCoordinatesById(nodeOne.id);
+  const { x: x2, y: y2 } = getNodeCoordinatesById(nodeTwo.id);
+
   if (x2 < x1 && y1 === y2) {
     if (nodeOne.direction === 'up') {
       return [1, ['f'], 'up'];
@@ -213,9 +202,8 @@ function getDistance(nodeOne: Node, nodeTwo: Node): Distance {
 }
 
 function calculateManhattanDistance(nodeOne: Node, nodeTwo: Node): number {
-  const nodeOneCoordinates = nodeOne.id.split('-').map((e) => parseInt(e));
-  const nodeTwoCoordinates = nodeTwo.id.split('-').map((e) => parseInt(e));
-  return (
-    Math.abs(nodeOneCoordinates[0] - nodeTwoCoordinates[0]) + Math.abs(nodeOneCoordinates[1] - nodeTwoCoordinates[1])
-  );
+  const { x: x1, y: y1 } = getNodeCoordinatesById(nodeOne.id);
+  const { x: x2, y: y2 } = getNodeCoordinatesById(nodeTwo.id);
+
+  return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 }

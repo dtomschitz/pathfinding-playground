@@ -1,17 +1,7 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
-import {
-  NodeType,
-  Grid,
-  Node,
-  NodeDroppedEvent,
-  Settings,
-  Maze,
-  Algorithm,
-  getNodeCoordinatesById,
-} from '../../models';
+import { NodeType, Grid, Node, NodeDroppedEvent, Maze, Algorithm, getNodeCoordinatesById } from '../../models';
 import { PaintingService, SettingsService } from '../../services';
 import { NodeComponent } from '../node';
-import { algorithms } from 'src/app/algorithms';
 
 @Component({
   selector: 'grid',
@@ -22,7 +12,7 @@ export class GridComponent implements OnInit {
   @Input() rows: number;
   @Input() columns: number;
 
-  @ViewChildren(NodeComponent) nodes: QueryList<NodeComponent>;
+  @ViewChildren(NodeComponent) nodeComponents: QueryList<NodeComponent>;
 
   grid: Grid = [];
   startNode: Node;
@@ -41,6 +31,7 @@ export class GridComponent implements OnInit {
     this.isMouseEnabled = false;
     this.resetPath();
     algorithm.fn(this.grid, this.startNode, this.targetNode, undefined);
+
     this.drawShortestPath();
     this.runChangeDetection();
     this.isMouseEnabled = true;
@@ -82,13 +73,21 @@ export class GridComponent implements OnInit {
     const currentAlgorithm = this.settingsService.settings.algorithm;
     let currentNode: Node;
 
-    const { x, y } = getNodeCoordinatesById(this.targetNode.previousNode);
-    currentNode = this.grid[x][y];
+    //console.log(this.targetNode);
 
-    while (currentNode.id !== this.startNode.id) {
-      currentNode.type = NodeType.PATH;
-      const { x, y } = getNodeCoordinatesById(currentNode.previousNode);
+    if (currentAlgorithm !== 'bidirectional') {
+      const { x, y } = getNodeCoordinatesById(this.targetNode.previousNode);
       currentNode = this.grid[x][y];
+
+      while (currentNode.id !== this.startNode.id) {
+        console.log(currentNode);
+
+        currentNode.type = NodeType.PATH;
+        const { x, y } = getNodeCoordinatesById(currentNode.previousNode);
+        currentNode = this.grid[x][y];
+      }
+
+      return;
     }
   }
 
@@ -107,13 +106,6 @@ export class GridComponent implements OnInit {
           row,
           column,
           type: this.getNodeType(row, column),
-          direction: undefined,
-          distance: Infinity,
-          totalDistance: Infinity,
-          heuristicDistance: undefined,
-          weight: 0,
-          path: undefined,
-          previousNode: undefined,
         };
 
         columns.push(node);
@@ -149,7 +141,7 @@ export class GridComponent implements OnInit {
   }
 
   runChangeDetection() {
-    for (const component of this.nodes) {
+    for (const component of this.nodeComponents) {
       component.markForCheck();
     }
   }
