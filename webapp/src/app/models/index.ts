@@ -5,5 +5,5 @@ export * from './grid';
 export * from './maze';
 export * from './node';
 export * from './painting-mode';
-export * from './point';
+export * from './coordinates';
 export * from './settings';

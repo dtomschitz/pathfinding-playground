@@ -110,6 +110,18 @@ grid {
   .row {
     display: flex;
   }
+
+  node {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+
+    border: 1px solid whitesmoke;
+
+    
+  }
 }
 
 nav-item {

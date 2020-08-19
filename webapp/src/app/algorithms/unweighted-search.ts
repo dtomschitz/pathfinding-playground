@@ -1,4 +1,4 @@
-import { Grid, Node, NodeType } from '../models';
+import { Grid, Node, NodeType, getNodeCoordinatesById } from '../models';
 
 type Name = 'bfs' | 'dfs';
 
@@ -16,7 +16,9 @@ export function unweightedSearch(grid: Grid, startNode: Node, targetNode: Node, 
       exploredNodes[currentNode.id] = true;
     }
 
-    currentNode.type = NodeType.VISITED;
+    if (currentNode.type !== NodeType.START && currentNode.type !== NodeType.TARGET) {
+      currentNode.type = NodeType.VISITED;
+    }
 
     if (currentNode.id === targetNode.id) {
       return true;
@@ -37,9 +39,7 @@ export function unweightedSearch(grid: Grid, startNode: Node, targetNode: Node, 
 }
 
 function getNeighbors(id: string, grid: Grid, name: Name) {
-  const coordinates = id.split('-');
-  const x = parseInt(coordinates[0]);
-  const y = parseInt(coordinates[1]);
+  const { x, y } = getNodeCoordinatesById(id);
   const neighbors: Node[] = [];
   let potentialNeighbor: Node;
 

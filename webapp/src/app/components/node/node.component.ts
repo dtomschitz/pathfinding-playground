@@ -1,4 +1,12 @@
-import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter,
+  ChangeDetectorRef,
+  HostBinding,
+} from '@angular/core';
 import { Node, NodeDroppedEvent, PaintingMode, NodeType } from 'src/app/models';
 import { PaintingService, NodeDraggingService } from 'src/app/services';
 

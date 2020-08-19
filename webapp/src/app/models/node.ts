@@ -1,4 +1,4 @@
-import { Point } from './point';
+import { Coordinates } from './coordinates';
 
 export interface Node {
   id: string;
@@ -29,3 +29,8 @@ export enum NodeType {
 }
 
 export type NodeDirection = 'up' | 'up-left' | 'up-right' | 'down' | 'down-left' | 'down-right' | 'left' | 'right';
+
+export function getNodeCoordinatesById(id: string): Coordinates {
+  const coordinates = id.split('-');
+  return { x: +coordinates[0], y: +coordinates[1] };
+}

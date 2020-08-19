@@ -1,5 +1,14 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
-import { NodeType, Grid, Node, NodeDroppedEvent, Settings, Maze, Algorithm } from '../../models';
+import {
+  NodeType,
+  Grid,
+  Node,
+  NodeDroppedEvent,
+  Settings,
+  Maze,
+  Algorithm,
+  getNodeCoordinatesById,
+} from '../../models';
 import { PaintingService, SettingsService } from '../../services';
 import { NodeComponent } from '../node';
 import { algorithms } from 'src/app/algorithms';
@@ -30,6 +39,7 @@ export class GridComponent implements OnInit {
 
   visualize(algorithm: Algorithm) {
     this.isMouseEnabled = false;
+    this.resetPath();
     algorithm.fn(this.grid, this.startNode, this.targetNode, undefined);
     this.drawShortestPath();
     this.runChangeDetection();
@@ -57,15 +67,14 @@ export class GridComponent implements OnInit {
       this.grid[newNode.row][newNode.column].type = previousNode.type;
       this.grid[previousNode.row][previousNode.column].type = NodeType.DEFAULT;
 
-      const node = this.grid[newNode.row][newNode.column];
+      this.runChangeDetection();
 
+      const node = this.grid[newNode.row][newNode.column];
       if (node.type === NodeType.START) {
         this.startNode = node;
       } else if (node.type === NodeType.TARGET) {
         this.targetNode = node;
       }
-
-      this.runChangeDetection();
     }
   }
 
@@ -73,17 +82,12 @@ export class GridComponent implements OnInit {
     const currentAlgorithm = this.settingsService.settings.algorithm;
     let currentNode: Node;
 
-    const coordinates = this.targetNode.previousNode.split('-');
-    const x = parseInt(coordinates[0]);
-    const y = parseInt(coordinates[1]);
-
+    const { x, y } = getNodeCoordinatesById(this.targetNode.previousNode);
     currentNode = this.grid[x][y];
 
     while (currentNode.id !== this.startNode.id) {
       currentNode.type = NodeType.PATH;
-      const coordinates = currentNode.previousNode.split('-');
-      const x = parseInt(coordinates[0]);
-      const y = parseInt(coordinates[1]);
+      const { x, y } = getNodeCoordinatesById(currentNode.previousNode);
       currentNode = this.grid[x][y];
     }
   }
@@ -128,6 +132,16 @@ export class GridComponent implements OnInit {
     for (const rows of this.grid) {
       for (const node of rows) {
         if (node.type !== NodeType.START && node.type !== NodeType.TARGET) {
+          node.type = NodeType.DEFAULT;
+        }
+      }
+    }
+  }
+
+  resetPath() {
+    for (const rows of this.grid) {
+      for (const node of rows) {
+        if (node.type === NodeType.PATH || node.type === NodeType.VISITED) {
           node.type = NodeType.DEFAULT;
         }
       }
