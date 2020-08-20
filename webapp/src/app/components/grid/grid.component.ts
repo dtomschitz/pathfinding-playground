@@ -1,7 +1,8 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
-import { NodeType, Grid, Node, NodeDroppedEvent, Maze, Algorithm, getNodeCoordinatesById } from '../../models';
+import { NodeType, Node, NodeDroppedEvent, Maze, Algorithm } from '../../models';
 import { PaintingService, SettingsService } from '../../services';
 import { NodeComponent } from '../node';
+import { Grid } from './grid';
 
 @Component({
   selector: 'grid',
@@ -9,31 +10,36 @@ import { NodeComponent } from '../node';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridComponent implements OnInit {
-  @Input() rows: number;
-  @Input() columns: number;
+  @Input() width: number;
+  @Input() height: number;
 
   @ViewChildren(NodeComponent) nodeComponents: QueryList<NodeComponent>;
 
-  grid: Grid = [];
+  grid: Grid;
   startNode: Node;
   targetNode: Node;
   middleNode: Node;
 
   isMouseEnabled = true;
 
-  constructor(private settingsService: SettingsService, private mouseService: PaintingService) {}
+  constructor(private settingsService: SettingsService, private mouseService: PaintingService) {
+    this.grid = new Grid();
+  }
 
   ngOnInit() {
-    this.createGrid();
+    this.grid.width = this.width;
+    this.grid.height = this.height;
+    this.grid.buildGrid();
+    // this.createGrid();
   }
 
   visualize(algorithm: Algorithm) {
     this.isMouseEnabled = false;
-    this.resetPath();
-    algorithm.fn(this.grid, this.startNode, this.targetNode, undefined);
+    //this.resetPath();
+    // algorithm.fn(this.grid, this.startNode, this.targetNode, undefined);
 
-    this.drawShortestPath();
-    this.runChangeDetection();
+    // this.drawShortestPath();
+    // this.runChangeDetection();
     this.isMouseEnabled = true;
   }
 
@@ -54,7 +60,7 @@ export class GridComponent implements OnInit {
   }
 
   onNodeDropped({ previousNode, newNode }: NodeDroppedEvent) {
-    if (newNode.type !== NodeType.START && newNode.type !== NodeType.TARGET) {
+    /*if (newNode.type !== NodeType.START && newNode.type !== NodeType.TARGET) {
       this.grid[newNode.row][newNode.column].type = previousNode.type;
       this.grid[previousNode.row][previousNode.column].type = NodeType.DEFAULT;
 
@@ -66,11 +72,11 @@ export class GridComponent implements OnInit {
       } else if (node.type === NodeType.TARGET) {
         this.targetNode = node;
       }
-    }
+    }*/
   }
 
   drawShortestPath() {
-    const currentAlgorithm = this.settingsService.settings.algorithm;
+    /*const currentAlgorithm = this.settingsService.settings.algorithm;
     let currentNode: Node;
 
     //console.log(this.targetNode);
@@ -88,16 +94,18 @@ export class GridComponent implements OnInit {
       }
 
       return;
-    }
+    }*/
   }
 
   createMaze(maze: Maze) {
-    this.resetGrid();
-    maze.generatorFn(this.grid, this.startNode, this.targetNode, this.rows, this.columns);
+    // this.resetGrid();
+    maze.generatorFn(this.grid);
+    console.log(this.grid);
+
     this.runChangeDetection();
   }
 
-  createGrid() {
+  /*createGrid() {
     for (let row = 0; row < this.rows; row++) {
       const columns: Node[] = [];
       for (let column = 0; column < this.columns; column++) {
@@ -138,7 +146,7 @@ export class GridComponent implements OnInit {
         }
       }
     }
-  }
+  }*/
 
   runChangeDetection() {
     for (const component of this.nodeComponents) {
@@ -150,7 +158,7 @@ export class GridComponent implements OnInit {
     return node.id;
   }
 
-  getNodeType(row: number, column: number) {
+  /*getNodeType(row: number, column: number) {
     if (row === Math.floor(this.rows / 2) && column === Math.floor(this.columns / 4)) {
       return NodeType.START;
     } else if (row === Math.floor(this.rows / 2) && column === Math.floor((3 * this.columns) / 4)) {
@@ -158,5 +166,5 @@ export class GridComponent implements OnInit {
     }
 
     return NodeType.DEFAULT;
-  }
+  }*/
 }

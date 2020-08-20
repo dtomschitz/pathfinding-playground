@@ -12,8 +12,8 @@ import { GridComponent } from '../grid';
 export class BoardComponent implements AfterViewInit {
   @ViewChild(GridComponent) gridComponent: GridComponent;
 
-  rows: number;
-  columns: number;
+  width: number;
+  height: number;
 
   constructor(
     private host: ElementRef,
@@ -22,8 +22,8 @@ export class BoardComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    this.rows = Math.floor((this.host.nativeElement.clientHeight - 64) / 30) - 1;
-    this.columns = Math.floor(this.host.nativeElement.clientWidth / 30) - 5;
+    this.width = Math.floor(this.host.nativeElement.clientWidth / 30) - 5;
+    this.height = Math.floor((this.host.nativeElement.clientHeight - 64) / 30) - 1;
     this.changeDetector.detectChanges();
   }
 

@@ -1,4 +1,4 @@
-<ng-container *ngIf="rows && columns">
+<ng-container *ngIf="width && height">
   <settings-card (visualizePath)="onVisualizePath()" (generateMaze)="onGenerateMaze()"></settings-card>
-  <grid [rows]="rows" [columns]="columns"></grid>
+  <grid [width]="width" [height]="height"></grid>
 </ng-container>

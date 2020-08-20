@@ -1,4 +1,4 @@
-import { Grid, Node, NodeType } from '../models';
+/*import { Grid, Node, NodeType } from '../models';
 
 interface RecursiveDivisionMazeSettings {
   startNode: Node;
@@ -211,3 +211,4 @@ export function recursiveDivisionMaze(grid: Grid, props: RecursiveDivisionMazeSe
     }
   }
 }
+*/

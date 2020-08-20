@@ -1,28 +1,25 @@
 import { Algorithm, Algorithms } from '../models';
-import { astar } from './astar';
-import { unweightedSearch } from './unweighted-search';
-import { bidirectional } from './bidirectional';
 
 export const algorithms: Algorithm[] = [
   {
     id: 'astar',
     name: 'A* Serach',
-    fn: astar,
+    fn: () => {},
   },
   {
     id: 'bidirectional',
     name: 'Bidirectional',
-    fn: (grid, startNode, targetNode, middleNode) => bidirectional(grid, startNode, targetNode, middleNode),
+    fn: () => {},
   },
   {
     id: 'bfs',
     name: 'Breadth-first Search',
-    fn: (grid, startNode, targetNode) => unweightedSearch(grid, startNode, targetNode, 'bfs'),
+    fn: () => {},
   },
   {
     id: 'dfs',
     name: 'Depth-first Search',
-    fn: (grid, startNode, targetNode) => unweightedSearch(grid, startNode, targetNode, 'dfs'),
+    fn: () => {},
   },
 ];
 

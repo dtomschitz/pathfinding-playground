@@ -1,6 +1,4 @@
-import { Coordinates } from './coordinates';
-
-export interface Node {
+/*export interface Node {
   id: string;
   row: number;
   column: number;
@@ -23,6 +21,22 @@ export interface Node {
   otherWeight?: number;
   // otherRelatesToObject = false;
   // otheroverwriteObjectRelation = false;
+}*/
+
+export interface Node {
+  id: string;
+  row: number;
+  col: number;
+  type: NodeType;
+  visited?: boolean;
+
+  g?: number;
+  f?: number;
+}
+
+export interface NodeCoordinates {
+  row: number;
+  col: number;
 }
 
 export interface NodeDroppedEvent {
@@ -40,8 +54,3 @@ export enum NodeType {
 }
 
 export type NodeDirection = 'up' | 'up-left' | 'up-right' | 'down' | 'down-left' | 'down-right' | 'left' | 'right';
-
-export function getNodeCoordinatesById(id: string): Coordinates {
-  const coordinates = id.split('-');
-  return { x: +coordinates[0], y: +coordinates[1] };
-}

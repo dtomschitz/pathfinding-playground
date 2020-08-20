@@ -1,26 +1,14 @@
 <mat-toolbar class="header">
-  <button (click)="toggleSidenav()" mat-icon-button>
-    <mat-icon>menu</mat-icon>
-  </button>
   <div class="title">Pathfinding Playground</div>
   <div class="flex-spacer"></div>
-  <!--<mat-form-field appearance="fill">
-    <mat-label>Algorithm</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
-    </mat-select>
-  </mat-form-field>-->
-
 </mat-toolbar>
 <mat-divider></mat-divider>
 <mat-sidenav-container>
-  <mat-sidenav #sidenav mode="over1" [opened]="showSidenav$ | async" [fixedInViewport]="true" [fixedTopGap]="64"
-    [fixedBottomGap]="0" (keydown.escape)="sidenav.close()">
+  <mat-sidenav #sidenav mode="over1" [opened]="false" [fixedInViewport]="true" [fixedTopGap]="64" [fixedBottomGap]="0" (keydown.escape)="sidenav.close()">
     <div class="sidenav">
       <h3 matSubheader>HISTORY</h3>
     </div>
   </mat-sidenav>
-
   <mat-sidenav-content>
     <board></board>
   </mat-sidenav-content>
