@@ -1,25 +1,26 @@
 import { Algorithm, Algorithms } from '../models';
+import { astar } from './astar';
 
 export const algorithms: Algorithm[] = [
   {
     id: 'astar',
     name: 'A* Serach',
-    fn: () => {},
+    fn: astar,
   },
   {
     id: 'bidirectional',
     name: 'Bidirectional',
-    fn: () => {},
+    fn: () => [],
   },
   {
     id: 'bfs',
     name: 'Breadth-first Search',
-    fn: () => {},
+    fn: () => [],
   },
   {
     id: 'dfs',
     name: 'Depth-first Search',
-    fn: () => {},
+    fn: () => [],
   },
 ];
 

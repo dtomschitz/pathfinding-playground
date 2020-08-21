@@ -36,10 +36,13 @@ export class GridComponent implements OnInit {
   visualize(algorithm: Algorithm) {
     this.isMouseEnabled = false;
     //this.resetPath();
-    // algorithm.fn(this.grid, this.startNode, this.targetNode, undefined);
+    const path = algorithm.fn(this.grid);
+    console.log(this.grid.start);
+    console.log(this.grid.target);
+    console.log(path);
 
     // this.drawShortestPath();
-    // this.runChangeDetection();
+    this.runChangeDetection();
     this.isMouseEnabled = true;
   }
 

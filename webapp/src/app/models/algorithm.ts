@@ -4,7 +4,7 @@ import { Grid } from '../components';
 export interface Algorithm {
   id: string;
   name: string;
-  fn: (grid: Grid, options?: AlgorithmOptions) => void;
+  fn: (grid: Grid, options?: AlgorithmOptions) => number[][];
 }
 
 export interface AlgorithmOptions {

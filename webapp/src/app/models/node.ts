@@ -28,10 +28,12 @@ export interface Node {
   row: number;
   col: number;
   type: NodeType;
-  visited?: boolean;
-
+  opened?: boolean;
+  closed?: boolean;
   g?: number;
   f?: number;
+  h?: number;
+  parent?: Node;
 }
 
 export interface NodeCoordinates {
