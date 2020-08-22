@@ -41,7 +41,7 @@ export class Grid {
     return algorithm.fn(this);
   }
 
-    reset() {
+  reset() {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         const { id, x: nodeX, y: nodeY, type } = this.nodes[y][x];
@@ -71,20 +71,20 @@ export class Grid {
     const { x, y } = node;
     const neighbors: Node[] = [];
 
-    if (this.isWalkable(x + 1, y)) {
-      neighbors.push(this.nodes[y][x + 1]);
+    if (this.isWalkable(x, y - 1)) {
+      neighbors.push(this.nodes[y - 1][x]);
     }
 
-    if (this.isWalkable(x - 1, y)) {
-      neighbors.push(this.nodes[y][x - 1]);
+    if (this.isWalkable(x + 1, y)) {
+      neighbors.push(this.nodes[y][x + 1]);
     }
 
     if (this.isWalkable(x, y + 1)) {
       neighbors.push(this.nodes[y + 1][x]);
     }
 
-    if (this.isWalkable(x, y - 1)) {
-      neighbors.push(this.nodes[x][y - 1]);
+    if (this.isWalkable(x - 1, y)) {
+      neighbors.push(this.nodes[y][x - 1]);
     }
 
     return neighbors;

@@ -8,6 +8,8 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
   const heuristic = options?.heuristic ?? Heuristics.manhatten;
   const weight = options?.weight ?? 1;
 
+  const SQRT2 = Math.SQRT2;
+
   const startX = grid.start.x;
   const startY = grid.start.y;
   const targetX = grid.target.x;
@@ -24,9 +26,8 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
   openList.push(startNode);
   startNode.opened = true;
 
-  let node: Node;
   while (!openList.empty()) {
-    node = openList.pop();
+    const node = openList.pop();
     node.closed = true;
 
     if (node === targetNode) {
@@ -34,9 +35,7 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
     }
 
     const neighbors = grid.getNeighbors(node);
-    for (let i = 0, l = neighbors.length; i < l; ++i) {
-      const neighbor = neighbors[i];
-
+    for (const neighbor of neighbors) {
       if (neighbor.closed) {
         continue;
       }
