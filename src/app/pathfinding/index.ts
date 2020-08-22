@@ -1,5 +1,7 @@
 import { Algorithm, Algorithms } from '../models';
-import { astar } from './astar';
+import { astar } from './algorithms';
+
+export * from './grid';
 
 export const algorithms: Algorithm[] = [
   {

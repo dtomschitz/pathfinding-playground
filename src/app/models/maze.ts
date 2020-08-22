@@ -1,4 +1,4 @@
-import { Grid } from '../components/grid';
+import { Grid } from '../pathfinding';
 
 export interface Maze {
   id: string;

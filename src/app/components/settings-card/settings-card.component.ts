@@ -2,11 +2,11 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/cor
 import { trigger, style, transition, animate } from '@angular/animations';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { takeUntil, take } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { PaintingService, SettingsService } from '../../services';
 import { Algorithm, PaintingMode, Maze } from '../../models';
 import { mazes } from '../../mazes';
-import { algorithms } from '../../algorithms';
+import { algorithms } from '../../pathfinding';
 
 @Component({
   selector: 'settings-card',

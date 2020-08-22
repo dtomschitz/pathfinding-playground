@@ -1,5 +1,5 @@
 import { NodeDirection } from './node';
-import { Grid } from '../components';
+import { Grid } from '../pathfinding';
 
 export interface Algorithm {
   id: string;

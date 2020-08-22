@@ -1,17 +1,20 @@
-import { Grid } from '../components';
-import { AlgorithmOptions, Node } from '../models';
-import { Heuristics } from './heuristic';
-import { Heap } from './heap';
-import { Utils } from './utils';
+import { AlgorithmOptions, Node } from '../../models';
+import { Heuristics } from '../heuristic';
+import { Heap } from '../heap';
+import { Utils } from '../utils';
+import { Grid } from '../grid';
 
-export function astar(grid: Grid, options?: AlgorithmOptions) {
+export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
   const heuristic = options?.heuristic ?? Heuristics.manhatten;
   const weight = options?.weight ?? 1;
 
-  const startNode = grid.getNode(grid.start.x, grid.start.y);
-  const targetNode = grid.getNode(grid.target.x, grid.target.y);
+  const startX = grid.start.x;
+  const startY = grid.start.y;
   const targetX = grid.target.x;
   const targetY = grid.target.y;
+
+  const startNode = grid.getNode(startX, startY);
+  const targetNode = grid.getNode(targetX, targetY);
 
   startNode.g = 0;
   startNode.f = 0;
@@ -40,7 +43,6 @@ export function astar(grid: Grid, options?: AlgorithmOptions) {
 
       const x = neighbor.x;
       const y = neighbor.y;
-
       const ng = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : Math.SQRT2);
 
       if (!neighbor.opened || ng < neighbor.g) {
@@ -58,4 +60,6 @@ export function astar(grid: Grid, options?: AlgorithmOptions) {
       }
     }
   }
+
+  return [];
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, AfterViewInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SettingsService } from '../../services';
-import { getAlgorithm } from '../../algorithms';
+import { getAlgorithm } from '../../pathfinding';
 import { getMaze } from '../../mazes';
 import { GridComponent } from '../grid';
 

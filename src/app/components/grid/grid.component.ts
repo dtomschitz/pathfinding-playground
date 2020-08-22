@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
-import { NodeType, Node, NodeDroppedEvent, Maze, Algorithm } from '../../models';
+import { Node, NodeDroppedEvent, Maze, Algorithm, NodeType } from '../../models';
 import { PaintingService, SettingsService } from '../../services';
+import { Grid } from '../../pathfinding';
 import { NodeComponent } from '../node';
-import { Grid } from './grid';
 
 @Component({
   selector: 'grid',
@@ -29,20 +29,20 @@ export class GridComponent implements OnInit {
   ngOnInit() {
     this.grid.width = this.width;
     this.grid.height = this.height;
-    this.grid.buildGrid();
+    this.grid.build();
     // this.createGrid();
   }
 
   visualize(algorithm: Algorithm) {
     this.isMouseEnabled = false;
-    //this.resetPath();
-    const path = algorithm.fn(this.grid);
+
+    this.grid.reset();
+    const path = this.grid.findPath(algorithm);
     console.log(this.grid.start);
     console.log(this.grid.target);
     console.log(path);
 
-    // this.drawShortestPath();
-    this.runChangeDetection();
+    this.drawShortestPath(path);
     this.isMouseEnabled = true;
   }
 
@@ -78,33 +78,16 @@ export class GridComponent implements OnInit {
     }*/
   }
 
-  drawShortestPath() {
-    /*const currentAlgorithm = this.settingsService.settings.algorithm;
-    let currentNode: Node;
-
-    //console.log(this.targetNode);
-
-    if (currentAlgorithm !== 'bidirectional') {
-      const { x, y } = getNodeCoordinatesById(this.targetNode.previousNode);
-      currentNode = this.grid[x][y];
-
-      while (currentNode.id !== this.startNode.id) {
-        console.log(currentNode);
-
-        currentNode.type = NodeType.PATH;
-        const { x, y } = getNodeCoordinatesById(currentNode.previousNode);
-        currentNode = this.grid[x][y];
-      }
-
-      return;
-    }*/
+  drawShortestPath(path: number[][]) {
+    for (const [x, y] of path) {
+      const component = this.nodeComponents.find((c) => c.node.x === x && c.node.y === y);
+      this.grid.getNode(x, y).type = NodeType.PATH;
+      component.markForCheck();
+    }
   }
 
   createMaze(maze: Maze) {
-    // this.resetGrid();
     maze.generatorFn(this.grid);
-    console.log(this.grid);
-
     this.runChangeDetection();
   }
 
