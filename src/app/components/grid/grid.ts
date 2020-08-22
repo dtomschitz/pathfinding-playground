@@ -75,9 +75,9 @@ export class Grid {
   }
 
   private getNodeType(x: number, y: number) {
-    if (x === Math.floor(this.height / 2) && y === Math.floor(this.width / 4)) {
+    if (y === Math.floor(this.height / 2) && x === Math.floor(this.width / 4)) {
       return NodeType.START;
-    } else if (x === Math.floor(this.height / 2) && y === Math.floor((3 * this.width) / 4)) {
+    } else if (y === Math.floor(this.height / 2) && x === Math.floor((3 * this.width) / 4)) {
       return NodeType.TARGET;
     }
 
