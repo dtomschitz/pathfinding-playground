@@ -25,8 +25,8 @@
 
 export interface Node {
   id: string;
-  row: number;
-  col: number;
+  x: number;
+  y: number;
   type: NodeType;
   opened?: boolean;
   closed?: boolean;
@@ -37,8 +37,8 @@ export interface Node {
 }
 
 export interface NodeCoordinates {
-  row: number;
-  col: number;
+  x: number;
+  y: number;
 }
 
 export interface NodeDroppedEvent {

@@ -8,10 +8,10 @@ export function astar(grid: Grid, options?: AlgorithmOptions) {
   const heuristic = options?.heuristic ?? Heuristics.manhatten;
   const weight = options?.weight ?? 1;
 
-  const startNode = grid.getNode(grid.start.row, grid.start.col);
-  const targetNode = grid.getNode(grid.target.row, grid.target.col);
-  const targetX = grid.target.row;
-  const targetY = grid.target.col;
+  const startNode = grid.getNode(grid.start.x, grid.start.y);
+  const targetNode = grid.getNode(grid.target.x, grid.target.y);
+  const targetX = grid.target.x;
+  const targetY = grid.target.y;
 
   startNode.g = 0;
   startNode.f = 0;
@@ -38,10 +38,10 @@ export function astar(grid: Grid, options?: AlgorithmOptions) {
         continue;
       }
 
-      const x = neighbor.row;
-      const y = neighbor.col;
+      const x = neighbor.x;
+      const y = neighbor.y;
 
-      const ng = node.g + (x - node.row === 0 || y - node.col === 0 ? 1 : Math.SQRT2);
+      const ng = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : Math.SQRT2);
 
       if (!neighbor.opened || ng < neighbor.g) {
         neighbor.g = ng;
