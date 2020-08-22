@@ -3,8 +3,8 @@ export interface Node {
   x: number;
   y: number;
   type: NodeType;
-  opened?: boolean;
-  closed?: boolean;
+  status?: 'opened' | 'closed';
+  isPath?: boolean;
   g?: number;
   f?: number;
   h?: number;
@@ -24,8 +24,6 @@ export interface NodeDroppedEvent {
 export enum NodeType {
   DEFAULT = 'default',
   WALL = 'wall',
-  VISITED = 'visited',
-  PATH = 'path',
   START = 'start',
   TARGET = 'target',
 }

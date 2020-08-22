@@ -24,11 +24,11 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
   const openList = new Heap<Node>((a, b) => a.f - b.f);
 
   openList.push(startNode);
-  startNode.opened = true;
+  startNode.status = 'opened';
 
   while (!openList.empty()) {
     const node = openList.pop();
-    node.closed = true;
+    startNode.status = 'closed';
 
     if (node === targetNode) {
       return Utils.backtrace(targetNode);
@@ -36,7 +36,7 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
 
     const neighbors = grid.getNeighbors(node);
     for (const neighbor of neighbors) {
-      if (neighbor.closed) {
+      if (neighbor.status === 'closed') {
         continue;
       }
 
@@ -44,15 +44,15 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
       const y = neighbor.y;
       const ng = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : Math.SQRT2);
 
-      if (!neighbor.opened || ng < neighbor.g) {
+      if (neighbor.status !== 'opened' || ng < neighbor.g) {
         neighbor.g = ng;
         neighbor.h = neighbor.h || weight * heuristic(Math.abs(x - targetX), Math.abs(y - targetY));
         neighbor.f = neighbor.g + neighbor.h;
         neighbor.parent = node;
 
-        if (!neighbor.opened) {
+        if (neighbor.status !== 'opened') {
           openList.push(neighbor);
-          neighbor.opened = true;
+          neighbor.status = 'opened';
         } else {
           openList.updateItem(neighbor);
         }

@@ -1,35 +1,7 @@
-<!--<div 
-  class="node"
-  dropzone="copy"
-  [ngClass]="{ wall: isWall, start: isStartNode, target: isTargetNode }"
-  [draggable]="isStartNode || isTargetNode"
-  (mouseover)="createWall()"
-  (mousedown)="onMouseDown($event)"
-  (mouseup)="onMouseUp($event)"
-  (contextmenu)="onRightClick($event)"
-  (dragstart)="onDragStart($event)"
-  (drop)="onDrop()"
-  (dragenter)="onDragEnter($event)"
-  (dragleave)="onDragLeave($event)"
-  (dragover)="onDragOver($event)">
-  <mat-icon *ngIf="isStartNode">edit</mat-icon>
-  <mat-icon *ngIf="isTargetNode">place</mat-icon>
-</div>-->
-
-<div 
-  class="node"
-  dropzone="copy"
-  [ngClass]="{ wall: isWall, start: isStartNode, target: isTargetNode, path: isPath, visited: isVisited }"
-  [draggable]="(isStartNode || isTargetNode) && isMouseEnabled"
-  (mouseover)="onMouseOver()"
-  (mouseup)="onMouseUp()"
-  (mousedown)="onMouseDown($event)"
-  (contextmenu)="onContextMenu($event)"
-  (dragstart)="onDragStart()"
-  (drop)="onDrop()"
-  (dragenter)="preventDefault($event)"
-  (dragleave)="preventDefault($event)"
-  (dragover)="preventDefault($event)">
+<div class="node" dropzone="copy" [ngClass]="classes" [draggable]="(isStartNode || isTargetNode) && isMouseEnabled"
+  (mouseover)="onMouseOver()" (mouseup)="onMouseUp()" (mousedown)="onMouseDown($event)"
+  (contextmenu)="onContextMenu($event)" (dragstart)="onDragStart()" (drop)="onDrop()"
+  (dragenter)="preventDefault($event)" (dragleave)="preventDefault($event)" (dragover)="preventDefault($event)">
   <mat-icon *ngIf="isStartNode">edit</mat-icon>
   <mat-icon *ngIf="isTargetNode">place</mat-icon>
 </div>

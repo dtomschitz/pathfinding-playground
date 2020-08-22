@@ -38,7 +38,9 @@ export class Grid {
   }
 
   findPath(algorithm: Algorithm) {
-    return algorithm.fn(this);
+    const path = algorithm.fn(this);
+    //path[path.length]
+    return path;
   }
 
   reset() {

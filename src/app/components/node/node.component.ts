@@ -93,16 +93,16 @@ export class NodeComponent {
     this.changeDetection.detectChanges();
   }
 
+  get classes() {
+    return { wall: this.isWall, start: this.isStartNode, target: this.isTargetNode, path: this.isPath };
+  }
+
   get isWall() {
     return this.node.type === NodeType.WALL;
   }
 
   get isPath() {
-    return this.node.type === NodeType.PATH;
-  }
-
-  get isVisited() {
-    return this.node.type === NodeType.VISITED;
+    return this.node.isPath;
   }
 
   get isStartNode() {

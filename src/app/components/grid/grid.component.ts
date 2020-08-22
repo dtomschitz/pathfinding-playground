@@ -37,12 +37,9 @@ export class GridComponent implements OnInit {
     this.isMouseEnabled = false;
 
     this.grid.reset();
-    const path = this.grid.findPath(algorithm);
-    console.log(this.grid.start);
-    console.log(this.grid.target);
-    console.log(path);
+    this.runChangeDetection();
+    this.drawShortestPath(this.grid.findPath(algorithm));
 
-    this.drawShortestPath(path);
     this.isMouseEnabled = true;
   }
 
@@ -81,7 +78,7 @@ export class GridComponent implements OnInit {
   drawShortestPath(path: number[][]) {
     for (const [x, y] of path) {
       const component = this.nodeComponents.find((c) => c.node.x === x && c.node.y === y);
-      this.grid.getNode(x, y).type = NodeType.PATH;
+      this.grid.getNode(x, y).isPath = true;
       component.markForCheck();
     }
   }
