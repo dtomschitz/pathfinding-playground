@@ -1,0 +1,15 @@
+<mat-toolbar class="header">
+  <div class="title">Pathfinding Playground</div>
+  <div class="flex-spacer"></div>
+</mat-toolbar>
+<mat-divider></mat-divider>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="over1" [opened]="false" [fixedInViewport]="true" [fixedTopGap]="64" [fixedBottomGap]="0" (keydown.escape)="sidenav.close()">
+    <div class="sidenav">
+      <h3 matSubheader>HISTORY</h3>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <board></board>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,4 @@
+<ng-container *ngIf="width && height">
+  <settings-card (visualizePath)="onVisualizePath()" (generateMaze)="onGenerateMaze()"></settings-card>
+  <grid [width]="width" [height]="height"></grid>
+</ng-container>
