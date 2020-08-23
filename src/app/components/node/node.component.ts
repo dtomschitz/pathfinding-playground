@@ -37,16 +37,21 @@ export class NodeComponent {
         return;
       }
 
-      this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
+      this.paintNode();
     }
   }
 
   onMouseOver() {
     if (this.isMouseEnabled) {
       if (this.paintingService.isMouseLocked && !this.isStartNode && !this.isTargetNode) {
-        this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
+        this.paintNode();
       }
     }
+  }
+
+  paintNode() {
+    this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
+    this.node.isPath = false;
   }
 
   onContextMenu(event: MouseEvent) {

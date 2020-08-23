@@ -16,10 +16,6 @@ export class GridComponent implements OnInit {
   @ViewChildren(NodeComponent) nodeComponents: QueryList<NodeComponent>;
 
   grid: Grid;
-  startNode: Node;
-  targetNode: Node;
-  middleNode: Node;
-
   isMouseEnabled = true;
 
   constructor(private settingsService: SettingsService, private mouseService: PaintingService) {
@@ -60,25 +56,28 @@ export class GridComponent implements OnInit {
   }
 
   onNodeDropped({ previousNode, newNode }: NodeDroppedEvent) {
-    /*if (newNode.type !== NodeType.START && newNode.type !== NodeType.TARGET) {
-      this.grid[newNode.row][newNode.column].type = previousNode.type;
-      this.grid[previousNode.row][previousNode.column].type = NodeType.DEFAULT;
+    if (newNode.type !== NodeType.START && newNode.type !== NodeType.TARGET) {
+      this.grid.getNode(newNode.x, newNode.y).type = previousNode.type;
+      this.grid.getNode(previousNode.x, previousNode.y).type = NodeType.DEFAULT;
 
-      this.runChangeDetection();
-
-      const node = this.grid[newNode.row][newNode.column];
+      const node = this.grid.getNode(newNode.x, newNode.y);
       if (node.type === NodeType.START) {
-        this.startNode = node;
+        this.grid.start = node;
       } else if (node.type === NodeType.TARGET) {
-        this.targetNode = node;
+        this.grid.target = node;
       }
-    }*/
+
+      this.getNodeComponent(previousNode.id).markForCheck();
+      this.getNodeComponent(newNode.id).markForCheck();
+    }
   }
 
   drawShortestPath(path: number[][]) {
     for (const [x, y] of path) {
       const component = this.nodeComponents.find((c) => c.node.x === x && c.node.y === y);
       this.grid.getNode(x, y).isPath = true;
+      console.log(this.grid.getNode(x, y));
+
       component.markForCheck();
     }
   }
@@ -139,6 +138,10 @@ export class GridComponent implements OnInit {
 
   trackByFn(node: Node) {
     return node.id;
+  }
+
+  private getNodeComponent(id: string) {
+    return this.nodeComponents.find((component) => component.node.id === id);
   }
 
   /*getNodeType(row: number, column: number) {
