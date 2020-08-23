@@ -7,6 +7,7 @@ import {
   ChangeDetectorRef,
   HostBinding,
   AfterViewInit,
+  OnInit,
 } from '@angular/core';
 import { Node, NodeDroppedEvent, PaintingMode, NodeType } from 'src/app/models';
 import { PaintingService, NodeDraggingService } from 'src/app/services';
@@ -17,7 +18,7 @@ import { PaintingService, NodeDraggingService } from 'src/app/services';
   styleUrls: ['./node.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NodeComponent {
+export class NodeComponent implements OnInit {
   @Input() node: Node;
   @Input() isMouseEnabled: boolean;
   @Output() dropped: EventEmitter<NodeDroppedEvent> = new EventEmitter<NodeDroppedEvent>();
@@ -53,6 +54,7 @@ export class NodeComponent {
   paintNode() {
     this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
     this.node.isPath = false;
+    // this.changeDetection.detectChanges();
   }
 
   onContextMenu(event: MouseEvent) {
@@ -65,6 +67,7 @@ export class NodeComponent {
 
       this.paintingService.updateMode(PaintingMode.ERASE);
       this.node.type = NodeType.DEFAULT;
+      // this.changeDetection.detectChanges();
     }
   }
 

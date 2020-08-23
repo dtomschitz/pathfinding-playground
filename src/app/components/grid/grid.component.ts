@@ -19,7 +19,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './grid.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GridComponent implements OnInit {
+export class GridComponent implements OnInit, AfterViewInit {
   @Input() width: number;
   @Input() height: number;
 
@@ -28,7 +28,11 @@ export class GridComponent implements OnInit {
   grid: Grid;
   isMouseEnabled = true;
 
-  constructor(private snackBar: MatSnackBar, private mouseService: PaintingService) {
+  constructor(
+    private changeDetection: ChangeDetectorRef,
+    private snackBar: MatSnackBar,
+    private mouseService: PaintingService
+  ) {
     this.grid = new Grid();
   }
 
@@ -38,12 +42,16 @@ export class GridComponent implements OnInit {
     this.grid.build();
   }
 
+  ngAfterViewInit() {
+    // this.changeDetection.detach();
+  }
+
   visualize(algorithm: Algorithm) {
     this.grid.reset();
 
     const path = this.grid.findPath(algorithm);
     if (path.length === 0) {
-      this.snackBar.open('No path where found!');
+      this.snackBar.open('No path where found!', ':(', { duration: 2000 });
       return;
     }
 
@@ -79,16 +87,18 @@ export class GridComponent implements OnInit {
         this.grid.target = node;
       }
 
-      this.getNodeComponent(previousNode.id).detectChanges();
-      this.getNodeComponent(newNode.id).detectChanges();
+      this.getNodeComponent(previousNode.id).markForCheck();
+      this.getNodeComponent(newNode.id).markForCheck();
     }
   }
 
   drawShortestPath(path: number[][]) {
     for (const [x, y] of path) {
+      // this.getNodeComponentByCoordiantes(x, y).node.isPath = true;
       this.grid.getNode(x, y).isPath = true;
-      this.getNodeComponentByCoordiantes(x, y).markForCheck();
+      // this.getNodeComponentByCoordiantes(x, y).markForCheck();
     }
+    this.changeDetection.detectChanges();
   }
 
   createMaze(maze: Maze) {
