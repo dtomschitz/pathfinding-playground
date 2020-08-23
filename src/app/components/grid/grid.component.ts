@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
 import { Node, NodeDroppedEvent, Maze, Algorithm, NodeType } from '../../models';
-import { PaintingService, SettingsService } from '../../services';
+import { PaintingService } from '../../services';
 import { Grid } from '../../pathfinding';
 import { NodeComponent } from '../node';
 
@@ -18,7 +18,7 @@ export class GridComponent implements OnInit {
   grid: Grid;
   isMouseEnabled = true;
 
-  constructor(private settingsService: SettingsService, private mouseService: PaintingService) {
+  constructor(private mouseService: PaintingService) {
     this.grid = new Grid();
   }
 
@@ -76,8 +76,6 @@ export class GridComponent implements OnInit {
     for (const [x, y] of path) {
       const component = this.nodeComponents.find((c) => c.node.x === x && c.node.y === y);
       this.grid.getNode(x, y).isPath = true;
-      console.log(this.grid.getNode(x, y));
-
       component.markForCheck();
     }
   }
