@@ -11,7 +11,6 @@ import { algorithms } from '../../pathfinding';
 @Component({
   selector: 'settings-card',
   templateUrl: './settings-card.component.html',
-  styleUrls: ['./settings-card.component.scss'],
   animations: [
     trigger('openCloseCard', [
       transition(':enter', [
@@ -65,7 +64,6 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
 
   settingsForm: FormGroup;
   algorithms: Algorithm[] = algorithms;
-  mazes: Maze[] = mazes;
 
   isHidden = true;
 
@@ -76,7 +74,6 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
   ) {
     this.settingsForm = this.formBuilder.group({
       algorithm: [this.settingsService.settings.algorithm],
-      maze: [this.settingsService.settings.maze],
       speed: [this.settingsService.settings.speed],
     });
   }

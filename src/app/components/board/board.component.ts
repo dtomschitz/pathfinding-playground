@@ -27,7 +27,9 @@ export class BoardComponent implements AfterViewInit {
     this.changeDetector.detectChanges();
   }
 
-  onVisualizePath() {
+  visualizePath() {
+    console.log('Dada');
+
     this.gridComponent.visualize(getAlgorithm(this.settingsService.settings.algorithm));
   }
 

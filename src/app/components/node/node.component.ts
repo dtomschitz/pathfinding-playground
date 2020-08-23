@@ -6,6 +6,7 @@ import {
   EventEmitter,
   ChangeDetectorRef,
   HostBinding,
+  AfterViewInit,
 } from '@angular/core';
 import { Node, NodeDroppedEvent, PaintingMode, NodeType } from 'src/app/models';
 import { PaintingService, NodeDraggingService } from 'src/app/services';
@@ -95,11 +96,15 @@ export class NodeComponent {
   }
 
   markForCheck() {
+    this.changeDetection.markForCheck();
+  }
+
+  detectChanges() {
     this.changeDetection.detectChanges();
   }
 
   get classes() {
-    return { wall: this.isWall, start: this.isStartNode, target: this.isTargetNode, path: this.isPath };
+    return { wall: this.isWall, path: this.isPath };
   }
 
   get isWall() {

@@ -8,8 +8,6 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
   const heuristic = options?.heuristic ?? Heuristics.manhatten;
   const weight = options?.weight ?? 1;
 
-  const SQRT2 = Math.SQRT2;
-
   const startX = grid.start.x;
   const startY = grid.start.y;
   const targetX = grid.target.x;

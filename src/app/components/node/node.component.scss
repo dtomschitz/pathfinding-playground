@@ -13,19 +13,28 @@
 
   border: 1px solid whitesmoke;
 
-  &.start,
-  &.target {
+  .start,
+  .target {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    border: 1px solid gray;
+    border: 1px solid #ffd740;
     border-radius: 100px;
-    background-color: gray;
+    background-color: #ffd740;
 
     mat-icon {
       cursor: pointer;
-      color: white;
+      color: black;
       height: 18px;
       width: 18px;
       font-size: 18px;
+    }
+
+    &:active {
+      color: red
     }
   }
 

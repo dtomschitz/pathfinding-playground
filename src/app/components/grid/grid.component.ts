@@ -1,8 +1,18 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+  ViewChildren,
+  QueryList,
+  ChangeDetectorRef,
+  AfterViewInit,
+} from '@angular/core';
 import { Node, NodeDroppedEvent, Maze, Algorithm, NodeType } from '../../models';
 import { PaintingService } from '../../services';
 import { Grid } from '../../pathfinding';
 import { NodeComponent } from '../node';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'grid',
@@ -18,7 +28,7 @@ export class GridComponent implements OnInit {
   grid: Grid;
   isMouseEnabled = true;
 
-  constructor(private mouseService: PaintingService) {
+  constructor(private snackBar: MatSnackBar, private mouseService: PaintingService) {
     this.grid = new Grid();
   }
 
@@ -26,17 +36,19 @@ export class GridComponent implements OnInit {
     this.grid.width = this.width;
     this.grid.height = this.height;
     this.grid.build();
-    // this.createGrid();
   }
 
   visualize(algorithm: Algorithm) {
-    this.isMouseEnabled = false;
-
     this.grid.reset();
-    this.runChangeDetection();
-    this.drawShortestPath(this.grid.findPath(algorithm));
 
-    this.isMouseEnabled = true;
+    const path = this.grid.findPath(algorithm);
+    if (path.length === 0) {
+      this.snackBar.open('No path where found!');
+      return;
+    }
+
+    this.drawShortestPath(path);
+    this.runChangeDetection();
   }
 
   onMouseDown(event: MouseEvent) {
@@ -67,16 +79,15 @@ export class GridComponent implements OnInit {
         this.grid.target = node;
       }
 
-      this.getNodeComponent(previousNode.id).markForCheck();
-      this.getNodeComponent(newNode.id).markForCheck();
+      this.getNodeComponent(previousNode.id).detectChanges();
+      this.getNodeComponent(newNode.id).detectChanges();
     }
   }
 
   drawShortestPath(path: number[][]) {
     for (const [x, y] of path) {
-      const component = this.nodeComponents.find((c) => c.node.x === x && c.node.y === y);
       this.grid.getNode(x, y).isPath = true;
-      component.markForCheck();
+      this.getNodeComponentByCoordiantes(x, y).markForCheck();
     }
   }
 
@@ -130,7 +141,7 @@ export class GridComponent implements OnInit {
 
   runChangeDetection() {
     for (const component of this.nodeComponents) {
-      component.markForCheck();
+      component.detectChanges();
     }
   }
 
@@ -142,6 +153,9 @@ export class GridComponent implements OnInit {
     return this.nodeComponents.find((component) => component.node.id === id);
   }
 
+  private getNodeComponentByCoordiantes(x: number, y: number) {
+    return this.nodeComponents.find((component) => component.node.x === x && component.node.y === y);
+  }
   /*getNodeType(row: number, column: number) {
     if (row === Math.floor(this.rows / 2) && column === Math.floor(this.columns / 4)) {
       return NodeType.START;

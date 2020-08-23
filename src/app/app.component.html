@@ -1,12 +1,12 @@
 <mat-toolbar class="header">
   <div class="title">Pathfinding Playground</div>
   <div class="flex-spacer"></div>
-  
-  <button color="primary" mat-stroked-button>Visualize</button>
+  <button color="primary" (click)="onVisualize()" mat-stroked-button>Visualize</button>
 </mat-toolbar>
 <mat-divider></mat-divider>
 <mat-sidenav-container>
-  <mat-sidenav #sidenav mode="over1" [opened]="false" [fixedInViewport]="true" [fixedTopGap]="64" [fixedBottomGap]="0" (keydown.escape)="sidenav.close()">
+  <mat-sidenav #sidenav mode="over1" [opened]="false" [fixedInViewport]="true" [fixedTopGap]="64" [fixedBottomGap]="0"
+    (keydown.escape)="sidenav.close()">
     <div class="sidenav">
       <h3 matSubheader>HISTORY</h3>
     </div>
