@@ -18,7 +18,7 @@ import { PaintingService, NodeDraggingService } from 'src/app/services';
   styleUrls: ['./node.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NodeComponent implements OnInit {
+export class NodeComponent implements AfterViewInit {
   @Input() node: Node;
   @Input() isMouseEnabled: boolean;
   @Output() dropped: EventEmitter<NodeDroppedEvent> = new EventEmitter<NodeDroppedEvent>();
@@ -30,6 +30,10 @@ export class NodeComponent implements OnInit {
     private nodeDraggingService: NodeDraggingService,
     private paintingService: PaintingService
   ) {}
+
+  ngAfterViewInit() {
+    this.changeDetection.detach();
+  }
 
   onMouseDown(event: MouseEvent) {
     if (this.isMouseEnabled) {
@@ -54,7 +58,7 @@ export class NodeComponent implements OnInit {
   paintNode() {
     this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
     this.node.isPath = false;
-    // this.changeDetection.detectChanges();
+    this.changeDetection.detectChanges();
   }
 
   onContextMenu(event: MouseEvent) {
@@ -67,7 +71,7 @@ export class NodeComponent implements OnInit {
 
       this.paintingService.updateMode(PaintingMode.ERASE);
       this.node.type = NodeType.DEFAULT;
-      // this.changeDetection.detectChanges();
+      this.changeDetection.detectChanges();
     }
   }
 
