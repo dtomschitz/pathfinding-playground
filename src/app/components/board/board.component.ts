@@ -3,8 +3,8 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Settings } from '../../models';
 import { GridComponent } from '../grid';
+import { SettingsActions } from '../../store/actions';
 import * as fromRoot from '../../store/reducers';
-import { SettingsActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'board',

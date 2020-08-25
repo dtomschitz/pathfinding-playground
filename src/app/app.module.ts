@@ -8,20 +8,26 @@ import { environment } from '../environments/environment';
 import { ROOT_REDUCERS } from './store/reducers';
 import { MaterialModule } from './material';
 import { SettingsService, PaintingService, NodeDraggingService } from './services';
-import { BoardComponent, SettingsCardComponent, GridComponent, NodeComponent, NavItemComponent } from './components';
-import { AppComponent } from './app.component';
-
-const COMPONENTS = [
-  AppComponent,
+import {
   BoardComponent,
   SettingsCardComponent,
   GridComponent,
-  NavItemComponent,
+  GridControlsComponent,
   NodeComponent,
-];
+  NavItemComponent,
+} from './components';
+import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [COMPONENTS],
+  declarations: [
+    AppComponent,
+    BoardComponent,
+    SettingsCardComponent,
+    GridComponent,
+    GridControlsComponent,
+    NavItemComponent,
+    NodeComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

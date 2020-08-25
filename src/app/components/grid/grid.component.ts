@@ -107,52 +107,23 @@ export class GridComponent implements OnInit, AfterViewInit {
     this.runChangeDetection();
   }
 
-  /*createGrid() {
-    for (let row = 0; row < this.rows; row++) {
-      const columns: Node[] = [];
-      for (let column = 0; column < this.columns; column++) {
-        const node: Node = {
-          id: `${row}-${column}`,
-          row,
-          column,
-          type: this.getNodeType(row, column),
-        };
-
-        columns.push(node);
-
-        if (node.type === NodeType.START) {
-          this.startNode = node;
-        } else if (node.type === NodeType.TARGET) {
-          this.targetNode = node;
-        }
-      }
-      this.grid.push(columns);
-    }
-  }
-
   resetGrid() {
-    for (const rows of this.grid) {
-      for (const node of rows) {
-        if (node.type !== NodeType.START && node.type !== NodeType.TARGET) {
-          node.type = NodeType.DEFAULT;
-        }
-      }
-    }
+    this.grid.reset();
   }
 
-  resetPath() {
-    for (const rows of this.grid) {
-      for (const node of rows) {
-        if (node.type === NodeType.PATH || node.type === NodeType.VISITED) {
-          node.type = NodeType.DEFAULT;
-        }
-      }
-    }
-  }*/
+  resetWalls() {
+    this.grid.resetWalls();
+  }
 
   runChangeDetection() {
     for (const component of this.nodeComponents) {
       component.detectChanges();
+    }
+  }
+
+  markForChecks() {
+    for (const component of this.nodeComponents) {
+      component.markForCheck();
     }
   }
 
@@ -167,13 +138,4 @@ export class GridComponent implements OnInit, AfterViewInit {
   private getNodeComponentByCoordiantes(x: number, y: number) {
     return this.nodeComponents.find((component) => component.node.x === x && component.node.y === y);
   }
-  /*getNodeType(row: number, column: number) {
-    if (row === Math.floor(this.rows / 2) && column === Math.floor(this.columns / 4)) {
-      return NodeType.START;
-    } else if (row === Math.floor(this.rows / 2) && column === Math.floor((3 * this.columns) / 4)) {
-      return NodeType.TARGET;
-    }
-
-    return NodeType.DEFAULT;
-  }*/
 }

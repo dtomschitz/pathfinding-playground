@@ -59,19 +59,9 @@ app-root {
 }
 
 board {
-  display: block;
   height: 100%;
   width: 100%;
-}
-
-board-tools {
   display: flex;
-  flex-direction: column;
-  position: absolute;
-
-  button.mat-fab {
-    margin: 5px;
-  }
 }
 
 settings-card {
@@ -126,6 +116,7 @@ settings-card {
 grid {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   height: 100%;
   width: 100%;
@@ -134,18 +125,21 @@ grid {
   .row {
     display: flex;
   }
+}
 
-  /*node {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 30px;
-    width: 30px;
+grid-controls {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 20px;
 
-    border: 1px solid whitesmoke;
-
-    
-  }*/
+  .mat-card {
+    border-radius: 100px;
+    padding: 4px;
+    button {
+      border-radius: 100px;
+    }
+  }
 }
 
 nav-item {

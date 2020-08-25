@@ -32,7 +32,7 @@ export class NodeComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    this.changeDetection.detach();
+    // this.changeDetection.detach();
   }
 
   onMouseDown(event: MouseEvent) {
@@ -58,7 +58,7 @@ export class NodeComponent implements AfterViewInit {
   paintNode() {
     this.node.type = this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
     this.node.isPath = false;
-    this.changeDetection.detectChanges();
+    // this.changeDetection.detectChanges();
   }
 
   onContextMenu(event: MouseEvent) {
@@ -71,7 +71,7 @@ export class NodeComponent implements AfterViewInit {
 
       this.paintingService.updateMode(PaintingMode.ERASE);
       this.node.type = NodeType.DEFAULT;
-      this.changeDetection.detectChanges();
+      // this.changeDetection.detectChanges();
     }
   }
 
