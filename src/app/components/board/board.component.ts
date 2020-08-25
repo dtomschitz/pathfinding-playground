@@ -1,8 +1,10 @@
 import { Component, ElementRef, AfterViewInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { SettingsService } from '../../services';
-import { getAlgorithm } from '../../pathfinding';
-// import { getMaze } from '../../mazes';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { Settings } from '../../models';
 import { GridComponent } from '../grid';
+import * as fromRoot from '../../store/reducers';
+import { SettingsActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'board',
@@ -12,14 +14,18 @@ import { GridComponent } from '../grid';
 export class BoardComponent implements AfterViewInit {
   @ViewChild(GridComponent) gridComponent: GridComponent;
 
+  settings$: Observable<Settings>;
+
   width: number;
   height: number;
 
   constructor(
     private host: ElementRef,
     private changeDetector: ChangeDetectorRef,
-    private settingsService: SettingsService
-  ) {}
+    private store: Store<fromRoot.State>
+  ) {
+    this.settings$ = this.store.pipe(select(fromRoot.selectSettings));
+  }
 
   ngAfterViewInit() {
     this.width = Math.floor(this.host.nativeElement.clientWidth / 30) - 5;
@@ -27,10 +33,13 @@ export class BoardComponent implements AfterViewInit {
     this.changeDetector.detectChanges();
   }
 
+  onSettingsChanged(changes: Partial<Settings>) {
+    this.store.dispatch(SettingsActions.updateSettings({ changes }));
+  }
+
+
   visualizePath() {
     console.log('Dada');
-
-    // this.gridComponent.visualize(getAlgorithm(this.settingsService.settings.algorithm));
   }
 
   onGenerateMaze() {

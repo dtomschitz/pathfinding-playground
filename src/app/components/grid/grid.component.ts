@@ -8,7 +8,7 @@ import {
   ChangeDetectorRef,
   AfterViewInit,
 } from '@angular/core';
-import { Node, NodeDroppedEvent, Maze, Algorithm, NodeType } from '../../models';
+import { Node, NodeDroppedEvent, Maze, Algorithm, NodeType, Settings } from '../../models';
 import { PaintingService } from '../../services';
 import { Grid } from '../../pathfinding';
 import { NodeComponent } from '../node';
@@ -22,6 +22,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class GridComponent implements OnInit, AfterViewInit {
   @Input() width: number;
   @Input() height: number;
+  @Input() settings: Settings;
 
   @ViewChildren(NodeComponent) nodeComponents: QueryList<NodeComponent>;
 

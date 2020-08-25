@@ -3,7 +3,7 @@
   <mat-card-content [formGroup]="settingsForm">
     <mat-form-field appearance="fill">
       <mat-label>Algorithm</mat-label>
-      <mat-select formControlName="algorithm">
+      <mat-select formControlName="algorithmId">
         <mat-option *ngFor="let algorithm of algorithms" [value]="algorithm.id">{{ algorithm.name }}</mat-option>
       </mat-select>
     </mat-form-field>

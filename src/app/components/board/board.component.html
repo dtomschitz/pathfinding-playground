@@ -1,4 +1,4 @@
 <ng-container *ngIf="width && height">
-  <settings-card (generateMaze)="onGenerateMaze()"></settings-card>
-  <grid [width]="width" [height]="height"></grid>
+  <settings-card [settings]="settings$ | async" (settingsChange)="onSettingsChanged($event)"></settings-card>
+  <grid [width]="width" [height]="height" [settings]="settings$ | async"></grid>
 </ng-container>

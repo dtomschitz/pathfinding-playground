@@ -69,18 +69,16 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
 
   isHidden = true;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private settingsService: SettingsService,
-    private paintingService: PaintingService
-  ) {
-    this.settingsForm = this.formBuilder.group({
-      algorithm: [this.settings.algorithmId],
-      speed: [this.settings.speed],
-    });
-  }
+  constructor(private formBuilder: FormBuilder, private paintingService: PaintingService) {}
 
   ngOnInit() {
+    if (this.settings) {
+      this.settingsForm = this.formBuilder.group({
+        algorithmId: [this.settings.algorithmId],
+        speed: [this.settings.speed],
+      });
+    }
+
     this.paintingService.isMouseLocked$.pipe(takeUntil(this.destroy$)).subscribe((isMouseLocked) => {
       if (isMouseLocked) {
         this.isHidden = true;
