@@ -1,8 +1,7 @@
-import { Algorithms } from './algorithm';
 import { Mazes } from './maze';
 
 export interface Settings {
-  algorithm: Algorithms;
+  algorithmId: string;
   maze: Mazes;
   speed: number;
 }

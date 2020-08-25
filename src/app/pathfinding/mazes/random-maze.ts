@@ -1,5 +1,5 @@
-import { Node, NodeType } from '../models';
-import { Grid } from '../pathfinding/grid';
+import { NodeType } from '../../models';
+import { Grid } from '../grid';
 
 export function randomMaze(grid: Grid) {
   for (let i = 0; i < grid.height; i++) {

@@ -40,10 +40,10 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
 
       const x = neighbor.x;
       const y = neighbor.y;
-      const ng = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : Math.SQRT2);
+      const tentativeG = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : Math.SQRT2);
 
-      if (neighbor.status !== 'opened' || ng < neighbor.g) {
-        neighbor.g = ng;
+      if (neighbor.status !== 'opened' || tentativeG < neighbor.g) {
+        neighbor.g = tentativeG;
         neighbor.h = neighbor.h || weight * heuristic(Math.abs(x - targetX), Math.abs(y - targetY));
         neighbor.f = neighbor.g + neighbor.h;
         neighbor.parent = node;

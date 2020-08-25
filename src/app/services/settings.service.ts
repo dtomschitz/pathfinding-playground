@@ -1,29 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Settings, Mazes } from '../models';
+import { Settings, Mazes, Algorithm, Algorithms } from '../models';
+import { BehaviorSubject } from 'rxjs';
+import { getAlgorithm } from '../pathfinding';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SettingsService {
-  private currentSettings: Settings;
+  algorithm$: BehaviorSubject<Algorithm>;
 
   constructor() {
-    this.currentSettings = {
-      algorithm: 'astar',
-      speed: 50,
-      maze: undefined,
-    };
   }
 
-  updateSettings(changes: Partial<Settings>) {
-    this.currentSettings = { ...this.currentSettings, ...changes };
-  }
-
-  setMazeType(maze: Mazes) {
-    this.currentSettings.maze = maze;
-  }
-
-  get settings() {
-    return this.currentSettings;
+  setAlgorithm(id: string) {
+    this.algorithm$.next(getAlgorithm(id));
   }
 }

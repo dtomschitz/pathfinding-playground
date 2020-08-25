@@ -47,6 +47,17 @@ mat-sidenav {
   }
 }
 
+app-root {
+  mat-form-field.algorithm-selector {
+    width: 120px;
+    font-size: small;
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+  }
+}
+
 board {
   display: block;
   height: 100%;

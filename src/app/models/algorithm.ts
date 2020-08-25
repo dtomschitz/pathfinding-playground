@@ -12,6 +12,6 @@ export interface AlgorithmOptions {
   heuristic?: (dx: number, dy: number) => number;
 }
 
-export type Algorithms = 'astar' | 'bfs' | 'dfs' | 'bidirectional';
+export type Algorithms = { [key: string]: Algorithm };
 
 export type Distance = [number, string[], NodeDirection];

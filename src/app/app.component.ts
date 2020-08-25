@@ -1,16 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
-import { BoardComponent } from './components';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
-export class AppComponent {
-  @ViewChild(BoardComponent) board: BoardComponent;
-
-  onVisualize() {
-    console.log('dada');
-
-    this.board.visualizePath();
-  }
-}
+export class AppComponent {}

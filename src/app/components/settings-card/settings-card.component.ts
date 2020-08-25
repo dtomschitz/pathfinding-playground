@@ -1,11 +1,10 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PaintingService, SettingsService } from '../../services';
-import { Algorithm, PaintingMode, Maze } from '../../models';
-import { mazes } from '../../mazes';
+import { Algorithm, PaintingMode, Maze, Settings } from '../../models';
 import { algorithms } from '../../pathfinding';
 
 @Component({
@@ -55,10 +54,13 @@ import { algorithms } from '../../pathfinding';
       ]),
     ]),
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsCardComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<void> = new Subject<void>();
 
+  @Input() settings: Settings;
+  @Output() settingsChange: EventEmitter<Partial<Settings>> = new EventEmitter<Partial<Settings>>();
   @Output() visualizePath: EventEmitter<void> = new EventEmitter<void>();
   @Output() generateMaze: EventEmitter<void> = new EventEmitter<void>();
 
@@ -73,8 +75,8 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
     private paintingService: PaintingService
   ) {
     this.settingsForm = this.formBuilder.group({
-      algorithm: [this.settingsService.settings.algorithm],
-      speed: [this.settingsService.settings.speed],
+      algorithm: [this.settings.algorithmId],
+      speed: [this.settings.speed],
     });
   }
 
@@ -87,7 +89,7 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
 
     this.settingsForm.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((changes) => this.settingsService.updateSettings(changes));
+      .subscribe((changes) => this.settingsChange.emit(changes));
   }
 
   ngOnDestroy() {

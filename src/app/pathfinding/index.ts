@@ -2,6 +2,7 @@ import { Algorithm, Algorithms } from '../models';
 import { astar } from './algorithms';
 
 export * from './grid';
+export * from './mazes';
 
 export const algorithms: Algorithm[] = [
   {
@@ -9,23 +10,8 @@ export const algorithms: Algorithm[] = [
     name: 'A* Serach',
     fn: astar,
   },
-  {
-    id: 'bidirectional',
-    name: 'Bidirectional',
-    fn: () => [],
-  },
-  {
-    id: 'bfs',
-    name: 'Breadth-first Search',
-    fn: () => [],
-  },
-  {
-    id: 'dfs',
-    name: 'Depth-first Search',
-    fn: () => [],
-  },
 ];
 
-export function getAlgorithm(id: Algorithms) {
+export function getAlgorithm(id: string) {
   return algorithms.find((algorithm) => algorithm.id === id);
 }
