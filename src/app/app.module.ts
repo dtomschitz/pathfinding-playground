@@ -7,7 +7,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { ROOT_REDUCERS } from './store/reducers';
 import { MaterialModule } from './material';
-import { SettingsService, PaintingService, NodeDraggingService } from './services';
+import { PaintingService, NodeDraggingService } from './services';
 import {
   BoardComponent,
   SettingsCardComponent,
@@ -46,7 +46,7 @@ import { AppComponent } from './app.component';
     }),
     MaterialModule,
   ],
-  providers: [SettingsService, PaintingService, NodeDraggingService],
+  providers: [PaintingService, NodeDraggingService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,4 +1,5 @@
-import { Node, NodeType, NodeCoordinates, Algorithm } from '../models';
+import { Node, NodeType, NodeCoordinates } from '../models';
+import { getAlgorithm } from './algorithms';
 
 export class Grid {
   nodes: Node[][];
@@ -37,7 +38,8 @@ export class Grid {
     }
   }
 
-  findPath(algorithm: Algorithm) {
+  findPath(algorithmId: string) {
+    const algorithm = getAlgorithm(algorithmId);
     const path = algorithm.fn(this);
     //path[path.length]
     return path;
@@ -66,6 +68,20 @@ export class Grid {
           x: nodeX,
           y: nodeY,
           type: type !== NodeType.WALL ? type : NodeType.DEFAULT,
+        };
+      }
+    }
+  }
+
+  resetPath() {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        const { id, x: nodeX, y: nodeY, type, isPath } = this.nodes[y][x];
+        this.nodes[y][x] = {
+          id,
+          x: nodeX,
+          y: nodeY,
+          type,
         };
       }
     }

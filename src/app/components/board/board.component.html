@@ -1,4 +1,4 @@
-<ng-container *ngIf="width && height">
-  <settings-card [settings]="settings$ | async" (settingsChange)="onSettingsChanged($event)"></settings-card>
-  <grid [width]="width" [height]="height" [settings]="settings$ | async"></grid>
+<ng-container *ngIf="width && height && (settings$ | async) as settings">
+  <settings-card [settings]="settings" (settingsChange)="onSettingsChanged($event)"></settings-card>
+  <grid [width]="width" [height]="height" [settings]="settings"></grid>
 </ng-container>

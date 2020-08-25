@@ -3,9 +3,9 @@ import { trigger, style, transition, animate } from '@angular/animations';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PaintingService, SettingsService } from '../../services';
-import { Algorithm, PaintingMode, Maze, Settings } from '../../models';
-import { algorithms } from '../../pathfinding';
+import { PaintingService } from '../../services';
+import { Algorithm, PaintingMode, Settings } from '../../models';
+import { algorithms } from '../../pathfinding/algorithms';
 
 @Component({
   selector: 'settings-card',

@@ -47,10 +47,10 @@ export class GridComponent implements OnInit, AfterViewInit {
     // this.changeDetection.detach();
   }
 
-  visualize(algorithm: Algorithm) {
-    this.grid.reset();
+  visualizePath() {
+    this.resetPath();
 
-    const path = this.grid.findPath(algorithm);
+    const path = this.grid.findPath(this.settings.algorithmId);
     if (path.length === 0) {
       this.snackBar.open('No path where found!', ':(', { duration: 2000 });
       return;
@@ -113,6 +113,10 @@ export class GridComponent implements OnInit, AfterViewInit {
 
   resetWalls() {
     this.grid.resetWalls();
+  }
+
+  resetPath() {
+    this.grid.resetPath();
   }
 
   runChangeDetection() {
