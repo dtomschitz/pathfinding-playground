@@ -111,7 +111,12 @@ export class NodeComponent implements AfterViewInit {
   }
 
   get classes() {
-    return { wall: this.isWall, path: this.isPath };
+    return {
+      wall: this.isWall,
+      path: !this.isWall && this.isPath,
+      opened: !this.isWall && this.isOpened,
+      closed: !this.isWall && this.isClosed,
+    };
   }
 
   get isWall() {
@@ -120,6 +125,14 @@ export class NodeComponent implements AfterViewInit {
 
   get isPath() {
     return this.node.isPath;
+  }
+
+  get isOpened() {
+    return this.node.status === 'opened';
+  }
+
+  get isClosed() {
+    return this.node.status === 'closed';
   }
 
   get isStartNode() {

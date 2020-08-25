@@ -26,7 +26,7 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
 
   while (!openList.empty()) {
     const node = openList.pop();
-    startNode.status = 'closed';
+    node.status = 'closed';
 
     if (node === targetNode) {
       return Utils.backtrace(targetNode);

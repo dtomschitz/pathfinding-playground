@@ -32,10 +32,6 @@
       width: 18px;
       font-size: 18px;
     }
-
-    &:active {
-      color: red
-    }
   }
 
   &.wall {
@@ -43,8 +39,9 @@
     border-color: black;
   }
 
-  &.visited {
-    background-color: green;
+  &.opened, &.closed {
+    background-color: #ffecb3;
+    border-color: #ffecb3;
   }
 
   &.path {

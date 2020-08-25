@@ -28,8 +28,8 @@ export class BoardComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.width = Math.floor(this.host.nativeElement.clientWidth / 30) - 5;
-    this.height = Math.floor((this.host.nativeElement.clientHeight - 64) / 30) - 1;
+    this.width = Math.floor(this.host.nativeElement.clientWidth / 30) - 3;
+    this.height = Math.floor((this.host.nativeElement.clientHeight - 64) / 30) - 2;
     this.changeDetector.detectChanges();
   }
 

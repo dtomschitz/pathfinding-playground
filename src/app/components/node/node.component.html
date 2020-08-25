@@ -1,4 +1,4 @@
-<div class="node" dropzone="copy" [ngClass]="{ wall: isWall, path: isPath }"
+<div class="node" dropzone="copy" [ngClass]="classes"
   [draggable]="(isStartNode || isTargetNode) && isMouseEnabled" (mouseover)="onMouseOver()" (mouseup)="onMouseUp()"
   (mousedown)="onMouseDown($event)" (contextmenu)="onContextMenu($event)" (dragstart)="onDragStart()" (drop)="onDrop()"
   (dragenter)="preventDefault($event)" (dragleave)="preventDefault($event)" (dragover)="preventDefault($event)">
