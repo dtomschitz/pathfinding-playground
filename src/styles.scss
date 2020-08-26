@@ -133,10 +133,42 @@ grid-controls {
   bottom: 20px;
 
   .mat-card {
+    padding: 0;
     border-radius: 100px;
-    padding: 4px;
+    width: 500px;
+
     button {
       border-radius: 100px;
+    }
+
+    &.default-controls {
+      display: flex;
+      align-items: center;
+      height: 48px;
+
+      button {
+        width: 100%;
+      }
+    }
+
+    &.replay-controls {
+      display: flex;
+      align-items: center;
+
+      .mat-slider {
+        flex: 1;
+      }
+    }
+
+    &.default-controls,
+    &.replay-controls {
+      :first-child {
+        margin-left: 4px;
+      }
+
+      :last-child {
+        margin-right: 4px;
+      }
     }
   }
 }

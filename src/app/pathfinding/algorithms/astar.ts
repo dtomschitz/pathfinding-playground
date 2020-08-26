@@ -1,10 +1,10 @@
-import { AlgorithmOptions, Node } from '../../models';
+import { AlgorithmOptions, Node, AlgorithmCallbacks } from '../../models';
 import { Heuristics } from '../heuristic';
 import { Heap } from '../heap';
 import { Utils } from '../utils';
 import { Grid } from '../grid';
 
-export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
+export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: AlgorithmOptions): number[][] {
   const heuristic = options?.heuristic ?? Heuristics.manhatten;
   const weight = options?.weight ?? 1;
 
@@ -24,9 +24,11 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
   openList.push(startNode);
   startNode.status = 'opened';
 
+  let i = 0;
   while (!openList.empty()) {
     const node = openList.pop();
-    node.status = 'closed';
+    callbacks.closed(node, i);
+    node.s = 'closed';
 
     if (node === targetNode) {
       return Utils.backtrace(targetNode);
@@ -34,7 +36,7 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
 
     const neighbors = grid.getNeighbors(node);
     for (const neighbor of neighbors) {
-      if (neighbor.status === 'closed') {
+      if (neighbor.s === 'closed') {
         continue;
       }
 
@@ -42,20 +44,23 @@ export function astar(grid: Grid, options?: AlgorithmOptions): number[][] {
       const y = neighbor.y;
       const tentativeG = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : Math.SQRT2);
 
-      if (neighbor.status !== 'opened' || tentativeG < neighbor.g) {
+      if (neighbor.s !== 'opened' || tentativeG < neighbor.g) {
         neighbor.g = tentativeG;
         neighbor.h = neighbor.h || weight * heuristic(Math.abs(x - targetX), Math.abs(y - targetY));
         neighbor.f = neighbor.g + neighbor.h;
         neighbor.parent = node;
 
-        if (neighbor.status !== 'opened') {
+        if (neighbor.s !== 'opened') {
           openList.push(neighbor);
-          neighbor.status = 'opened';
+          callbacks.opened(node, i);
+          neighbor.s = 'opened';
         } else {
           openList.updateItem(neighbor);
         }
       }
     }
+
+    i++;
   }
 
   return [];

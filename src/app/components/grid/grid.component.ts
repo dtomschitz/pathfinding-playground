@@ -8,7 +8,7 @@ import {
   ChangeDetectorRef,
   AfterViewInit,
 } from '@angular/core';
-import { Node, NodeDroppedEvent, Maze, Algorithm, NodeType, Settings } from '../../models';
+import { Node, NodeDroppedEvent, Maze, Algorithm, NodeType, Settings, AlgorithmOperation } from '../../models';
 import { PaintingService } from '../../services';
 import { Grid } from '../../pathfinding';
 import { NodeComponent } from '../node';
@@ -27,6 +27,9 @@ export class GridComponent implements OnInit, AfterViewInit {
   @ViewChildren(NodeComponent) nodeComponents: QueryList<NodeComponent>;
 
   grid: Grid;
+  hasOperation = false;
+  steps: AlgorithmOperation[][];
+  currentStep: number;
   isMouseEnabled = true;
 
   constructor(
@@ -48,14 +51,18 @@ export class GridComponent implements OnInit, AfterViewInit {
   }
 
   visualizePath() {
+    this.hasOperation = true;
+
     this.resetPath();
 
-    const path = this.grid.findPath(this.settings.algorithmId);
-    if (path.length === 0) {
+    const { path, steps } = this.grid.findPath(this.settings.algorithmId);
+    this.steps = steps;
+    /*if (path.length === 0) {
       this.snackBar.open('No path where found!', ':(', { duration: 2000 });
       return;
-    }
+    }*/
 
+    this.renderSteps(steps);
     this.drawShortestPath(path);
     this.runChangeDetection();
   }
@@ -93,13 +100,35 @@ export class GridComponent implements OnInit, AfterViewInit {
     }
   }
 
+  renderSteps(operations: AlgorithmOperation[][]) {
+    for (let i = 0; i < operations.length; i++) {
+      this.currentStep = i;
+      for (const { x, y, status } of operations[i]) {
+        setTimeout(() => {
+          this.grid.getNode(x, y).status = status;
+          this.getNodeComponentByCoordiantes(x, y).detectChanges();
+        }, 200);
+      }
+    }
+  }
+
+  jumpToStep(step: number) {
+    this.resetSteps();
+
+    for (let i = 0; i < step; i++) {
+      this.currentStep = i;
+      for (const { x, y, status } of this.steps[i]) {
+        this.grid.getNode(x, y).status = status;
+        this.getNodeComponentByCoordiantes(x, y).detectChanges();
+      }
+    }
+  }
+
   drawShortestPath(path: number[][]) {
     for (const [x, y] of path) {
-      // this.getNodeComponentByCoordiantes(x, y).node.isPath = true;
       this.grid.getNode(x, y).isPath = true;
-      // this.getNodeComponentByCoordiantes(x, y).markForCheck();
+      this.getNodeComponentByCoordiantes(x, y).detectChanges();
     }
-    this.changeDetection.detectChanges();
   }
 
   createMaze(maze: Maze) {
@@ -117,6 +146,10 @@ export class GridComponent implements OnInit, AfterViewInit {
 
   resetPath() {
     this.grid.resetPath();
+  }
+
+  resetSteps() {
+    this.grid.resetSteps();
   }
 
   runChangeDetection() {

@@ -1,6 +1,21 @@
-<mat-card>
+<mat-card *ngIf="!hasOperation" class="default-controls">
   <button (click)="resetPath.emit()" mat-button>Reset Path</button>
   <button (click)="resetWalls.emit()" mat-button>Reset Walls</button>
   <button (click)="resetAll.emit()" mat-button>Reset All</button>
   <button (click)="visualizePath.emit()" color="primary" mat-button>Visualize</button>
+</mat-card>
+<mat-card *ngIf="hasOperation" class="replay-controls">
+  <button (click)="replay.emit()" class="replay" mat-icon-button>
+    <mat-icon>replay</mat-icon>
+  </button>
+  <mat-slider
+    [min]="0"
+    [max]="steps"
+    [step]="1"
+    [(ngModel)]="currentStep"
+    (valueChange)="jumpToStep.emit($event)">
+  </mat-slider>
+  <button (click)="cancel.emit()" class="cancel" mat-icon-button>
+    <mat-icon>cancel</mat-icon>
+  </button>
 </mat-card>

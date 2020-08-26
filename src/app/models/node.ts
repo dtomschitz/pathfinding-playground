@@ -8,6 +8,7 @@ export interface Node {
   g?: number;
   f?: number;
   h?: number;
+  s?: 'opened' | 'closed';
   parent?: Node;
 }
 

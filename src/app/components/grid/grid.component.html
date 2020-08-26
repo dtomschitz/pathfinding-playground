@@ -7,4 +7,13 @@
     </div>
   </div>
 </ng-container>
-<grid-controls (visualizePath)="visualizePath()" (resetAll)="resetGrid()" (resetWalls)="resetWalls()" (resetPath)="resetPath()"></grid-controls>
+<grid-controls 
+  [hasOperation]="hasOperation"
+  [steps]="steps?.length"
+  [currentStep]="currentStep"
+  (visualizePath)="visualizePath()"
+  (resetAll)="resetGrid()"
+  (resetWalls)="resetWalls()"
+  (resetPath)="resetPath()"
+  (jumpToStep)="jumpToStep($event)">
+</grid-controls>
