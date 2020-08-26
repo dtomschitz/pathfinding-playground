@@ -49,7 +49,7 @@ export class GridComponent implements OnInit, AfterViewInit {
     // this.changeDetection.detach();
   }
 
-  visualizePath() {
+  async visualizePath() {
     this.resetPath();
 
     const { path, steps } = this.grid.findPath(this.settings.algorithmId);
@@ -59,8 +59,8 @@ export class GridComponent implements OnInit, AfterViewInit {
       return;
     }*/
 
-    this.renderSteps(steps);
-    // this.drawShortestPath(path);
+    await this.renderSteps(steps);
+    await this.drawShortestPath(path);
     this.runChangeDetection();
   }
 
@@ -120,7 +120,7 @@ export class GridComponent implements OnInit, AfterViewInit {
     }
   }
 
-  drawShortestPath(path: number[][]) {
+  async drawShortestPath(path: number[][]) {
     for (const [x, y] of path) {
       this.grid.getNode(x, y).isPath = true;
       this.getNodeComponentByCoordiantes(x, y).detectChanges();
