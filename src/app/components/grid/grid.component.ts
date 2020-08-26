@@ -27,7 +27,6 @@ export class GridComponent implements OnInit, AfterViewInit {
   @ViewChildren(NodeComponent) nodeComponents: QueryList<NodeComponent>;
 
   grid: Grid;
-  hasOperation = false;
   steps: AlgorithmOperation[][];
   currentStep: number;
   isMouseEnabled = true;
@@ -51,8 +50,6 @@ export class GridComponent implements OnInit, AfterViewInit {
   }
 
   visualizePath() {
-    this.hasOperation = true;
-
     this.resetPath();
 
     const { path, steps } = this.grid.findPath(this.settings.algorithmId);
@@ -63,7 +60,7 @@ export class GridComponent implements OnInit, AfterViewInit {
     }*/
 
     this.renderSteps(steps);
-    this.drawShortestPath(path);
+    // this.drawShortestPath(path);
     this.runChangeDetection();
   }
 
@@ -100,15 +97,14 @@ export class GridComponent implements OnInit, AfterViewInit {
     }
   }
 
-  renderSteps(operations: AlgorithmOperation[][]) {
+  async renderSteps(operations: AlgorithmOperation[][]) {
     for (let i = 0; i < operations.length; i++) {
-      this.currentStep = i;
       for (const { x, y, status } of operations[i]) {
-        setTimeout(() => {
-          this.grid.getNode(x, y).status = status;
-          this.getNodeComponentByCoordiantes(x, y).detectChanges();
-        }, 200);
+        this.grid.getNode(x, y).status = status;
+        this.getNodeComponentByCoordiantes(x, y).markForCheck();
       }
+      this.currentStep = i;
+      await this.delay(2);
     }
   }
 
@@ -129,6 +125,12 @@ export class GridComponent implements OnInit, AfterViewInit {
       this.grid.getNode(x, y).isPath = true;
       this.getNodeComponentByCoordiantes(x, y).detectChanges();
     }
+  }
+
+  reset() {
+    this.steps = undefined;
+    this.currentStep = undefined;
+    this.resetPath();
   }
 
   createMaze(maze: Maze) {
@@ -174,5 +176,9 @@ export class GridComponent implements OnInit, AfterViewInit {
 
   private getNodeComponentByCoordiantes(x: number, y: number) {
     return this.nodeComponents.find((component) => component.node.x === x && component.node.y === y);
+  }
+
+  private delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

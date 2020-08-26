@@ -5,7 +5,7 @@ import { Utils } from '../utils';
 import { Grid } from '../grid';
 
 export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: AlgorithmOptions): number[][] {
-  const heuristic = options?.heuristic ?? Heuristics.manhatten;
+  const heuristic = options?.heuristic ?? Heuristics.octile;
   const weight = options?.weight ?? 1;
 
   const startX = grid.start.x;
