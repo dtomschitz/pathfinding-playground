@@ -38,35 +38,28 @@ export class Grid {
     }
   }
 
-  findPath(algorithmId: string): { path: number[][]; steps: AlgorithmOperation[][] } {
+  findPath(algorithmId: string): { path: number[][]; operations: AlgorithmOperation[] } {
     const algorithm = getAlgorithm(algorithmId);
-    const steps: AlgorithmOperation[][] = [];
+    const operations: AlgorithmOperation[] = [];
 
     const path = algorithm.fn(this, {
       opened: ({ x, y }, i) => {
-        if (!steps[i]) {
-          steps[i] = [];
-        }
-
-        steps[i].push({
+        operations.push({
           x,
           y,
           status: 'opened',
         });
       },
       closed: ({ x, y }, i) => {
-        if (!steps[i]) {
-          steps[i] = [];
-        }
-
-        steps[i].push({
+        operations.push({
           x,
           y,
           status: 'closed',
         });
       },
     });
-    return { path, steps };
+
+    return { path, operations };
   }
 
   reset() {

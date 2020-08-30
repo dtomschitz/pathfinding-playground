@@ -8,12 +8,9 @@
   </div>
 </ng-container>
 <grid-controls 
-  [steps]="steps?.length"
-  [currentStep]="currentStep"
   (visualizePath)="visualizePath()"
   (resetAll)="resetGrid()"
   (resetWalls)="resetWalls()"
   (resetPath)="resetPath()"
-  (jumpToStep)="jumpToStep($event)"
   (cancel)="reset()">
 </grid-controls>

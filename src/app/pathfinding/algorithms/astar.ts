@@ -20,6 +20,7 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
   startNode.f = 0;
 
   const openList = new Heap<Node>((a, b) => a.f - b.f);
+  const SQRT2 = Math.SQRT2;
 
   openList.push(startNode);
   startNode.status = 'opened';
@@ -42,7 +43,7 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
 
       const x = neighbor.x;
       const y = neighbor.y;
-      const tentativeG = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : Math.SQRT2);
+      const tentativeG = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : SQRT2);
 
       if (neighbor.s !== 'opened' || tentativeG < neighbor.g) {
         neighbor.g = tentativeG;

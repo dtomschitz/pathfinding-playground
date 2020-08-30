@@ -1,4 +1,11 @@
-import { Component, ElementRef, AfterViewInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  AfterViewInit,
+  ChangeDetectorRef,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Settings } from '../../models';
@@ -10,6 +17,7 @@ import * as fromRoot from '../../store/reducers';
   selector: 'board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardComponent implements AfterViewInit {
   @ViewChild(GridComponent) gridComponent: GridComponent;
@@ -28,15 +36,14 @@ export class BoardComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.width = Math.floor(this.host.nativeElement.clientWidth / 30) - 3;
-    this.height = Math.floor((this.host.nativeElement.clientHeight - 64) / 30) - 2;
+    this.width = Math.floor(this.host.nativeElement.clientWidth / 30) - 5;
+    this.height = Math.floor((this.host.nativeElement.clientHeight - 64) / 30) - 3;
     this.changeDetector.detectChanges();
   }
 
   onSettingsChanged(changes: Partial<Settings>) {
     this.store.dispatch(SettingsActions.updateSettings({ changes }));
   }
-
 
   visualizePath() {
     console.log('Dada');

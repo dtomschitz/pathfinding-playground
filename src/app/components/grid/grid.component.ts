@@ -46,22 +46,17 @@ export class GridComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // this.changeDetection.detach();
+    this.changeDetection.detach();
   }
 
   async visualizePath() {
     this.resetPath();
 
-    const { path, steps } = this.grid.findPath(this.settings.algorithmId);
-    this.steps = steps;
-    /*if (path.length === 0) {
-      this.snackBar.open('No path where found!', ':(', { duration: 2000 });
-      return;
-    }*/
-
-    await this.renderSteps(steps);
+    const { path, operations } = this.grid.findPath(this.settings.algorithmId);
+    await this.renderOperations(operations);
     await this.drawShortestPath(path);
-    this.runChangeDetection();
+
+    // this.runChangeDetection();
   }
 
   onMouseDown(event: MouseEvent) {
@@ -92,19 +87,18 @@ export class GridComponent implements OnInit, AfterViewInit {
         this.grid.target = node;
       }
 
-      this.getNodeComponent(previousNode.id).markForCheck();
-      this.getNodeComponent(newNode.id).markForCheck();
+      // this.getNodeComponent(previousNode.id).detectChanges();
+      // this.getNodeComponent(newNode.id).detectChanges();
+      this.changeDetection.detectChanges();
     }
   }
 
-  async renderSteps(operations: AlgorithmOperation[][]) {
-    for (let i = 0; i < operations.length; i++) {
-      for (const { x, y, status } of operations[i]) {
-        this.grid.getNode(x, y).status = status;
-        this.getNodeComponentByCoordiantes(x, y).markForCheck();
-      }
-      this.currentStep = i;
-      await this.delay(2);
+  async renderOperations(operations: AlgorithmOperation[]) {
+    for (const { x, y, status } of operations) {
+      this.grid.getNode(x, y).status = status;
+      this.getNodeComponentByCoordiantes(x, y).detectChanges();
+      this.changeDetection.detectChanges();
+      await this.delay(10);
     }
   }
 
@@ -140,18 +134,25 @@ export class GridComponent implements OnInit, AfterViewInit {
 
   resetGrid() {
     this.grid.reset();
+    this.changeDetection.detectChanges();
+    this.runChangeDetection();
   }
 
   resetWalls() {
     this.grid.resetWalls();
+    this.changeDetection.detectChanges();
+    this.runChangeDetection();
   }
 
   resetPath() {
     this.grid.resetPath();
+    this.changeDetection.detectChanges();
+    this.runChangeDetection();
   }
 
   resetSteps() {
     this.grid.resetSteps();
+    this.changeDetection.detectChanges();
   }
 
   runChangeDetection() {
