@@ -95,11 +95,16 @@ export class GridComponent implements OnInit, AfterViewInit {
 
   async renderOperations(operations: AlgorithmOperation[]) {
     for (const { x, y, status } of operations) {
+      console.log(`${x}, ${y}, ${status}`);
+
       this.grid.getNode(x, y).status = status;
-      this.getNodeComponentByCoordiantes(x, y).detectChanges();
+      this.getNodeComponentByCoordiantes(x, y).markForCheck();
       this.changeDetection.detectChanges();
       await this.delay(10);
     }
+
+    this.runChangeDetection();
+    this.changeDetection.detectChanges();
   }
 
   jumpToStep(step: number) {

@@ -113,8 +113,8 @@ export class NodeComponent implements AfterViewInit {
     return {
       wall: this.isWall,
       path: !this.isWall && this.isPath,
-      opened: !this.isWall && this.isOpened,
-      closed: !this.isWall && this.isClosed,
+      opened: this.isOpened,
+      closed: this.isClosed,
     };
   }
 
