@@ -1,12 +1,12 @@
-import { AlgorithmOptions, Node, AlgorithmCallbacks } from '../../models';
+import { AlgorithmOptions, Node, AlgorithmCallbacks, Path } from '../../models';
 import { Heuristics } from '../heuristic';
 import { Heap } from '../heap';
 import { Utils } from '../utils';
 import { Grid } from '../grid';
 
-export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: AlgorithmOptions): number[][] {
+export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: AlgorithmOptions): Path {
   const heuristic = options?.heuristic ?? Heuristics.manhatten;
-  const weight = options?.weight ?? .2;
+  const weight = options?.weight ?? 1;
 
   const startX = grid.start.x;
   const startY = grid.start.y;
@@ -23,7 +23,7 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
   const SQRT2 = Math.SQRT2;
 
   openList.push(startNode);
-  startNode.status = 'opened';
+  startNode.s = 'opened';
 
   let i = 0;
   while (!openList.empty()) {

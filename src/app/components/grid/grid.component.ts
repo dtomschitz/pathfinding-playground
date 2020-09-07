@@ -52,12 +52,12 @@ export class GridComponent implements OnInit, AfterViewInit {
     this.render();
   }
 
-  visualizePath() {
-    const { path, operations } = this.grid.findPath(this.settings.algorithmId);
-    console.log(path);
+  async visualizePath() {
+    this.resetPath();
 
-    // this.renderOperations(operations);
-    this.renderPath(path);
+    const { path, operations } = this.grid.findPath(this.settings.algorithmId);
+    await this.renderOperations(operations);
+    await this.renderPath(path);
   }
 
   lockMouse(event: MouseEvent) {
@@ -108,10 +108,11 @@ export class GridComponent implements OnInit, AfterViewInit {
   onMouseUp(event: MouseEvent) {
     if (this.isMouseEnabled) {
       if (this.draggedNode) {
-        const newNode = this.grid.getNodeAt(event.offsetX, event.offsetY);
-        this.updateNodeType(newNode, this.draggedNode.type);
-        this.updateNodeType(this.draggedNode, NodeType.DEFAULT);
+        this.grid.getNodeAt(event.offsetX, event.offsetY).type = this.draggedNode.type;
+        this.grid.getNode(this.draggedNode.x, this.draggedNode.y).type = NodeType.DEFAULT;
         this.draggedNode = undefined;
+
+        this.render();
       }
 
       this.paintingService.updateMode(PaintingMode.CREATE);
@@ -130,6 +131,21 @@ export class GridComponent implements OnInit, AfterViewInit {
       this.paintingService.updateMode(PaintingMode.ERASE);
       this.updateNodeType(node, this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT);
     }
+  }
+
+  resetPath() {
+    this.grid.resetPath();
+    this.render();
+  }
+
+  resetWalls() {
+    this.grid.resetWalls();
+    this.render();
+  }
+
+  reset() {
+    this.grid.reset();
+    this.render();
   }
 
   private updateNodeType(node: Node, type: NodeType) {
@@ -162,32 +178,34 @@ export class GridComponent implements OnInit, AfterViewInit {
       for (let x = this.paddingLeft; x <= this.width - this.paddingRight - this.paddingLeft; x += this.nodeSize) {
         const node = this.grid.getNodeAt(x, y);
 
-        if (node?.status) {
-          this.renderRect(x, y, 'red');
-        } else if (node.isPath) {
-          this.renderRect(x, y, 'yellow');
-        } else if (node.type === NodeType.WALL) {
-          this.renderRect(x, y, 'black');
-        } else if (node.type === NodeType.START) {
+        if (node.type === NodeType.START) {
           this.renderStartPoint(x, y);
         } else if (node.type === NodeType.TARGET) {
           this.renderTargetPoint(x, y);
+        } else if (node.type === NodeType.WALL) {
+          this.renderRect(x, y, 'black');
+        } else if (node.status && !node.isPath) {
+          this.renderRect(x, y, '#FFECB3');
+        } else if (node.isPath) {
+          this.renderRect(x, y, '#ffd740');
         }
       }
     }
   }
 
-  private renderPath(path: number[][]) {
+  private async renderPath(path: number[][]) {
     for (const [x, y] of path) {
       this.grid.getNode(x, y).isPath = true;
       this.render();
+      await this.delay(5);
     }
   }
 
-  private renderOperations(operations: AlgorithmOperation[]) {
+  private async renderOperations(operations: AlgorithmOperation[]) {
     for (const { x, y, status } of operations) {
       this.grid.getNode(x, y).status = status;
       this.render();
+      await this.delay(2);
     }
   }
 
@@ -250,6 +268,10 @@ export class GridComponent implements OnInit, AfterViewInit {
     } else if (node.type === NodeType.WALL) {
       return 'black';
     }
+  }
+
+  private delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 

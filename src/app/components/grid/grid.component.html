@@ -12,5 +12,9 @@
     </canvas>
   </div>
 </ng-container>
-<grid-controls (visualizePath)="visualizePath()">
+<grid-controls
+  (visualizePath)="visualizePath()"
+  (resetPath)="resetPath()"
+  (resetWalls)="resetWalls()"
+  (resetAll)="reset()">
 </grid-controls>

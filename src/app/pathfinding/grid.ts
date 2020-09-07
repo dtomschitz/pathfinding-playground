@@ -87,7 +87,7 @@ export class Grid {
   resetPath() {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        const { id, x: nodeX, y: nodeY, type, isPath } = this.nodes[y][x];
+        const { id, x: nodeX, y: nodeY, type } = this.nodes[y][x];
         this.nodes[y][x] = {
           id,
           x: nodeX,
@@ -119,7 +119,7 @@ export class Grid {
   }
 
   getNodeAt(x: number, y: number) {
-   //  console.log(Math.floor(x / this.nodeSize), Math.floor(y / this.nodeSize));
+    //  console.log(Math.floor(x / this.nodeSize), Math.floor(y / this.nodeSize));
 
     // return this.nodes[`${Math.floor(y / this.nodeSize)}-${Math.floor(x / this.nodeSize)}`];
     return this.getNode(Math.floor(x / this.nodeSize), Math.floor(y / this.nodeSize));

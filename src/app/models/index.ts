@@ -3,4 +3,5 @@ export * from './dimension';
 export * from './maze';
 export * from './node';
 export * from './painting-mode';
+export * from './path';
 export * from './settings';
