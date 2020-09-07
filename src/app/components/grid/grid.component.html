@@ -1,16 +1,16 @@
-<ng-container *ngIf="grid.nodes">
-  <div class="wrapper" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)">
-    <div *ngFor="let row of grid.nodes; trackBy: trackByFn, let i = index" class="row">
-      <div *ngFor="let column of grid.nodes[i]; trackBy: trackByFn; let j = index" class="column">
-        <node [node]="grid.nodes[i][j]" [isMouseEnabled]="isMouseEnabled" (dropped)="onNodeDropped($event)"></node>
-      </div>
-    </div>
+<ng-container *ngIf="width && height">
+  <div class="wrapper" (mousedown)="lockMouse($event)" (mouseup)="releaseMouse($event)">
+    <canvas 
+      #canvas
+      [width]="width"
+      [height]="height"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp($event)"
+      (contextmenu)="onContextMenu($event)"
+      >
+    </canvas>
   </div>
 </ng-container>
-<grid-controls 
-  (visualizePath)="visualizePath()"
-  (resetAll)="resetGrid()"
-  (resetWalls)="resetWalls()"
-  (resetPath)="resetPath()"
-  (cancel)="reset()">
+<grid-controls (visualizePath)="visualizePath()">
 </grid-controls>

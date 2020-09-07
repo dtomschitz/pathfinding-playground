@@ -6,13 +6,7 @@ export class Grid {
   start: NodeCoordinates;
   target: NodeCoordinates;
 
-  width: number;
-  height: number;
-
-  constructor(width?: number, height?: number) {
-    this.width = width;
-    this.height = height;
-  }
+  constructor(public width: number, public height: number, public nodeSize: number) {}
 
   build() {
     this.nodes = new Array(this.height);
@@ -122,6 +116,13 @@ export class Grid {
 
   getNode(x: number, y: number) {
     return this.nodes[y][x];
+  }
+
+  getNodeAt(x: number, y: number) {
+   //  console.log(Math.floor(x / this.nodeSize), Math.floor(y / this.nodeSize));
+
+    // return this.nodes[`${Math.floor(y / this.nodeSize)}-${Math.floor(x / this.nodeSize)}`];
+    return this.getNode(Math.floor(x / this.nodeSize), Math.floor(y / this.nodeSize));
   }
 
   isWalkable(x: number, y: number) {
