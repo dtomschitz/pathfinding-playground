@@ -13,7 +13,6 @@ import { GridComponent } from '../grid';
   selector: 'board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardComponent implements AfterViewInit {
   @ViewChild(GridComponent) gridComponent: GridComponent;
@@ -26,6 +25,7 @@ export class BoardComponent implements AfterViewInit {
 
   width: number;
   height: number;
+  visualizing: boolean;
 
   constructor(private host: ElementRef, private changeDetector: ChangeDetectorRef) {}
 
@@ -44,7 +44,9 @@ export class BoardComponent implements AfterViewInit {
   }
 
   visualizePath() {
+    this.visualizing = true;
     this.gridComponent.visualizePath();
+    this.visualizing = false;
   }
 
   resetPath() {

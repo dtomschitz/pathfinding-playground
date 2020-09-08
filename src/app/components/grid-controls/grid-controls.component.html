@@ -1,4 +1,4 @@
-<mat-card class="default-controls">
+<mat-card *ngIf="!visualizing" class="default-controls">
   <button (click)="resetPath.emit()" mat-button>Reset Path</button>
   <button (click)="resetWalls.emit()" mat-button>Reset Walls</button>
   <button (click)="resetAll.emit()" mat-button>Reset All</button>

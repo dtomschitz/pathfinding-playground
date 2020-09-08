@@ -6,9 +6,7 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
   styleUrls: ['./grid-controls.component.scss'],
 })
 export class GridControlsComponent implements OnInit {
-  @Input() hasOperation: boolean;
-  @Input() steps: number;
-  @Input() currentStep: number;
+  @Input() visualizing: boolean;
 
   @Output() replay: EventEmitter<void> = new EventEmitter<void>();
   @Output() jumpToStep: EventEmitter<number> = new EventEmitter<number>();

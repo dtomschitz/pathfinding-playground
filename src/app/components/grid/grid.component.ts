@@ -1,10 +1,12 @@
 import { Component, Input, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { Settings, Node, NodeType, PaintingMode, AlgorithmOperation } from '../../models';
+import { Settings, Node, NodeType, PaintingMode, AlgorithmOperation, NodeCoordinates } from '../../models';
 import { PaintingService } from '../../services';
 import { Grid } from '../../pathfinding';
 
 const startIcon =
   'M24 4c-7.73 0-14 6.27-14 14 0 10.5 14 26 14 26s14-15.5 14-26c0-7.73-6.27-14-14-14zm0 19c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z';
+
+const targetIcon = 'M28.8 12L28 8H10v34h4V28h11.2l.8 4h14V12z';
 
 @Component({
   selector: 'grid',
@@ -20,8 +22,7 @@ export class GridComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvasRef: ElementRef<HTMLCanvasElement>;
 
   grid: Grid;
-
-  draggedNode: Node;
+  draggedNode: NodeCoordinates;
   hoveredNode: Node;
 
   private xNodes: number;
@@ -36,9 +37,9 @@ export class GridComponent implements OnInit, AfterViewInit {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
 
-  constructor(private paintingService: PaintingService) {}
-
   private isMouseEnabled = true;
+
+  constructor(private paintingService: PaintingService) {}
 
   ngOnInit() {
     this.calculateGridSizes();
@@ -54,11 +55,14 @@ export class GridComponent implements OnInit, AfterViewInit {
   }
 
   async visualizePath() {
+    this.disableMouse();
     this.resetPath();
 
     const { path, operations } = this.grid.findPath(this.settings.algorithmId);
     await this.renderOperations(operations);
     await this.renderPath(path);
+
+    this.enableMouse();
   }
 
   generateMaze() {
@@ -83,13 +87,15 @@ export class GridComponent implements OnInit, AfterViewInit {
   }
 
   onMouseDown(event: MouseEvent) {
-    const node = this.grid.getNodeAt(event.offsetX, event.offsetY);
-    if (this.isNodeStartOrTargetPoint(node)) {
-      this.draggedNode = node;
-      return;
-    }
+    if (this.isMouseEnabled) {
+      const node = this.grid.getNodeAt(event.offsetX, event.offsetY);
+      if (this.isNodeStartOrTargetPoint(node)) {
+        this.draggedNode = { x: node.x, y: node.y };
+        return;
+      }
 
-    this.updateNodeType(node, this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT);
+      this.updateNodeType(node, this.paintingService.mode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT);
+    }
   }
 
   onMouseMove(event: MouseEvent) {
@@ -114,11 +120,26 @@ export class GridComponent implements OnInit, AfterViewInit {
   onMouseUp(event: MouseEvent) {
     if (this.isMouseEnabled) {
       if (this.draggedNode) {
-        this.grid.getNodeAt(event.offsetX, event.offsetY).type = this.draggedNode.type;
-        this.grid.getNode(this.draggedNode.x, this.draggedNode.y).type = NodeType.DEFAULT;
-        this.draggedNode = undefined;
+        const newNode = this.grid.getNodeAt(event.offsetX, event.offsetY);
+        const previouseNode = this.grid.getNode(this.draggedNode.x, this.draggedNode.y);
 
-        this.render();
+        newNode.type = previouseNode.type;
+        previouseNode.type = NodeType.DEFAULT;
+
+        if (newNode.type === NodeType.START) {
+          this.grid.start = {
+            x: newNode.x,
+            y: newNode.y,
+          };
+        } else if (newNode.type === NodeType.TARGET) {
+          this.grid.target = {
+            x: newNode.x,
+            y: newNode.y,
+          };
+        }
+
+        this.draggedNode = undefined;
+        this.resetPath();
       }
 
       this.paintingService.updateMode(PaintingMode.CREATE);
@@ -191,9 +212,9 @@ export class GridComponent implements OnInit, AfterViewInit {
         } else if (node.type === NodeType.WALL) {
           this.renderRect(x, y, 'black');
         } else if (node.status && !node.isPath) {
-          this.renderRect(x, y, '#FFECB3');
+          this.renderRect(x, y, '#64B5F6');
         } else if (node.isPath) {
-          this.renderRect(x, y, '#ffd740');
+          this.renderRect(x, y, '#1565C0');
         }
       }
     }
@@ -216,7 +237,7 @@ export class GridComponent implements OnInit, AfterViewInit {
   }
 
   private renderGrid() {
-    this.ctx.strokeStyle = 'lightgray';
+    this.ctx.strokeStyle = '#424242';
     this.ctx.beginPath();
 
     for (let x = this.paddingLeft; x <= this.width - this.paddingRight; x += this.nodeSize) {
@@ -233,12 +254,13 @@ export class GridComponent implements OnInit, AfterViewInit {
   }
 
   private renderStartPoint(x: number, y: number) {
-    this.renderRect(x, y, '#ffd740');
+    this.renderRect(x, y, '#1565C0');
     this.renderIcon(x, y, 0.45, startIcon);
   }
 
   private renderTargetPoint(x: number, y: number) {
-    this.renderRect(x, y, '#ffd740');
+    this.renderRect(x, y, '#1565C0');
+    this.renderIcon(x, y, 0.45, targetIcon);
   }
 
   private renderRect(x: number, y: number, fillStyle?: string) {
@@ -251,9 +273,9 @@ export class GridComponent implements OnInit, AfterViewInit {
     );
   }
 
-  private renderIcon(x: number, y: number, scale: number, icon: any, color = 'black') {
+  private renderIcon(x: number, y: number, scale: number, icon: any, color = 'white') {
     this.ctx.save();
-    this.ctx.translate(x, y);
+    this.ctx.translate(x + 3.5, y + 3.5);
     this.ctx.fillStyle = color;
     this.ctx.scale(scale, scale);
     this.ctx.fill(new Path2D(icon));
@@ -264,16 +286,16 @@ export class GridComponent implements OnInit, AfterViewInit {
     this.ctx.clearRect(0, 0, this.width, this.height);
   }
 
-  private isNodeStartOrTargetPoint(node: Node) {
-    return node.type === NodeType.START || node.type === NodeType.TARGET;
+  private enableMouse() {
+    this.isMouseEnabled = true;
   }
 
-  private getNodeFillStyle(node: Node) {
-    if (node.type === NodeType.START || node.type === NodeType.TARGET) {
-      return 'yellow';
-    } else if (node.type === NodeType.WALL) {
-      return 'black';
-    }
+  private disableMouse() {
+    this.isMouseEnabled = false;
+  }
+
+  private isNodeStartOrTargetPoint(node: Node) {
+    return node.type === NodeType.START || node.type === NodeType.TARGET;
   }
 
   private delay(ms: number) {
