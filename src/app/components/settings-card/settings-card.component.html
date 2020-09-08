@@ -7,6 +7,12 @@
         <mat-option *ngFor="let algorithm of algorithms" [value]="algorithm.id">{{ algorithm.name }}</mat-option>
       </mat-select>
     </mat-form-field>
+    <!--<mat-form-field appearance="fill">
+      <mat-label>Maze</mat-label>
+      <mat-select formControlName="mazeId">
+        <mat-option *ngFor="let maze of mazes" [value]="maze.id">{{ maze.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>-->
     <div class="speed-control">
       <mat-icon>speed</mat-icon>
       <mat-slider formControlName="speed" thumbLabel [min]="1" [max]="100" [thumbLabel]="true" [step]="1" [displayWith]="formatSpeedLabel"></mat-slider>

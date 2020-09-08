@@ -4,12 +4,14 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PaintingService } from '../../services';
-import { Algorithm, PaintingMode, Settings } from '../../models';
+import { Algorithm, PaintingMode, Settings, Maze } from '../../models';
 import { algorithms } from '../../pathfinding/algorithms';
+import { mazes } from '../../pathfinding/mazes';
 
 @Component({
   selector: 'settings-card',
   templateUrl: './settings-card.component.html',
+  styleUrls: ['./settings-card.component.scss'],
   animations: [
     trigger('openCloseCard', [
       transition(':enter', [
@@ -66,6 +68,7 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
 
   settingsForm: FormGroup;
   algorithms: Algorithm[] = algorithms;
+  mazes: Maze[] = mazes;
 
   isHidden = true;
 
@@ -75,6 +78,7 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
     if (this.settings) {
       this.settingsForm = this.formBuilder.group({
         algorithmId: [this.settings.algorithmId],
+        mazeId: [this.settings.mazeId],
         speed: [this.settings.speed],
       });
     }

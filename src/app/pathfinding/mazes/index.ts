@@ -3,9 +3,14 @@ import { Maze } from '../../models';
 
 export const mazes: Maze[] = [
   {
+    id: 'noMaze',
+    name: 'No Maze',
+    generate: () => {},
+  },
+  {
     id: 'randomMaze',
     name: 'Random Maze',
-    generatorFn: () => {},
+    generate: () => {},
   },
 ];
 

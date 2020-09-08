@@ -1,5 +1,6 @@
-import { Node, NodeType, NodeCoordinates, AlgorithmOperation } from '../models';
+import { Node, NodeType, NodeCoordinates, AlgorithmOperation, Path } from '../models';
 import { getAlgorithm } from './algorithms';
+import { getMaze } from './mazes';
 
 export class Grid {
   nodes: Node[][];
@@ -32,7 +33,7 @@ export class Grid {
     }
   }
 
-  findPath(algorithmId: string): { path: number[][]; operations: AlgorithmOperation[] } {
+  findPath(algorithmId: string): { path: Path; operations: AlgorithmOperation[] } {
     const algorithm = getAlgorithm(algorithmId);
     const operations: AlgorithmOperation[] = [];
 
@@ -54,6 +55,11 @@ export class Grid {
     });
 
     return { path, operations };
+  }
+
+  generateMaze(mazeId: string) {
+    const maze = getMaze(mazeId);
+    maze.generate(this);
   }
 
   reset() {

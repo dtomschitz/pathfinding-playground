@@ -8,6 +8,7 @@ export type State = Settings;
 
 const initialState: State = {
   algorithmId: 'astar',
+  mazeId: 'nomaze',
   speed: 50,
 };
 

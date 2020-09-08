@@ -3,7 +3,7 @@ import { Grid } from '../pathfinding';
 export interface Maze {
   id: string;
   name: string;
-  generatorFn: (grid: Grid) => void;
+  generate: (grid: Grid) => void;
   props?: any;
 }
 

@@ -6,12 +6,8 @@ import {
   ViewChild,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { Settings } from '../../models';
 import { GridComponent } from '../grid';
-import { SettingsActions } from '../../store/actions';
-import * as fromRoot from '../../store/reducers';
 
 @Component({
   selector: 'board',
@@ -22,18 +18,16 @@ import * as fromRoot from '../../store/reducers';
 export class BoardComponent implements AfterViewInit {
   @ViewChild(GridComponent) gridComponent: GridComponent;
 
-  settings$: Observable<Settings>;
+  settings: Settings = {
+    algorithmId: 'astar',
+    mazeId: 'nomaze',
+    speed: 50,
+  };
 
   width: number;
   height: number;
 
-  constructor(
-    private host: ElementRef,
-    private changeDetector: ChangeDetectorRef,
-    private store: Store<fromRoot.State>
-  ) {
-    this.settings$ = this.store.pipe(select(fromRoot.selectSettings));
-  }
+  constructor(private host: ElementRef, private changeDetector: ChangeDetectorRef) {}
 
   ngAfterViewInit() {
     this.width = this.host.nativeElement.clientWidth;
@@ -42,15 +36,26 @@ export class BoardComponent implements AfterViewInit {
   }
 
   onSettingsChanged(changes: Partial<Settings>) {
-    this.store.dispatch(SettingsActions.updateSettings({ changes }));
+    this.settings = { ...this.settings, ...changes };
+  }
+
+  generateMaze() {
+    this.gridComponent.generateMaze();
   }
 
   visualizePath() {
-    console.log('Dada');
+    this.gridComponent.visualizePath();
   }
 
-  onGenerateMaze() {
-    // this.gridComponent.createMaze(getMaze(this.settingsService.settings.maze));
-    // this.settingsService.settings.maze = undefined;
+  resetPath() {
+    this.gridComponent.resetPath();
+  }
+
+  resetWalls() {
+    this.gridComponent.resetWalls();
+  }
+
+  reset() {
+    this.gridComponent.reset();
   }
 }
