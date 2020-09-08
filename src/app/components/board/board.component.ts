@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { Settings } from '../../models';
 import { GridComponent } from '../grid';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'board',
@@ -25,7 +26,7 @@ export class BoardComponent implements AfterViewInit {
 
   width: number;
   height: number;
-  visualizing: boolean;
+  visualizing$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private host: ElementRef, private changeDetector: ChangeDetectorRef) {}
 
@@ -43,10 +44,10 @@ export class BoardComponent implements AfterViewInit {
     this.gridComponent.generateMaze();
   }
 
-  visualizePath() {
-    this.visualizing = true;
-    this.gridComponent.visualizePath();
-    this.visualizing = false;
+  async visualizePath() {
+    this.visualizing$.next(true);
+    await this.gridComponent.visualizePath();
+    this.visualizing$.next(false);
   }
 
   resetPath() {

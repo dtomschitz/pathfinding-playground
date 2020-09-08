@@ -5,7 +5,7 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
   templateUrl: './grid-controls.component.html',
   styleUrls: ['./grid-controls.component.scss'],
 })
-export class GridControlsComponent implements OnInit {
+export class GridControlsComponent {
   @Input() visualizing: boolean;
 
   @Output() replay: EventEmitter<void> = new EventEmitter<void>();
@@ -16,8 +16,4 @@ export class GridControlsComponent implements OnInit {
   @Output() resetWalls: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetAll: EventEmitter<void> = new EventEmitter<void>();
   @Output() visualizePath: EventEmitter<void> = new EventEmitter<void>();
-
-  constructor() {}
-
-  ngOnInit() {}
 }
