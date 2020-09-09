@@ -5,7 +5,6 @@ import { Grid } from '../../pathfinding';
 
 const startIcon =
   'M24 4c-7.73 0-14 6.27-14 14 0 10.5 14 26 14 26s14-15.5 14-26c0-7.73-6.27-14-14-14zm0 19c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z';
-
 const targetIcon = 'M28.8 12L28 8H10v34h4V28h11.2l.8 4h14V12z';
 
 @Component({
@@ -23,7 +22,7 @@ export class GridComponent implements OnInit, AfterViewInit {
 
   grid: Grid;
   draggedNode: NodeCoordinates;
-  hoveredNode: Node;
+  hoveringNode: NodeCoordinates;
 
   private xNodes: number;
   private yNodes: number;
@@ -105,11 +104,13 @@ export class GridComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      if (this.isNodeStartOrTargetPoint(node)) {
+      if (this.draggedNode) {
+        this.renderRect(node.x, node.y, '#1565C0');
+        this.render();
         return;
       }
 
-      if (this.draggedNode) {
+      if (this.isNodeStartOrTargetPoint(node)) {
         return;
       }
 
@@ -178,11 +179,6 @@ export class GridComponent implements OnInit, AfterViewInit {
   private updateNodeType(node: Node, type: NodeType) {
     node.type = type;
     node.isPath = false;
-    this.render();
-  }
-
-  private paintNode(node: Node, color: string) {
-    // node.color = color;
     this.render();
   }
 

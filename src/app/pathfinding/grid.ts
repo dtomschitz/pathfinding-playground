@@ -79,12 +79,14 @@ export class Grid {
   resetWalls() {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        const { id, x: nodeX, y: nodeY, type } = this.nodes[y][x];
+        const { id, x: nodeX, y: nodeY, type, isPath, status } = this.nodes[y][x];
         this.nodes[y][x] = {
           id,
           x: nodeX,
           y: nodeY,
           type: type !== NodeType.WALL ? type : NodeType.DEFAULT,
+          isPath,
+          status
         };
       }
     }
