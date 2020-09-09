@@ -16,7 +16,6 @@ export class GridComponent implements OnInit, AfterViewInit {
   @Input() width: number;
   @Input() height: number;
   @Input() nodeSize: number;
-  @Input() settings: Settings;
 
   @ViewChild('canvas') canvasRef: ElementRef<HTMLCanvasElement>;
 
@@ -53,20 +52,21 @@ export class GridComponent implements OnInit, AfterViewInit {
     this.render();
   }
 
-  async visualizePath() {
+  async visualizePath(algorithmId: string) {
     this.disableMouse();
     this.resetPath();
 
-    const { path, operations } = this.grid.findPath(this.settings.algorithmId);
+    const { path, operations } = this.grid.findPath(algorithmId);
     await this.renderOperations(operations);
     await this.renderPath(path);
 
     this.enableMouse();
   }
 
-  generateMaze() {
+  generateMaze(mazeId: string) {
     this.reset();
-    this.grid.generateMaze(this.settings.mazeId);
+    this.grid.generateMaze(mazeId);
+    this.render();
   }
 
   lockMouse(event: MouseEvent) {

@@ -56,15 +56,13 @@ import { mazes } from '../../pathfinding/mazes';
       ]),
     ]),
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsCardComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<void> = new Subject<void>();
 
   @Input() settings: Settings;
   @Output() settingsChange: EventEmitter<Partial<Settings>> = new EventEmitter<Partial<Settings>>();
-  @Output() visualizePath: EventEmitter<void> = new EventEmitter<void>();
-  @Output() generateMaze: EventEmitter<void> = new EventEmitter<void>();
+  @Output() generateMaze: EventEmitter<string> = new EventEmitter<string>();
 
   settingsForm: FormGroup;
   algorithms: Algorithm[] = algorithms;
@@ -99,17 +97,14 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onGenrateMaze(mazeId: string) {
+    console.log(mazeId);
+    
+    this.generateMaze.emit(mazeId);
+  }
+
   showChard() {
     this.isHidden = false;
-  }
-
-  onVisualize() {
-    this.isHidden = true;
-    this.visualizePath.emit();
-  }
-
-  onGenerateMaze() {
-    this.generateMaze.emit();
   }
 
   switchPaintingMode(mode: keyof typeof PaintingMode) {

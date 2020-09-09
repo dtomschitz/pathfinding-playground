@@ -26,7 +26,7 @@ export class BoardComponent implements AfterViewInit {
 
   width: number;
   height: number;
-  visualizing$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  visualizing: boolean;
 
   constructor(private host: ElementRef, private changeDetector: ChangeDetectorRef) {}
 
@@ -40,14 +40,14 @@ export class BoardComponent implements AfterViewInit {
     this.settings = { ...this.settings, ...changes };
   }
 
-  generateMaze() {
-    this.gridComponent.generateMaze();
+  onGenerateMaze(mazeId: string) {
+    this.gridComponent.generateMaze(mazeId);
   }
 
   async visualizePath() {
-    this.visualizing$.next(true);
-    await this.gridComponent.visualizePath();
-    this.visualizing$.next(false);
+    this.visualizing = true;
+    await this.gridComponent.visualizePath(this.settings.algorithmId);
+    this.visualizing = false;
   }
 
   resetPath() {

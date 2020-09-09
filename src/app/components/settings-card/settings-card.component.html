@@ -9,13 +9,13 @@
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Maze</mat-label>
-      <mat-select formControlName="mazeId">
+      <mat-select formControlName="mazeId" (selectionChange)="onGenrateMaze($event.value)">
         <mat-option *ngFor="let maze of mazes" [value]="maze.id">{{ maze.name }}</mat-option>
       </mat-select>
     </mat-form-field>
     <div class="speed-control">
       <mat-icon>speed</mat-icon>
-      <mat-slider formControlName="speed" thumbLabel [min]="1" [max]="100" [thumbLabel]="true" [step]="1" [displayWith]="formatSpeedLabel"></mat-slider>
+      <mat-slider formControlName="speed" color="primary" thumbLabel [min]="1" [max]="100" [thumbLabel]="true" [step]="1" [displayWith]="formatSpeedLabel"></mat-slider>
     </div>
   </mat-card-content>
 </mat-card>
