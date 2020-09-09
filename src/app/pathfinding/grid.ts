@@ -1,33 +1,35 @@
-import { Node, NodeType, NodeCoordinates, AlgorithmOperation, Path } from '../models';
+import { Node, NodeType, NodeCoordinates, AlgorithmOperation, Path, Nodes } from '../models';
 import { getAlgorithm } from './algorithms';
 import { getMaze } from './mazes';
 
 export class Grid {
-  nodes: Node[][];
-  start: NodeCoordinates;
-  target: NodeCoordinates;
+  nodes: Nodes;
+  start: string;
+  target: string;
 
   constructor(public width: number, public height: number, public nodeSize: number) {}
 
   build() {
-    this.nodes = new Array(this.height);
+    // this.nodes = new Array(this.height);
+    this.nodes = {};
 
     for (let y = 0; y < this.height; y++) {
-      this.nodes[y] = new Array<Node>(this.width);
+      // this.nodes[y] = new Array<Node>(this.width);
       for (let x = 0; x < this.width; x++) {
+        const id = `${y}-${x}`;
         const type = this.getNodeType(x, y);
 
-        this.nodes[y][x] = {
-          id: `${y}-${x}`,
+        this.nodes[id] = {
+          id,
           x,
           y,
           type,
         };
 
         if (type === NodeType.START) {
-          this.start = { x, y };
+          this.start = id;
         } else if (type === NodeType.TARGET) {
-          this.target = { x, y };
+          this.target = id;
         }
       }
     }
@@ -65,13 +67,13 @@ export class Grid {
   reset() {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        const { id, x: nodeX, y: nodeY, type } = this.nodes[y][x];
+        /* const { id, x: nodeX, y: nodeY, type } = this.nodes[y][x];
         this.nodes[y][x] = {
           id,
           x: nodeX,
           y: nodeY,
           type: type === NodeType.START || type === NodeType.TARGET ? type : NodeType.DEFAULT,
-        };
+        };*/
       }
     }
   }
@@ -79,15 +81,15 @@ export class Grid {
   resetWalls() {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        const { id, x: nodeX, y: nodeY, type, isPath, status } = this.nodes[y][x];
+        /*const { id, x: nodeX, y: nodeY, type, isPath, status } = this.nodes[y][x];
         this.nodes[y][x] = {
           id,
           x: nodeX,
           y: nodeY,
           type: type !== NodeType.WALL ? type : NodeType.DEFAULT,
           isPath,
-          status
-        };
+          status,
+        };*/
       }
     }
   }
@@ -95,14 +97,14 @@ export class Grid {
   resetPath() {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        const { id, x: nodeX, y: nodeY, type } = this.nodes[y][x];
+        /*const { id, x: nodeX, y: nodeY, type } = this.nodes[y][x];
         this.nodes[y][x] = {
           id,
           x: nodeX,
           y: nodeY,
           type,
           isPath: false,
-        };
+        };*/
       }
     }
   }
@@ -110,20 +112,21 @@ export class Grid {
   resetSteps() {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        const { id, x: nodeX, y: nodeY, type, isPath } = this.nodes[y][x];
+        /*const { id, x: nodeX, y: nodeY, type, isPath } = this.nodes[y][x];
         this.nodes[y][x] = {
           id,
           x: nodeX,
           y: nodeY,
           type,
           isPath,
-        };
+        };*/
       }
     }
   }
 
   getNode(x: number, y: number) {
-    return this.nodes[y][x];
+    //return this.nodes[y][x];
+    return this.nodes[`${y}-${x}`];
   }
 
   getNodeAt(x: number, y: number) {
@@ -133,8 +136,23 @@ export class Grid {
     return this.getNode(Math.floor(x / this.nodeSize), Math.floor(y / this.nodeSize));
   }
 
+  get startNode() {
+    const { x, y } = this.getNodeCoordinates(this.start);
+    return this.getNode(x, y);
+  }
+
+  get targetNode() {
+    const { x, y } = this.getNodeCoordinates(this.target);
+    return this.getNode(x, y);
+  }
+
+  getNodeCoordinates(id: string){
+    const coordinates = id.split('-');
+    return { x: +coordinates[1], y: +coordinates[0] };
+  }
+
   isWalkable(x: number, y: number) {
-    return this.isInside(x, y) && this.nodes[y][x].type !== NodeType.WALL;
+    return this.isInside(x, y) && this.getNode(x, y).type !== NodeType.WALL;
   }
 
   isInside(x: number, y: number) {
@@ -146,22 +164,34 @@ export class Grid {
     const neighbors: Node[] = [];
 
     if (this.isWalkable(x, y - 1)) {
-      neighbors.push(this.nodes[y - 1][x]);
+      neighbors.push(this.getNode(x, y - 1));
+      // neighbors.push(this.nodes[y - 1][x]);
     }
 
     if (this.isWalkable(x + 1, y)) {
-      neighbors.push(this.nodes[y][x + 1]);
+      // neighbors.push(this.nodes[y][x + 1]);
+      neighbors.push(this.getNode(x + 1, y));
     }
 
     if (this.isWalkable(x, y + 1)) {
-      neighbors.push(this.nodes[y + 1][x]);
+      neighbors.push(this.getNode(x, y + 1));
+      // neighbors.push(this.nodes[y + 1][x]);
     }
 
     if (this.isWalkable(x - 1, y)) {
-      neighbors.push(this.nodes[y][x - 1]);
+      neighbors.push(this.getNode(x - 1, y));
+      // neighbors.push(this.nodes[y][x - 1]);
     }
 
     return neighbors;
+  }
+
+  setStartNode({ x, y }: Node) {
+    this.start = `${y}-${x}`;
+  }
+
+  setTargetNode({ x, y }: Node) {
+    this.target = `${y}-${x}`;
   }
 
   private getNodeType(x: number, y: number) {

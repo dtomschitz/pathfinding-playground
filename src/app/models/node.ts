@@ -29,4 +29,6 @@ export enum NodeType {
   TARGET = 'target',
 }
 
+export type Nodes = { [key: string]: Node };
+
 export type NodeDirection = 'up' | 'up-left' | 'up-right' | 'down' | 'down-left' | 'down-right' | 'left' | 'right';

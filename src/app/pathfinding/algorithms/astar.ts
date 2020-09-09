@@ -8,13 +8,8 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
   const heuristic = options?.heuristic ?? Heuristics.manhatten;
   const weight = options?.weight ?? 1;
 
-  const startX = grid.start.x;
-  const startY = grid.start.y;
-  const targetX = grid.target.x;
-  const targetY = grid.target.y;
-
-  const startNode = grid.getNode(startX, startY);
-  const targetNode = grid.getNode(targetX, targetY);
+  const startNode = grid.startNode;
+  const targetNode = grid.targetNode;
 
   startNode.g = 0;
   startNode.f = 0;
@@ -47,7 +42,7 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
 
       if (neighbor.s !== 'opened' || tentativeG < neighbor.g) {
         neighbor.g = tentativeG;
-        neighbor.h = neighbor.h || weight * heuristic(Math.abs(x - targetX), Math.abs(y - targetY));
+        neighbor.h = neighbor.h || weight * heuristic(Math.abs(x - targetNode.x), Math.abs(y - targetNode.y));
         neighbor.f = neighbor.g + neighbor.h;
         neighbor.parent = node;
 

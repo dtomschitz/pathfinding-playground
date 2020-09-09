@@ -128,15 +128,9 @@ export class GridComponent implements OnInit, AfterViewInit {
         previouseNode.type = NodeType.DEFAULT;
 
         if (newNode.type === NodeType.START) {
-          this.grid.start = {
-            x: newNode.x,
-            y: newNode.y,
-          };
+          this.grid.setStartNode(newNode);
         } else if (newNode.type === NodeType.TARGET) {
-          this.grid.target = {
-            x: newNode.x,
-            y: newNode.y,
-          };
+          this.grid.setTargetNode(newNode);
         }
 
         this.draggedNode = undefined;
