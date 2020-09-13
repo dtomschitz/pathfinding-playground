@@ -65,88 +65,72 @@ export class Grid {
   }
 
   reset() {
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        /* const { id, x: nodeX, y: nodeY, type } = this.nodes[y][x];
-        this.nodes[y][x] = {
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        const { id, x: nodeX, y: nodeY, type } = this.getNode(j, i);
+        this.nodes[`${i}-${j}`] = {
           id,
           x: nodeX,
           y: nodeY,
           type: type === NodeType.START || type === NodeType.TARGET ? type : NodeType.DEFAULT,
-        };*/
+        };
       }
     }
   }
 
   resetWalls() {
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        /*const { id, x: nodeX, y: nodeY, type, isPath, status } = this.nodes[y][x];
-        this.nodes[y][x] = {
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        const { id, x, y, type, isPath, status } = this.getNode(j, i);
+        this.nodes[`${y}-${x}`] = {
           id,
-          x: nodeX,
-          y: nodeY,
+          x,
+          y,
           type: type !== NodeType.WALL ? type : NodeType.DEFAULT,
           isPath,
           status,
-        };*/
+        };
       }
     }
   }
 
   resetPath() {
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        /*const { id, x: nodeX, y: nodeY, type } = this.nodes[y][x];
-        this.nodes[y][x] = {
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        const { id, x, y, type } = this.getNode(j, i);
+        this.nodes[`${i}-${j}`] = {
           id,
-          x: nodeX,
-          y: nodeY,
+          x,
+          y,
           type,
           isPath: false,
-        };*/
+        };
       }
     }
-  }
-
-  resetSteps() {
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        /*const { id, x: nodeX, y: nodeY, type, isPath } = this.nodes[y][x];
-        this.nodes[y][x] = {
-          id,
-          x: nodeX,
-          y: nodeY,
-          type,
-          isPath,
-        };*/
-      }
-    }
-  }
-
-  getNode(x: number, y: number) {
-    //return this.nodes[y][x];
-    return this.nodes[`${y}-${x}`];
-  }
-
-  getNodeAt(x: number, y: number) {
-    //  console.log(Math.floor(x / this.nodeSize), Math.floor(y / this.nodeSize));
-
-    // return this.nodes[`${Math.floor(y / this.nodeSize)}-${Math.floor(x / this.nodeSize)}`];
-    return this.getNode(Math.floor(x / this.nodeSize), Math.floor(y / this.nodeSize));
   }
 
   get startNode() {
-    const { x, y } = this.getNodeCoordinates(this.start);
-    return this.getNode(x, y);
+    return this.getNodeById(this.start);
   }
 
   get targetNode() {
-    const { x, y } = this.getNodeCoordinates(this.target);
-    return this.getNode(x, y);
+    return this.getNodeById(this.target);
   }
 
-  getNodeCoordinates(id: string){
+  getNode(x: number, y: number) {
+    return this.nodes[`${y}-${x}`];
+  }
+
+  getNodeById(id: string) {
+    const coordinates = id.split('-');
+    return this.getNode(+coordinates[1], +coordinates[0]);
+  }
+
+  getNodeAt(x: number, y: number) {
+    return this.getNode(Math.floor(x / this.nodeSize), Math.floor(y / this.nodeSize));
+  }
+
+  getNodeCoordinates(id: string) {
     const coordinates = id.split('-');
     return { x: +coordinates[1], y: +coordinates[0] };
   }
@@ -165,22 +149,18 @@ export class Grid {
 
     if (this.isWalkable(x, y - 1)) {
       neighbors.push(this.getNode(x, y - 1));
-      // neighbors.push(this.nodes[y - 1][x]);
     }
 
     if (this.isWalkable(x + 1, y)) {
-      // neighbors.push(this.nodes[y][x + 1]);
       neighbors.push(this.getNode(x + 1, y));
     }
 
     if (this.isWalkable(x, y + 1)) {
       neighbors.push(this.getNode(x, y + 1));
-      // neighbors.push(this.nodes[y + 1][x]);
     }
 
     if (this.isWalkable(x - 1, y)) {
       neighbors.push(this.getNode(x - 1, y));
-      // neighbors.push(this.nodes[y][x - 1]);
     }
 
     return neighbors;
