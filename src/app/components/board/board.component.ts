@@ -21,7 +21,7 @@ export class BoardComponent implements AfterViewInit {
   settings: Settings = {
     algorithmId: 'astar',
     mazeId: 'nomaze',
-    speed: 50,
+    operationsPerSecond: 250,
   };
 
   width: number;
@@ -46,7 +46,7 @@ export class BoardComponent implements AfterViewInit {
 
   async visualizePath() {
     this.visualizing = true;
-    await this.gridComponent.visualizePath(this.settings.algorithmId);
+    await this.gridComponent.visualizePath(this.settings.algorithmId, this.settings.operationsPerSecond);
     this.visualizing = false;
   }
 

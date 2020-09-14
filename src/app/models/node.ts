@@ -3,12 +3,12 @@ export interface Node {
   x: number;
   y: number;
   type: NodeType;
-  status?: 'opened' | 'closed';
+  status?: NodeStatus;
+  operationStatus?: NodeStatus;
   isPath?: boolean;
   g?: number;
   f?: number;
   h?: number;
-  s?: 'opened' | 'closed';
   parent?: Node;
 }
 
@@ -30,5 +30,7 @@ export enum NodeType {
 }
 
 export type Nodes = { [key: string]: Node };
+
+export type NodeStatus = 'opened' | 'closed';
 
 export type NodeDirection = 'up' | 'up-left' | 'up-right' | 'down' | 'down-left' | 'down-right' | 'left' | 'right';

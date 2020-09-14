@@ -32,17 +32,4 @@
       width: 100%;
     }
   }
-
-  .speed-control {
-    display: flex;
-    flex-direction: row;
-
-    .mat-slider {
-      flex: 1;
-    }
-
-    .mat-icon {
-      align-self: center;
-    }
-  }
 }

@@ -52,12 +52,14 @@ export class GridComponent implements OnInit, AfterViewInit {
     this.render();
   }
 
-  async visualizePath(algorithmId: string) {
+  async visualizePath(algorithmId: string, operationsPerSecond: number) {
     this.disableMouse();
     this.resetPath();
 
+    console.log(operationsPerSecond);
+
     const { path, operations } = this.grid.findPath(algorithmId);
-    await this.renderOperations(operations);
+    await this.renderOperations(operations, operationsPerSecond);
     await this.renderPath(path);
 
     this.enableMouse();
@@ -214,15 +216,15 @@ export class GridComponent implements OnInit, AfterViewInit {
     for (const [x, y] of path) {
       this.grid.getNode(x, y).isPath = true;
       this.render();
-      await this.delay(5);
+      // await this.delay(5);
     }
   }
 
-  private async renderOperations(operations: AlgorithmOperation[]) {
+  private async renderOperations(operations: AlgorithmOperation[], operationsPerSecond: number) {
     for (const { x, y, status } of operations) {
       this.grid.getNode(x, y).status = status;
       this.render();
-      await this.delay(2);
+      // await this.delay(1000 / operationsPerSecond);
     }
   }
 

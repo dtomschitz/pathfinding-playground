@@ -18,13 +18,13 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
   const SQRT2 = Math.SQRT2;
 
   openList.push(startNode);
-  startNode.s = 'opened';
+  startNode.status = 'opened';
 
   let i = 0;
   while (!openList.empty()) {
     const node = openList.pop();
     callbacks.closed(node, i);
-    node.s = 'closed';
+    node.status = 'closed';
 
     if (node === targetNode) {
       return Utils.backtrace(targetNode);
@@ -32,7 +32,7 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
 
     const neighbors = grid.getNeighbors(node);
     for (const neighbor of neighbors) {
-      if (neighbor.s === 'closed') {
+      if (neighbor.status === 'closed') {
         continue;
       }
 
@@ -40,16 +40,16 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
       const y = neighbor.y;
       const tentativeG = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : SQRT2);
 
-      if (neighbor.s !== 'opened' || tentativeG < neighbor.g) {
+      if (neighbor.status !== 'opened' || tentativeG < neighbor.g) {
         neighbor.g = tentativeG;
         neighbor.h = neighbor.h || weight * heuristic(Math.abs(x - targetNode.x), Math.abs(y - targetNode.y));
         neighbor.f = neighbor.g + neighbor.h;
         neighbor.parent = node;
 
-        if (neighbor.s !== 'opened') {
+        if (neighbor.status !== 'opened') {
           openList.push(neighbor);
           callbacks.opened(node, i);
-          neighbor.s = 'opened';
+          neighbor.status = 'opened';
         } else {
           openList.updateItem(neighbor);
         }

@@ -77,7 +77,7 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
       this.settingsForm = this.formBuilder.group({
         algorithmId: [this.settings.algorithmId],
         mazeId: [this.settings.mazeId],
-        speed: [this.settings.speed],
+        operationsPerSecond: [this.settings.operationsPerSecond],
       });
     }
 
