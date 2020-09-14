@@ -1,5 +1,0 @@
-<ng-container *ngIf="width && height">
-  <settings-card [settings]="settings" (settingsChange)="onSettingsChanged($event)" (generateMaze)="onGenerateMaze($event)"></settings-card>
-  <grid [width]="width" [height]="height" [nodeSize]="28"></grid>
-  <grid-controls [visualizing]="visualizing" (visualizePath)="visualizePath()" (resetPath)="resetPath()" (resetWalls)="resetWalls()" (resetAll)="reset()"></grid-controls>
-</ng-container>

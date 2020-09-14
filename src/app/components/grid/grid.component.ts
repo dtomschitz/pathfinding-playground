@@ -17,6 +17,8 @@ export class GridComponent implements OnInit, AfterViewInit {
   @Input() height: number;
   @Input() nodeSize: number;
 
+  @Input() settings: Settings
+
   @ViewChild('canvas') canvasRef: ElementRef<HTMLCanvasElement>;
 
   grid: Grid;
@@ -52,14 +54,12 @@ export class GridComponent implements OnInit, AfterViewInit {
     this.render();
   }
 
-  async visualizePath(algorithmId: string, operationsPerSecond: number) {
+  async visualizePath(algorithmId: string, delay?: number, operationsPerSecond?: number) {
     this.disableMouse();
     this.resetPath();
 
-    console.log(operationsPerSecond);
-
     const { path, operations } = this.grid.findPath(algorithmId);
-    await this.renderOperations(operations, operationsPerSecond);
+    await this.renderOperations(operations, delay, operationsPerSecond);
     await this.renderPath(path);
 
     this.enableMouse();
@@ -212,19 +212,25 @@ export class GridComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private async renderPath(path: number[][]) {
+  private async renderPath(path: number[][], delay?: number) {
     for (const [x, y] of path) {
       this.grid.getNode(x, y).isPath = true;
       this.render();
-      // await this.delay(5);
+
+      if (this.delay) {
+        await this.delay(5);
+      }
     }
   }
 
-  private async renderOperations(operations: AlgorithmOperation[], operationsPerSecond: number) {
+  private async renderOperations(operations: AlgorithmOperation[], delay?: number, operationsPerSecond?: number) {
     for (const { x, y, status } of operations) {
       this.grid.getNode(x, y).status = status;
       this.render();
-      // await this.delay(1000 / operationsPerSecond);
+
+      if (delay && operationsPerSecond) {
+        await this.delay(1000 / operationsPerSecond);
+      }
     }
   }
 
