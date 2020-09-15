@@ -1,14 +1,12 @@
-<ng-container *ngIf="width && height">
-  <div class="wrapper" (mousedown)="lockMouse($event)" (mouseup)="releaseMouse($event)">
-    <canvas 
-      #canvas
-      [width]="width"
-      [height]="height"
-      (mousedown)="onMouseDown($event)"
-      (mousemove)="onMouseMove($event)"
-      (mouseup)="onMouseUp($event)"
-      (contextmenu)="onContextMenu($event)"
-      >
-    </canvas>
-  </div>
-</ng-container>
+<div class="wrapper" (mousedown)="lockMouse($event)" (mouseup)="releaseMouse($event)">
+  <canvas 
+    #canvas
+    [width]="width"
+    [height]="height"
+    (mousedown)="onMouseDown($event)"
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp($event)"
+    (contextmenu)="onContextMenu($event)"
+    >
+  </canvas>
+</div>

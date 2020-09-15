@@ -2,17 +2,25 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Settings } from '../models';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class SettingsService {
-  settings$: BehaviorSubject<Settings> = new BehaviorSubject<Settings>({
+  private readonly _settings = new BehaviorSubject<Settings>({
     algorithmId: 'astar',
     mazeId: 'nomaze',
     operationsPerSecond: 250,
   });
 
-  updateSettings(settings: Settings) {
-    this.settings$.next(settings);
+  readonly settings$ = this._settings.asObservable();
+
+  private get settings(): Settings {
+    return this._settings.getValue();
+  }
+
+  private set settings(settings: Settings) {
+    this._settings.next(settings);
+  }
+
+  updateSettings(changes: Partial<Settings>) {
+    this.settings = { ...this.settings, ...changes };
   }
 }

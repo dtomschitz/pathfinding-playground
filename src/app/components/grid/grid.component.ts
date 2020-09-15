@@ -1,7 +1,17 @@
-import { Component, Input, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { Settings, Node, NodeType, PaintingMode, AlgorithmOperation, NodeCoordinates } from '../../models';
-import { PaintingService } from '../../services';
-import { Grid } from '../../pathfinding';
+import {
+  Component,
+  Input,
+  OnInit,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+  OnDestroy,
+  Output,
+  EventEmitter,
+} from '@angular/core';
+import { Pixel } from '../../models';
+import { Subject } from 'rxjs';
+import { GridMouseService } from 'src/app/services/grid-mouse.service';
 
 const startIcon =
   'M24 4c-7.73 0-14 6.27-14 14 0 10.5 14 26 14 26s14-15.5 14-26c0-7.73-6.27-14-14-14zm0 19c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z';
@@ -12,21 +22,24 @@ const targetIcon = 'M28.8 12L28 8H10v34h4V28h11.2l.8 4h14V12z';
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
 })
-export class GridComponent implements OnInit, AfterViewInit {
+export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly destroy$: Subject<void> = new Subject<void>();
   @Input() width: number;
   @Input() height: number;
-  @Input() nodeSize: number;
+  @Input() xNodes: number;
+  @Input() yNodes: number;
+  @Input() pixelSize: number;
+  @Input() disabled = false;
 
-  @Input() settings: Settings
+  @Output() mouseDown: EventEmitter<Pixel> = new EventEmitter<Pixel>();
+  @Output() mouseMove: EventEmitter<Pixel> = new EventEmitter<Pixel>();
+  @Output() mouseUp: EventEmitter<Pixel> = new EventEmitter<Pixel>();
+  @Output() contextMenu: EventEmitter<Pixel> = new EventEmitter<Pixel>();
 
   @ViewChild('canvas') canvasRef: ElementRef<HTMLCanvasElement>;
 
-  grid: Grid;
-  draggedNode: NodeCoordinates;
-  hoveringNode: NodeCoordinates;
+  pixels: { [key: string]: Pixel } = {};
 
-  private xNodes: number;
-  private yNodes: number;
   private paddingX: number;
   private paddingY: number;
   private paddingLeft: number;
@@ -37,24 +50,153 @@ export class GridComponent implements OnInit, AfterViewInit {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
 
-  private isMouseEnabled = true;
+  private isMouseLocked = false;
 
-  constructor(private paintingService: PaintingService) {}
+  constructor(private gridMouseService: GridMouseService) {}
 
   ngOnInit() {
     this.calculateGridSizes();
+    this.generatePixels();
   }
 
   ngAfterViewInit() {
     this.canvas = this.canvasRef.nativeElement;
     this.ctx = this.canvas.getContext('2d');
 
-    this.grid = new Grid(this.xNodes, this.yNodes, this.nodeSize);
-    this.grid.build();
+    this.clearCanvas();
+    this.renderGrid();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onMouseDown(event: MouseEvent) {
+    if (!this.disabled) {
+      this.mouseDown.emit(this.getPixelAt(event.offsetX, event.offsetY));
+    }
+  }
+
+  onMouseMove(event: MouseEvent) {
+    if (!this.disabled && this.isMouseLocked) {
+      this.mouseMove.emit(this.getPixelAt(event.offsetX, event.offsetY));
+    }
+  }
+
+  onMouseUp(event: MouseEvent) {
+    if (!this.disabled) {
+      this.mouseUp.emit(this.getPixelAt(event.offsetX, event.offsetY));
+    }
+  }
+
+  onContextMenu(event: MouseEvent) {
+    event.preventDefault();
+    if (!this.disabled) {
+      this.contextMenu.emit(this.getPixelAt(event.offsetX, event.offsetY));
+    }
+  }
+
+  lockMouse(event: MouseEvent) {
+    if (!this.disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.gridMouseService.lockMouse();
+    }
+  }
+
+  releaseMouse(event: MouseEvent) {
+    if (!this.disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.gridMouseService.releaseMouse();
+    }
+  }
+
+  render() {
+    this.clearCanvas();
+
+    for (let y = this.paddingTop; y <= this.height - this.paddingBottom - this.paddingTop; y += this.pixelSize) {
+      for (let x = this.paddingLeft; x <= this.width - this.paddingRight - this.paddingLeft; x += this.pixelSize) {
+        const pixel = this.getPixelAt(x, y);
+        if (pixel.fillStyle) {
+          this.ctx.fillStyle = pixel.fillStyle;
+          this.ctx.fillRect(
+            Math.floor(x / this.pixelSize) * this.pixelSize + this.paddingLeft,
+            Math.floor(y / this.pixelSize) * this.pixelSize + this.paddingTop,
+            this.pixelSize,
+            this.pixelSize
+          );
+        }
+      }
+    }
+
+    this.renderGrid();
+  }
+
+  fillPixel(x: number, y: number, fillStyle?: string) {
+    this.pixels[`${y}-${x}`] = { ...this.pixels[`${y}-${x}`], fillStyle };
     this.render();
   }
 
-  async visualizePath(algorithmId: string, delay?: number, operationsPerSecond?: number) {
+  private renderGrid() {
+    this.ctx.strokeStyle = '#424242';
+    this.ctx.beginPath();
+
+    for (let x = this.paddingLeft; x <= this.width - this.paddingRight; x += this.pixelSize) {
+      this.ctx.moveTo(x, this.paddingTop);
+      this.ctx.lineTo(x, this.height - this.paddingBottom);
+    }
+
+    for (let y = this.paddingTop; y <= this.height - this.paddingBottom; y += this.pixelSize) {
+      this.ctx.moveTo(this.paddingLeft, y);
+      this.ctx.lineTo(this.width - this.paddingRight, y);
+    }
+
+    this.ctx.stroke();
+  }
+
+  private clearCanvas() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+  }
+
+  private calculateGridSizes() {
+    this.paddingX = this.width - this.xNodes * this.pixelSize;
+    this.paddingY = this.height - this.yNodes * this.pixelSize;
+    this.paddingLeft = Math.ceil(this.paddingX / 3) - 0.5;
+    this.paddingTop = Math.ceil(this.paddingY / 3) - 0.5;
+    this.paddingRight = this.width - this.xNodes * this.pixelSize - this.paddingLeft;
+    this.paddingBottom = this.height - this.yNodes * this.pixelSize - this.paddingTop;
+  }
+
+  private generatePixels() {
+    for (let y = 0; y < this.yNodes; y++) {
+      for (let x = 0; x < this.xNodes; x++) {
+        const id = `${y}-${x}`;
+
+        this.pixels[id] = {
+          id,
+          x,
+          y,
+        };
+      }
+    }
+  }
+
+  private getPixel(x: number, y: number) {
+    return this.pixels[`${y}-${x}`];
+  }
+
+  private getPixelById(id: string) {
+    const coordinates = id.split('-');
+    return this.getPixel(+coordinates[1], +coordinates[0]);
+  }
+
+  private getPixelAt(x: number, y: number) {
+    return this.getPixel(Math.floor(x / this.pixelSize), Math.floor(y / this.pixelSize));
+  }
+
+  /*async visualizePath(algorithmId: string, delay?: number, operationsPerSecond?: number) {
     this.disableMouse();
     this.resetPath();
 
@@ -179,8 +321,6 @@ export class GridComponent implements OnInit, AfterViewInit {
   }
 
   private calculateGridSizes() {
-    this.xNodes = Math.floor(this.width / this.nodeSize);
-    this.yNodes = Math.floor(this.height / this.nodeSize);
     this.paddingX = this.width - this.xNodes * this.nodeSize;
     this.paddingY = this.height - this.yNodes * this.nodeSize;
     this.paddingLeft = Math.ceil(this.paddingX / 3) - 0.5;
@@ -298,5 +438,5 @@ export class GridComponent implements OnInit, AfterViewInit {
 
   private delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  }*/
 }

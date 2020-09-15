@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, Input } from '@angular/core';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PaintingService } from '../../services';
+import { GridPaintingService, SettingsService } from '../../services';
 import { Algorithm, PaintingMode, Settings, Maze } from '../../models';
 import { algorithms } from '../../pathfinding/algorithms';
 import { mazes } from '../../pathfinding/mazes';
@@ -60,9 +60,9 @@ import { mazes } from '../../pathfinding/mazes';
 export class SettingsCardComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<void> = new Subject<void>();
 
-  @Input() settings: Settings;
-  @Output() settingsChange: EventEmitter<Partial<Settings>> = new EventEmitter<Partial<Settings>>();
   @Output() generateMaze: EventEmitter<string> = new EventEmitter<string>();
+
+  settings$: Observable<Settings>;
 
   settingsForm: FormGroup;
   algorithms: Algorithm[] = algorithms;
@@ -70,16 +70,24 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
 
   isHidden = true;
 
-  constructor(private formBuilder: FormBuilder, private paintingService: PaintingService) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private settingsService: SettingsService,
+    private paintingService: GridPaintingService
+  ) {
+    this.settings$ = this.settingsService.settings$;
+
+    this.settingsForm = this.formBuilder.group({
+      algorithmId: [],
+      mazeId: [],
+      operationsPerSecond: [],
+    });
+  }
 
   ngOnInit() {
-    if (this.settings) {
-      this.settingsForm = this.formBuilder.group({
-        algorithmId: [this.settings.algorithmId],
-        mazeId: [this.settings.mazeId],
-        operationsPerSecond: [this.settings.operationsPerSecond],
-      });
-    }
+    this.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
+      this.settingsForm.setValue(settings);
+    });
 
     this.paintingService.isMouseLocked$.pipe(takeUntil(this.destroy$)).subscribe((isMouseLocked) => {
       if (isMouseLocked) {
@@ -89,7 +97,7 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
 
     this.settingsForm.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((changes) => this.settingsChange.emit(changes));
+      .subscribe((changes) => this.settingsService.updateSettings(changes));
   }
 
   ngOnDestroy() {
@@ -98,17 +106,11 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
   }
 
   onGenrateMaze(mazeId: string) {
-    console.log(mazeId);
-    
     this.generateMaze.emit(mazeId);
   }
 
   showChard() {
     this.isHidden = false;
-  }
-
-  switchPaintingMode(mode: keyof typeof PaintingMode) {
-    this.paintingService.updateMode(PaintingMode[mode]);
   }
 
   formatSpeedLabel(value: number) {
