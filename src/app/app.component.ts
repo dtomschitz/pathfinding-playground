@@ -6,11 +6,12 @@ import {
   ViewChild,
   AfterViewChecked,
   OnInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AlgorithmOperation, Node, NodeCoordinates, NodeType, PaintingMode, Pixel, Settings } from './models';
-import { SettingsService } from './services';
+import { DrawingGridService, SettingsService } from './services';
 import { GridComponent } from './components';
 import { Grid } from './pathfinding';
 
@@ -22,6 +23,7 @@ const targetIcon = 'M28.8 12L28 8H10v34h4V28h11.2l.8 4h14V12z';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   private readonly destroy$: Subject<void> = new Subject<void>();
@@ -47,6 +49,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   constructor(
     private host: ElementRef,
     private changeDetector: ChangeDetectorRef,
+    private gridService: DrawingGridService,
     private settingsService: SettingsService
   ) {}
 
@@ -70,8 +73,8 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     const { x: startX, y: startY } = this.grid.startNode;
     const { x: targetX, y: targetY } = this.grid.targetNode;
 
-    this.gridComponent.fillPixel(startX, startY, '#1565C0');
-    this.gridComponent.fillPixel(targetX, targetY, '#1565C0');
+    this.gridService.fillPixel(startX, startY, '#1565C0');
+    this.gridService.fillPixel(targetX, targetY, '#1565C0');
   }
 
   onSettingsChanged(changes: Partial<Settings>) {
@@ -101,7 +104,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   async renderPath(path: number[][], delay?: number) {
     for (const [x, y] of path) {
-      this.gridComponent.fillPixel(x, y, '#1565C0');
+      this.gridService.fillPixel(x, y, '#1565C0');
 
       /*if (delay) {
         await this.delay(5);
@@ -111,7 +114,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   async renderOperations(operations: AlgorithmOperation[], delay?: number, operationsPerSecond?: number) {
     for (const { x, y, status } of operations) {
-      this.gridComponent.fillPixel(x, y, '#64B5F6');
+      this.gridService.fillPixel(x, y, '#64B5F6');
     }
   }
 
@@ -179,7 +182,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     }
   }
 
-  private renderIcon(x: number, y: number, scale: number, icon: any, color = 'white') {
+  /*private renderIcon(x: number, y: number, scale: number, icon: any, color = 'white') {
     this.gridComponent.renderingContext.save();
     this.gridComponent.renderingContext.translate(x + 3.5, y + 3.5);
     this.gridComponent.renderingContext.fillStyle = color;
@@ -187,8 +190,8 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     this.gridComponent.renderingContext.fill(new Path2D(icon));
     this.gridComponent.renderingContext.restore();
 
-    this.gridComponent.render();
-  }
+    this.gridService.render();
+  }*/
 
   private isNodeStartOrTargetPoint(node: Node) {
     return node.type === NodeType.START || node.type === NodeType.TARGET;
@@ -203,16 +206,16 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   private updateNode(node: Node, changes: Partial<Node>) {
-    this.grid.updateNode(node.x, node.y, changes);
-
+    // this.grid.updateNode(node.x, node.y, changes);
+    node = { ...node, ...changes };
     if (node.type === NodeType.START) {
-      this.gridComponent.fillPixel(node.x, node.y, '#1565C0');
+      this.gridService.fillPixel(node.x, node.y, '#1565C0');
     } else if (node.type === NodeType.TARGET) {
-      this.gridComponent.fillPixel(node.x, node.y, '#1565C0');
+      this.gridService.fillPixel(node.x, node.y, '#1565C0');
     } else if (node.type === NodeType.WALL) {
-      this.gridComponent.fillPixel(node.x, node.y, 'black');
+      this.gridService.fillPixel(node.x, node.y, 'black');
     } else {
-      this.gridComponent.clearPixel(node.x, node.y);
+      this.gridService.clearPixel(node.x, node.y);
     }
     /*} else if (node.status && !node.isPath) {
       this.gridComponent.fillPixel(node.x, node.y, '#64B5F6');

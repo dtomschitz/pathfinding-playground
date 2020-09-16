@@ -26,6 +26,15 @@ export class DrawingGridService {
     this.updatePixel(`${y}-${x}`, { fillStyle: undefined });
   }
 
+  getPixel(x: number, y: number) {
+    return this.pixels.find((pixel) => pixel.x === x && pixel.y === y);
+  }
+
+  getPixelById(id: string) {
+    const coordinates = id.split('-');
+    return this.getPixel(+coordinates[1], +coordinates[0]);
+  }
+
   private updatePixel(id: string, changes: Partial<Pixel>) {
     const pixel = this.pixels.find((pixel) => pixel.id === id);
     if (pixel) {
@@ -38,19 +47,19 @@ export class DrawingGridService {
     }
   }
 
-  private get isMouseLocked(): boolean {
+  get isMouseLocked(): boolean {
     return this._isMouseLocked.getValue();
   }
 
-  private set isMouseLocked(isMouseLocked: boolean) {
+  set isMouseLocked(isMouseLocked: boolean) {
     this._isMouseLocked.next(isMouseLocked);
   }
 
-  private get pixels(): Pixel[] {
+  get pixels(): Pixel[] {
     return this._pixels.getValue();
   }
 
-  private set pixels(pixels: Pixel[]) {
+  set pixels(pixels: Pixel[]) {
     this._pixels.next(pixels);
   }
 }
