@@ -1,23 +1,35 @@
-import { Component, ElementRef, AfterViewInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { Node, NodeCoordinates, NodeType, PaintingMode, Pixel, Settings } from './models';
+import {
+  Component,
+  ElementRef,
+  AfterViewInit,
+  ChangeDetectorRef,
+  ViewChild,
+  AfterViewChecked,
+  OnInit,
+} from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { AlgorithmOperation, Node, NodeCoordinates, NodeType, PaintingMode, Pixel, Settings } from './models';
+import { SettingsService } from './services';
 import { GridComponent } from './components';
 import { Grid } from './pathfinding';
+
+const startIcon =
+  'M24 4c-7.73 0-14 6.27-14 14 0 10.5 14 26 14 26s14-15.5 14-26c0-7.73-6.27-14-14-14zm0 19c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z';
+const targetIcon = 'M28.8 12L28 8H10v34h4V28h11.2l.8 4h14V12z';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
+  private readonly destroy$: Subject<void> = new Subject<void>();
+
   @ViewChild(GridComponent) gridComponent: GridComponent;
 
-  settings: Settings = {
-    algorithmId: 'astar',
-    mazeId: 'nomaze',
-    operationsPerSecond: 250,
-  };
-
   grid: Grid;
+  settings: Settings;
 
   width: number;
   height: number;
@@ -30,9 +42,17 @@ export class AppComponent implements AfterViewInit {
   hoveringNode: NodeCoordinates;
 
   isMouseEnabled = true;
-  paintingMode: PaintingMode;
+  paintingMode: PaintingMode = PaintingMode.CREATE;
 
-  constructor(private host: ElementRef, private changeDetector: ChangeDetectorRef) {}
+  constructor(
+    private host: ElementRef,
+    private changeDetector: ChangeDetectorRef,
+    private settingsService: SettingsService
+  ) {}
+
+  ngOnInit() {
+    this.settingsService.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => (this.settings = settings));
+  }
 
   ngAfterViewInit() {
     this.width = this.host.nativeElement.clientWidth;
@@ -46,6 +66,14 @@ export class AppComponent implements AfterViewInit {
     this.changeDetector.detectChanges();
   }
 
+  ngAfterViewChecked() {
+    const { x: startX, y: startY } = this.grid.startNode;
+    const { x: targetX, y: targetY } = this.grid.targetNode;
+
+    this.gridComponent.fillPixel(startX, startY, '#1565C0');
+    this.gridComponent.fillPixel(targetX, targetY, '#1565C0');
+  }
+
   onSettingsChanged(changes: Partial<Settings>) {
     this.settings = { ...this.settings, ...changes };
   }
@@ -55,9 +83,36 @@ export class AppComponent implements AfterViewInit {
   }
 
   async visualizePath() {
-    this.visualizing = true;
-    // await this.gridComponent.visualizePath(this.settings.algorithmId, this.settings.operationsPerSecond);
-    this.visualizing = false;
+    this.disableMouse();
+    this.grid.resetPath();
+    this.gridComponent.resetPixels(({ x, y }) => {
+      return this.grid.getNode(x, y).type === NodeType.WALL;
+    });
+
+    const { algorithmId, delay, operationsPerSecond } = this.settings;
+    const { path, operations } = this.grid.findPath(algorithmId);
+    console.log(path);
+
+    await this.renderOperations(operations, delay, operationsPerSecond);
+    await this.renderPath(path);
+
+    this.enableMouse();
+  }
+
+  async renderPath(path: number[][], delay?: number) {
+    for (const [x, y] of path) {
+      this.gridComponent.fillPixel(x, y, '#1565C0');
+
+      /*if (delay) {
+        await this.delay(5);
+      }*/
+    }
+  }
+
+  async renderOperations(operations: AlgorithmOperation[], delay?: number, operationsPerSecond?: number) {
+    for (const { x, y, status } of operations) {
+      this.gridComponent.fillPixel(x, y, '#64B5F6');
+    }
   }
 
   onMouseDown({ x, y }: Pixel) {
@@ -67,7 +122,7 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    this.updateNodeType(node, this.paintingMode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT);
+    this.updateNodeType(node);
   }
 
   onMouseMove({ x, y }: Pixel) {
@@ -86,7 +141,7 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    this.updateNodeType(node, this.paintingMode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT);
+    this.updateNodeType(node);
   }
 
   onMouseUp({ x, y }: Pixel) {
@@ -105,7 +160,7 @@ export class AppComponent implements AfterViewInit {
         }
 
         this.draggedNode = undefined;
-        this.resetPath();
+        // this.resetPath();
       }
 
       this.paintingMode = PaintingMode.CREATE;
@@ -120,29 +175,63 @@ export class AppComponent implements AfterViewInit {
       }
 
       this.paintingMode = PaintingMode.ERASE;
-      this.updateNodeType(node, NodeType.DEFAULT);
+      this.updateNodeType(node);
     }
+  }
+
+  private renderIcon(x: number, y: number, scale: number, icon: any, color = 'white') {
+    this.gridComponent.renderingContext.save();
+    this.gridComponent.renderingContext.translate(x + 3.5, y + 3.5);
+    this.gridComponent.renderingContext.fillStyle = color;
+    this.gridComponent.renderingContext.scale(scale, scale);
+    this.gridComponent.renderingContext.fill(new Path2D(icon));
+    this.gridComponent.renderingContext.restore();
+
+    this.gridComponent.render();
   }
 
   private isNodeStartOrTargetPoint(node: Node) {
     return node.type === NodeType.START || node.type === NodeType.TARGET;
   }
 
-  private updateNodeType(node: Node, type: NodeType) {
-    node.type = type;
-    node.isPath = false;
-    this.gridComponent.fillPixel(node.x, node.y, 'black');
+  private updateNodeType(node: Node) {
+    const type = this.paintingMode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
+    this.updateNode(node, {
+      type,
+      isPath: false,
+    });
   }
 
-  resetPath() {
-    // this.gridComponent.resetPath();
+  private updateNode(node: Node, changes: Partial<Node>) {
+    this.grid.updateNode(node.x, node.y, changes);
+
+    if (node.type === NodeType.START) {
+      this.gridComponent.fillPixel(node.x, node.y, '#1565C0');
+    } else if (node.type === NodeType.TARGET) {
+      this.gridComponent.fillPixel(node.x, node.y, '#1565C0');
+    } else if (node.type === NodeType.WALL) {
+      this.gridComponent.fillPixel(node.x, node.y, 'black');
+    } else {
+      this.gridComponent.clearPixel(node.x, node.y);
+    }
+    /*} else if (node.status && !node.isPath) {
+      this.gridComponent.fillPixel(node.x, node.y, '#64B5F6');
+    } else if (node.isPath) {
+      this.gridComponent.fillPixel(node.x, node.y, '#1565C0');
+    } else {
+      this.gridComponent.clearPixel(node.x, node.y);
+    }*/
   }
 
-  resetWalls() {
-    // this.gridComponent.resetWalls();
+  private enableMouse() {
+    this.isMouseEnabled = true;
   }
 
-  reset() {
-    //   this.gridComponent.reset();
+  private disableMouse() {
+    this.isMouseEnabled = false;
+  }
+
+  private delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

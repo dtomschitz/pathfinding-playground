@@ -1,6 +1,7 @@
-<div class="wrapper" (mousedown)="lockMouse($event)" (mouseup)="releaseMouse($event)">
-  <canvas 
+<div class="layers" (mousedown)="lockMouse($event)" (mouseup)="releaseMouse($event)">
+  <canvas
     #canvas
+    class="pixels"
     [width]="width"
     [height]="height"
     (mousedown)="onMouseDown($event)"

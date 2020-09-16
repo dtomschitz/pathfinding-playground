@@ -3,8 +3,8 @@ import { trigger, style, transition, animate } from '@angular/animations';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { GridPaintingService, SettingsService } from '../../services';
-import { Algorithm, PaintingMode, Settings, Maze } from '../../models';
+import { DrawingGridService, SettingsService } from '../../services';
+import { Algorithm, Settings, Maze } from '../../models';
 import { algorithms } from '../../pathfinding/algorithms';
 import { mazes } from '../../pathfinding/mazes';
 
@@ -73,7 +73,7 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private settingsService: SettingsService,
-    private paintingService: GridPaintingService
+    private gridService: DrawingGridService
   ) {
     this.settings$ = this.settingsService.settings$;
 
@@ -86,10 +86,10 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
-      this.settingsForm.setValue(settings);
+      this.settingsForm.patchValue(settings);
     });
 
-    this.paintingService.isMouseLocked$.pipe(takeUntil(this.destroy$)).subscribe((isMouseLocked) => {
+    this.gridService.isMouseLocked$.pipe(takeUntil(this.destroy$)).subscribe((isMouseLocked) => {
       if (isMouseLocked) {
         this.isHidden = true;
       }

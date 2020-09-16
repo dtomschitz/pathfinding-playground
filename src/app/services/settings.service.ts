@@ -7,6 +7,7 @@ export class SettingsService {
   private readonly _settings = new BehaviorSubject<Settings>({
     algorithmId: 'astar',
     mazeId: 'nomaze',
+    delay: 1000,
     operationsPerSecond: 250,
   });
 

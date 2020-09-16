@@ -1,4 +1,4 @@
-import { Node, NodeType, NodeCoordinates, AlgorithmOperation, Path, Nodes } from '../models';
+import { Node, NodeType, AlgorithmOperation, Path, Nodes } from '../models';
 import { getAlgorithm } from './algorithms';
 import { getMaze } from './mazes';
 
@@ -135,6 +135,10 @@ export class Grid {
     return { x: +coordinates[1], y: +coordinates[0] };
   }
 
+  updateNode(x: number, y: number, changes: Partial<Node>) {
+    this.nodes[`${y}-${x}`] = { ...this.nodes[`${y}-${x}`], ...changes };
+  }
+
   isWalkable(x: number, y: number) {
     return this.isInside(x, y) && this.getNode(x, y).type !== NodeType.WALL;
   }
@@ -176,6 +180,8 @@ export class Grid {
 
   private getNodeType(x: number, y: number) {
     if (y === Math.floor(this.height / 2) && x === Math.floor(this.width / 4)) {
+      console.log('dad');
+
       return NodeType.START;
     } else if (y === Math.floor(this.height / 2) && x === Math.floor((3 * this.width) / 4)) {
       return NodeType.TARGET;
