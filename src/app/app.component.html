@@ -19,7 +19,7 @@
     (contextMenu)="onContextMenu($event)">
   </grid>
   <grid-controls 
-    [visualizing]="visualizing"
+    [visualizing]="visualizing$ | async"
     (visualizePath)="visualizePath()"
     (resetEverything)="resetEverything()"
     (resetWalls)="resetWalls()"

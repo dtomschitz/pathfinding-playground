@@ -9,7 +9,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { AlgorithmOperation, Node, NodeCoordinates, NodeType, PaintingMode, Pixel, Settings } from './models';
 import { DrawingGridService, SettingsService } from './services';
 import { GridComponent } from './components';
@@ -38,7 +38,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   xNodes: number;
   yNodes: number;
   nodeSize = 28;
-  visualizing: boolean;
+  visualizing$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   draggedNode: NodeCoordinates;
   hoveringNode: NodeCoordinates;
@@ -94,6 +94,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   async visualizePath() {
+    this.visualizing$.next(true);
     this.disableMouse();
     this.resetPath();
 
@@ -109,6 +110,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     await this.renderPath(path, 300);
 
     this.enableMouse();
+    this.visualizing$.next(false);
   }
 
   async renderPath(path: number[][], delay?: number) {

@@ -113,6 +113,10 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
     this.isHidden = false;
   }
 
+  hideCard() {
+    this.isHidden = true;
+  }
+
   formatSpeedLabel(value: number) {
     return value + '%';
   }

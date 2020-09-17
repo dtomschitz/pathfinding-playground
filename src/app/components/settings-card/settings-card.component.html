@@ -18,6 +18,9 @@
       <input formControlName="operationsPerSecond" matInput>
     </mat-form-field>
   </mat-card-content>
+  <mat-card-actions align="end">
+    <button color="primary" (click)="hideCard()" mat-button>Close</button>
+  </mat-card-actions>
 </mat-card>
 <button *ngIf="isHidden" @showHideButton color="primary" (click)="showChard()" mat-fab>
   <mat-icon>settings</mat-icon>

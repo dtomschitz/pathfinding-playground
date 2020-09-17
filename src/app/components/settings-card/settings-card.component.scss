@@ -16,12 +16,20 @@
     z-index: 999;
 
     .mat-card-title {
+      display: flex;
+      align-items: center;
       margin-bottom: 16px;
+
+      .title {
+        margin-left: 16px;
+        line-height: 40px;
+      }
     }
 
     .mat-card-content {
       display: flex;
       flex-direction: column;
+      margin-bottom: 0;
     }
   }
 
