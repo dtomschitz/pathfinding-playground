@@ -1,13 +1,17 @@
 import { Algorithm } from '../../models';
 import { astar } from './astar';
-
-export * from './astar';
+import { dijkstra } from './dijkstra';
 
 export const algorithms: Algorithm[] = [
   {
     id: 'astar',
-    name: 'A* Serach',
+    name: 'A*',
     fn: astar,
+  },
+  {
+    id: 'dijkstra',
+    name: 'Dijkstra',
+    fn: dijkstra,
   },
 ];
 
