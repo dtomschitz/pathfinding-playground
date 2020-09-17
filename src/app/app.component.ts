@@ -8,7 +8,7 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AlgorithmOperation, Node, NodeCoordinates, NodeType, PaintingMode, Pixel, Settings } from './models';
 import { DrawingGridService, SettingsService } from './services';
@@ -23,7 +23,7 @@ const targetIcon = 'M28.8 12L28 8H10v34h4V28h11.2l.8 4h14V12z';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   private readonly destroy$: Subject<void> = new Subject<void>();
@@ -51,10 +51,26 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     private changeDetector: ChangeDetectorRef,
     private gridService: DrawingGridService,
     private settingsService: SettingsService
-  ) {}
+  ) {
+    this.grid = new Grid();
+  }
 
   ngOnInit() {
     this.settingsService.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => (this.settings = settings));
+
+    this.grid.updatedNode$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((node) => {
+      if (node) {
+        if (node.type === NodeType.START) {
+          this.gridService.fillPixel(node.x, node.y, '#1565C0');
+        } else if (node.type === NodeType.TARGET) {
+          this.gridService.fillPixel(node.x, node.y, '#1565C0');
+        } else if (node.type === NodeType.WALL) {
+          this.gridService.fillPixel(node.x, node.y, 'black');
+        } else {
+          this.gridService.clearPixel(node.x, node.y);
+        }
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -63,9 +79,10 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     this.xNodes = Math.floor(this.width / this.nodeSize);
     this.yNodes = Math.floor(this.height / this.nodeSize);
 
-    this.grid = new Grid(this.xNodes, this.yNodes, this.nodeSize);
-    this.grid.build();
+    //this.grid = new Grid(this.xNodes, this.yNodes, this.nodeSize);
+    //this.grid.build();
 
+    this.grid.generateNodes(this.xNodes, this.yNodes, this.nodeSize);
     this.changeDetector.detectChanges();
   }
 
@@ -199,31 +216,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   private updateNodeType(node: Node) {
     const type = this.paintingMode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
-    this.updateNode(node, {
-      type,
-      isPath: false,
-    });
-  }
 
-  private updateNode(node: Node, changes: Partial<Node>) {
-    // this.grid.updateNode(node.x, node.y, changes);
-    node = { ...node, ...changes };
-    if (node.type === NodeType.START) {
-      this.gridService.fillPixel(node.x, node.y, '#1565C0');
-    } else if (node.type === NodeType.TARGET) {
-      this.gridService.fillPixel(node.x, node.y, '#1565C0');
-    } else if (node.type === NodeType.WALL) {
-      this.gridService.fillPixel(node.x, node.y, 'black');
-    } else {
-      this.gridService.clearPixel(node.x, node.y);
-    }
-    /*} else if (node.status && !node.isPath) {
-      this.gridComponent.fillPixel(node.x, node.y, '#64B5F6');
-    } else if (node.isPath) {
-      this.gridComponent.fillPixel(node.x, node.y, '#1565C0');
-    } else {
-      this.gridComponent.clearPixel(node.x, node.y);
-    }*/
+    this.grid.updateNode(node.x, node.y, { type, isPath: false });
+    // node = { ...node, ...{ type, isPath: false } };
   }
 
   private enableMouse() {

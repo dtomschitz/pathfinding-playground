@@ -1,5 +1,5 @@
-import { NodeDirection, Node } from './node';
 import { Grid } from '../pathfinding';
+import { NodeDirection, Node } from './node';
 
 export interface Algorithm {
   id: string;

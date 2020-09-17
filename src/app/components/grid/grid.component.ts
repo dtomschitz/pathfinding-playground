@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { Pixel } from '../../models';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { DrawingGridService } from '../../services';
 
 @Component({
@@ -49,6 +49,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   private paddingBottom: number;
 
   private isMouseLocked: boolean;
+  private cachedPixel: Pixel;
 
   constructor(private gridService: DrawingGridService) {}
 
@@ -87,6 +88,13 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onMouseMove(event: MouseEvent) {
     if (!this.disabled && this.isMouseLocked) {
+      const pixel = this.getPixelAt(event.offsetX, event.offsetY);
+
+      if (this.cachedPixel && this.cachedPixel === pixel) {
+        return;
+      }
+
+      this.cachedPixel = pixel;
       this.mouseMove.emit(this.getPixelAt(event.offsetX, event.offsetY));
     }
   }
