@@ -75,12 +75,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   ngAfterViewInit() {
     this.width = this.host.nativeElement.clientWidth;
-    this.height = this.host.nativeElement.clientHeight;
+    this.height = this.host.nativeElement.clientHeight - 64;
     this.xNodes = Math.floor(this.width / this.nodeSize);
     this.yNodes = Math.floor(this.height / this.nodeSize);
-
-    //this.grid = new Grid(this.xNodes, this.yNodes, this.nodeSize);
-    //this.grid.build();
 
     this.grid.generateNodes(this.xNodes, this.yNodes, this.nodeSize);
     this.changeDetector.detectChanges();

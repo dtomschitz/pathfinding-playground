@@ -1,32 +1,35 @@
+@import '~@angular/material/theming';
+
 :host {
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
 
-  mat-form-field.algorithm-selector {
-    width: 120px;
-    font-size: small;
+mat-toolbar.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 
-    .mat-form-field-wrapper {
-      padding-bottom: 0;
-    }
+  @include mat-elevation(8);
+
+  .title {
+    padding: 0 16px;
+    font-weight: 300;
   }
 }
 
-mat-toolbar {
-  &.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+settings-card {
+  right: 20px;
+  top: 84px;
+}
 
-    .title {
-      padding: 0 16px;
-      font-weight: 300;
-    }
-  }
+grid {
+  position: absolute;
+  top: 64px;
 }
 
 mat-sidenav-container {

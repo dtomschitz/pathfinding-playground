@@ -4,29 +4,19 @@
   <div class="flex-spacer"></div>
 </mat-toolbar>
 <mat-divider></mat-divider>
-<mat-sidenav-container>
-  <mat-sidenav #sidenav mode="over1" [opened]="false" [fixedInViewport]="true" [fixedTopGap]="64" [fixedBottomGap]="0"
-    (keydown.escape)="sidenav.close()">
-    <div class="sidenav">
-      <h3 matSubheader>HISTORY</h3>
-    </div>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <ng-container *ngIf="width && height">
-      <settings-card  (generateMaze)="onGenerateMaze($event)"></settings-card>
-      <grid
-        [width]="width"
-        [height]="height"
-        [xNodes]="xNodes"
-        [yNodes]="yNodes"
-        [pixelSize]="nodeSize"
-        [disabled]="!isMouseEnabled"
-        (mouseDown)="onMouseDown($event)"
-        (mouseMove)="onMouseMove($event)"
-        (mouseUp)="onMouseUp($event)"
-        (contextMenu)="onContextMenu($event)">
-      </grid>
-      <grid-controls [visualizing]="visualizing" (visualizePath)="visualizePath()"></grid-controls>
-    </ng-container>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<ng-container *ngIf="width && height">
+  <settings-card  (generateMaze)="onGenerateMaze($event)"></settings-card>
+  <grid
+    [width]="width"
+    [height]="height"
+    [xNodes]="xNodes"
+    [yNodes]="yNodes"
+    [pixelSize]="nodeSize"
+    [disabled]="!isMouseEnabled"
+    (mouseDown)="onMouseDown($event)"
+    (mouseMove)="onMouseMove($event)"
+    (mouseUp)="onMouseUp($event)"
+    (contextMenu)="onContextMenu($event)">
+  </grid>
+  <grid-controls [visualizing]="visualizing" (visualizePath)="visualizePath()"></grid-controls>
+</ng-container>
