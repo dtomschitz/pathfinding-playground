@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { Pixel } from '../../models';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { DrawingGridService } from '../../services';
 
 @Component({

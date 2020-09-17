@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Node, NodeType, AlgorithmOperation, Path, Nodes } from '../models';
 import { getAlgorithm } from '../pathfinding/algorithms';
@@ -58,11 +57,13 @@ export class Grid {
 
     const path = algorithm.fn(this, {
       opened: ({ x, y }) => {
-        operations.push({
-          x,
-          y,
-          status: 'opened',
-        });
+        /*if (!operations.find((operation) => operation.x === x && operation.y === y && operation.status === 'opened')) {
+          operations.push({
+            x,
+            y,
+            status: 'opened',
+          });
+        }*/
       },
       closed: ({ x, y }, i) => {
         operations.push({
@@ -73,57 +74,19 @@ export class Grid {
       },
     });
 
-    return { path, operations };
+    return { path, operations: [...new Set(operations)] };
   }
 
   generateMaze(mazeId: string) {
-    const maze = getMaze(mazeId);
-    maze.generate(this);
-  }
+    const nodes = getMaze(mazeId).generate(this);
+    if (!nodes) {
+      this.resetNodes(({ type }) => ({ type: type === NodeType.WALL ? NodeType.DEFAULT : type }));
+      return;
+    }
 
-  reset() {
-    /*for (let i = 0; i < this.height; i++) {
-      for (let j = 0; j < this.width; j++) {
-        const { id, x: nodeX, y: nodeY, type } = this.getNode(j, i);
-        this.nodes[`${i}-${j}`] = {
-          id,
-          x: nodeX,
-          y: nodeY,
-          type: type === NodeType.START || type === NodeType.TARGET ? type : NodeType.DEFAULT,
-        };
-      }
-    }*/
-  }
-
-  resetWalls() {
-    /*for (let i = 0; i < this.height; i++) {
-      for (let j = 0; j < this.width; j++) {
-        const { id, x, y, type, isPath, status } = this.getNode(j, i);
-        this.nodes[`${y}-${x}`] = {
-          id,
-          x,
-          y,
-          type: type !== NodeType.WALL ? type : NodeType.DEFAULT,
-          isPath,
-          status,
-        };
-      }
-    }*/
-  }
-
-  resetPath() {
-    /* for (let i = 0; i < this.height; i++) {
-      for (let j = 0; j < this.width; j++) {
-        const { id, x, y, type } = this.getNode(j, i);
-        this.nodes[`${i}-${j}`] = {
-          id,
-          x,
-          y,
-          type,
-          isPath: false,
-        };
-      }
-    }*/
+    for (const { x, y } of nodes) {
+      this.updateNode(x, y, { type: NodeType.WALL });
+    }
   }
 
   get startNode() {
@@ -159,9 +122,12 @@ export class Grid {
     return { x: +coordinates[1], y: +coordinates[0] };
   }
 
+  setNodes(nodes: Node[]) {
+    this.nodes = [...nodes];
+  }
+
   updateNode(x: number, y: number, changes: Partial<Node>) {
-    const id = `${y}-${x}`;
-    const node = this.nodes.find((node) => node.id === id);
+    const node = this.getNodeById(`${y}-${x}`);
     if (node) {
       const index = this.nodes.indexOf(node);
       this.nodes[index] = {
@@ -171,6 +137,39 @@ export class Grid {
       this.nodes = [...this.nodes];
       this._updatedNode.next(this.nodes[index]);
     }
+  }
+
+  resetNode(x: number, y: number, keep: Partial<Node>) {
+    const node = this.getNodeById(`${y}-${x}`);
+    if (node) {
+      const index = this.nodes.indexOf(node);
+      this.nodes[index] = {
+        id: node.id,
+        x: node.x,
+        y: node.y,
+        type: node.type,
+        ...keep,
+      };
+      this.nodes = [...this.nodes];
+      this._updatedNode.next(this.nodes[index]);
+    }
+  }
+
+  resetNodes(keep?: (node: Node) => Partial<Node>) {
+    const nodes: Node[] = [];
+    for (let i = 0; i < this.nodes.length; i++) {
+      const node = this.nodes[i];
+      nodes[i] = {
+        id: node.id,
+        x: node.x,
+        y: node.y,
+        type: node.type,
+        ...keep(node),
+      };
+      this._updatedNode.next(nodes[i]);
+    }
+
+    this.nodes = [...nodes];
   }
 
   isWalkable(x: number, y: number) {

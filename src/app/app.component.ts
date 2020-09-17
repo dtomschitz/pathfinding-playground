@@ -58,17 +58,15 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   ngOnInit() {
     this.settingsService.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => (this.settings = settings));
 
+    /*this.grid.nodes$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((nodes) => {
+      if (nodes) {
+        this.renderNode(node);
+      }
+    });*/
+
     this.grid.updatedNode$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((node) => {
       if (node) {
-        if (node.type === NodeType.START) {
-          this.gridService.fillPixel(node.x, node.y, '#1565C0');
-        } else if (node.type === NodeType.TARGET) {
-          this.gridService.fillPixel(node.x, node.y, '#1565C0');
-        } else if (node.type === NodeType.WALL) {
-          this.gridService.fillPixel(node.x, node.y, 'black');
-        } else {
-          this.gridService.clearPixel(node.x, node.y);
-        }
+        this.renderNode(node);
       }
     });
   }
@@ -91,27 +89,24 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     this.gridService.fillPixel(targetX, targetY, '#1565C0');
   }
 
-  onSettingsChanged(changes: Partial<Settings>) {
-    this.settings = { ...this.settings, ...changes };
-  }
-
-  onGenerateMaze(mazeId: string) {
-    //this.gridComponent.generateMaze(mazeId);
+  generateMaze(mazeId: string) {
+    this.grid.generateMaze(mazeId);
   }
 
   async visualizePath() {
     this.disableMouse();
-    this.grid.resetPath();
+    this.resetPath();
+
     this.gridComponent.resetPixels(({ x, y }) => {
       return this.grid.getNode(x, y).type === NodeType.WALL;
     });
 
     const { algorithmId, delay, operationsPerSecond } = this.settings;
     const { path, operations } = this.grid.findPath(algorithmId);
-    console.log(path);
+    console.log(operations);
 
     await this.renderOperations(operations, delay, operationsPerSecond);
-    await this.renderPath(path);
+    await this.renderPath(path, 300);
 
     this.enableMouse();
   }
@@ -119,16 +114,14 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   async renderPath(path: number[][], delay?: number) {
     for (const [x, y] of path) {
       this.gridService.fillPixel(x, y, '#1565C0');
-
-      /*if (delay) {
-        await this.delay(5);
-      }*/
+      this.delay(delay);
     }
   }
 
   async renderOperations(operations: AlgorithmOperation[], delay?: number, operationsPerSecond?: number) {
     for (const { x, y, status } of operations) {
       this.gridService.fillPixel(x, y, '#64B5F6');
+      await this.delay(delay / operationsPerSecond);
     }
   }
 
@@ -206,6 +199,38 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
     this.gridService.render();
   }*/
+
+  resetEverything() {
+    this.grid.resetNodes(({ type }) => ({
+      type: type === NodeType.START || type === NodeType.TARGET ? type : NodeType.DEFAULT,
+    }));
+  }
+
+  resetWalls() {
+    this.grid.resetNodes(({ type, isPath, status }) => ({
+      type: type === NodeType.WALL ? NodeType.DEFAULT : type,
+      isPath,
+      status,
+    }));
+  }
+
+  resetPath() {
+    this.grid.resetNodes(() => ({
+      isPath: false,
+    }));
+  }
+
+  private renderNode(node: Node) {
+    if (node.type === NodeType.START) {
+      this.gridService.fillPixel(node.x, node.y, '#1565C0');
+    } else if (node.type === NodeType.TARGET) {
+      this.gridService.fillPixel(node.x, node.y, '#1565C0');
+    } else if (node.type === NodeType.WALL) {
+      this.gridService.fillPixel(node.x, node.y, 'black');
+    } else {
+      this.gridService.clearPixel(node.x, node.y);
+    }
+  }
 
   private isNodeStartOrTargetPoint(node: Node) {
     return node.type === NodeType.START || node.type === NodeType.TARGET;

@@ -5,7 +5,7 @@
 </mat-toolbar>
 <mat-divider></mat-divider>
 <ng-container *ngIf="width && height">
-  <settings-card  (generateMaze)="onGenerateMaze($event)"></settings-card>
+  <settings-card (generateMaze)="generateMaze($event)"></settings-card>
   <grid
     [width]="width"
     [height]="height"
@@ -18,5 +18,11 @@
     (mouseUp)="onMouseUp($event)"
     (contextMenu)="onContextMenu($event)">
   </grid>
-  <grid-controls [visualizing]="visualizing" (visualizePath)="visualizePath()"></grid-controls>
+  <grid-controls 
+    [visualizing]="visualizing"
+    (visualizePath)="visualizePath()"
+    (resetEverything)="resetEverything()"
+    (resetWalls)="resetWalls()"
+    (resetPath)="resetPath()">
+  </grid-controls>
 </ng-container>

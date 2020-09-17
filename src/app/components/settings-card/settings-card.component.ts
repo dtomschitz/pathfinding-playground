@@ -86,7 +86,7 @@ export class SettingsCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
-      this.settingsForm.patchValue(settings);
+      this.settingsForm.patchValue(settings, { emitEvent: false });
     });
 
     this.gridService.isMouseLocked$.pipe(takeUntil(this.destroy$)).subscribe((isMouseLocked) => {

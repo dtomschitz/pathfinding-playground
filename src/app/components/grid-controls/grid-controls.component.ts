@@ -14,6 +14,6 @@ export class GridControlsComponent {
 
   @Output() resetPath: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetWalls: EventEmitter<void> = new EventEmitter<void>();
-  @Output() resetAll: EventEmitter<void> = new EventEmitter<void>();
+  @Output() resetEverything: EventEmitter<void> = new EventEmitter<void>();
   @Output() visualizePath: EventEmitter<void> = new EventEmitter<void>();
 }

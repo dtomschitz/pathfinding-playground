@@ -5,7 +5,7 @@ export const mazes: Maze[] = [
   {
     id: 'noMaze',
     name: 'No Maze',
-    generate: () => {},
+    generate: () => undefined,
   },
   {
     id: 'randomMaze',

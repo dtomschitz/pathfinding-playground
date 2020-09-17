@@ -19,12 +19,13 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
 
   openList.push(startNode);
   startNode.status = 'opened';
+  callbacks.opened(startNode, 0);
 
   let i = 0;
   while (!openList.empty()) {
     const node = openList.pop();
-    callbacks.closed(node, i);
     node.status = 'closed';
+    callbacks.closed(node, i);
 
     if (node === targetNode) {
       return Utils.backtrace(targetNode);
@@ -48,8 +49,8 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
 
         if (neighbor.status !== 'opened') {
           openList.push(neighbor);
-          callbacks.opened(node, i);
           neighbor.status = 'opened';
+          callbacks.opened(node, i);
         } else {
           openList.updateItem(neighbor);
         }
