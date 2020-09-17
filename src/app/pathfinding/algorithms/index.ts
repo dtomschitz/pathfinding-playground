@@ -1,5 +1,6 @@
 import { Algorithm } from '../../models';
 import { astar } from './astar';
+import { breadthFirst } from './breadth-first';
 import { dijkstra } from './dijkstra';
 
 export const algorithms: Algorithm[] = [
@@ -12,6 +13,11 @@ export const algorithms: Algorithm[] = [
     id: 'dijkstra',
     name: 'Dijkstra',
     fn: dijkstra,
+  },
+  {
+    id: 'breadthFirst',
+    name: 'Breadth First',
+    fn: breadthFirst,
   },
 ];
 

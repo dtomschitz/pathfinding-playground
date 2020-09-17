@@ -10,7 +10,6 @@ export class Grid {
   readonly nodes$ = this._nodes.asObservable();
   readonly updatedNode$ = this._updatedNode.asObservable();
 
-
   start: string;
   target: string;
 
@@ -65,8 +64,13 @@ export class Grid {
             status: 'opened',
           });
         }*/
+        operations.push({
+          x,
+          y,
+          status: 'opened',
+        });
       },
-      closed: ({ x, y }, i) => {
+      closed: ({ x, y }) => {
         operations.push({
           x,
           y,

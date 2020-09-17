@@ -13,8 +13,8 @@ export interface AlgorithmOptions {
 }
 
 export interface AlgorithmCallbacks {
-  opened: (node: Node, iteration: number) => void;
-  closed: (node: Node, iteration: number) => void;
+  opened: (node: Node) => void;
+  closed: (node: Node) => void;
 }
 
 export type AlgorithmOperation = Pick<Node, 'x' | 'y' | 'status'>;
