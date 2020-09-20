@@ -58,13 +58,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   ngOnInit() {
     this.settingsService.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => (this.settings = settings));
 
-    /*this.grid.nodes$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((nodes) => {
-      if (nodes) {
-        this.renderNode(node);
-      }
-    });*/
-
     this.grid.updatedNode$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((node) => {
+      console.log(node);
+
       if (node) {
         this.renderNode(node);
       }
@@ -162,8 +158,14 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         const newNode = this.grid.getNode(x, y);
         const previouseNode = this.grid.getNode(this.draggedNode.x, this.draggedNode.y);
 
-        newNode.type = previouseNode.type;
-        previouseNode.type = NodeType.DEFAULT;
+        // newNode.type = previouseNode.type;
+
+        this.updateNodeType(newNode, previouseNode.type);
+        this.updateNodeType(previouseNode, NodeType.DEFAULT);
+
+        console.log(newNode);
+
+        // previouseNode.type = NodeType.DEFAULT;
 
         if (newNode.type === NodeType.START) {
           this.grid.setStartNode(newNode);
@@ -172,7 +174,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         }
 
         this.draggedNode = undefined;
-        // this.resetPath();
       }
 
       this.paintingMode = PaintingMode.CREATE;
@@ -238,11 +239,15 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     return node.type === NodeType.START || node.type === NodeType.TARGET;
   }
 
-  private updateNodeType(node: Node) {
-    const type = this.paintingMode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
+  private updateNodeType(node: Node, type?: NodeType) {
+    const newType = type ?? this.paintingMode === PaintingMode.CREATE ? NodeType.WALL : NodeType.DEFAULT;
 
-    this.grid.updateNode(node.x, node.y, { type, isPath: false });
-    // node = { ...node, ...{ type, isPath: false } };
+    if (node.type !== newType) {
+      this.grid.updateNode(node.x, node.y, {
+        type: newType,
+        isPath: false,
+      });
+    }
   }
 
   private enableMouse() {
