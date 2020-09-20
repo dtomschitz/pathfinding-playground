@@ -37,12 +37,21 @@ export class DrawingGridService {
 
   private updatePixel(id: string, changes: Partial<Pixel>) {
     const pixel = this.pixels.find((pixel) => pixel.id === id);
+
     if (pixel) {
-      const index = this.pixels.indexOf(pixel);
-      this.pixels[index] = {
+      const updatedPixel: Pixel = {
         ...pixel,
         ...changes,
       };
+
+      if (updatedPixel === pixel) {
+        return;
+      }
+
+      console.log('update pixel');
+
+      const index = this.pixels.indexOf(pixel);
+      this.pixels[index] = updatedPixel;
       this.pixels = [...this.pixels];
     }
   }

@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { Pixel } from '../../models';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { DrawingGridService } from '../../services';
 
 @Component({
@@ -58,7 +58,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((isMouseLocked) => (this.isMouseLocked = isMouseLocked));
 
-    this.gridService.pixels$.pipe(takeUntil(this.destroy$)).subscribe((pixels) => {
+    this.gridService.pixels$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((pixels) => {
       if (pixels && this.renderingContext) {
         this.render(pixels);
       }
