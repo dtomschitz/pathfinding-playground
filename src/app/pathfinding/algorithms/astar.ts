@@ -11,6 +11,10 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
   const startNode = grid.startNode;
   const targetNode = grid.targetNode;
 
+  console.log(startNode);
+  
+
+
   startNode.g = 0;
   startNode.f = 0;
 

@@ -128,6 +128,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   onMouseDown({ x, y }: Pixel) {
     const node = this.grid.getNode(x, y);
     if (this.isNodeStartOrTargetPoint(node)) {
+      this.gridService.releaseMouse();
       this.draggedNode = { x: node.x, y: node.y };
       return;
     }
@@ -163,9 +164,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         this.updateNodeType(newNode, previouseNode.type);
         this.updateNodeType(previouseNode, NodeType.DEFAULT);
 
-        if (newNode.type === NodeType.START) {
+        if (previouseNode.type === NodeType.START) {
           this.grid.setStartNode(newNode);
-        } else if (newNode.type === NodeType.TARGET) {
+        } else if (previouseNode.type === NodeType.TARGET) {
           this.grid.setTargetNode(newNode);
         }
 

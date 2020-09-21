@@ -57,13 +57,6 @@ export class Grid {
 
     const path = algorithm.fn(this, {
       opened: ({ x, y }) => {
-        /*if (!operations.find((operation) => operation.x === x && operation.y === y && operation.status === 'opened')) {
-          operations.push({
-            x,
-            y,
-            status: 'opened',
-          });
-        }*/
         operations.push({
           x,
           y,
