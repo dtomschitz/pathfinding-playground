@@ -60,8 +60,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     this.settingsService.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => (this.settings = settings));
 
     this.grid.updatedNode$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((node) => {
-      console.log(node);
-
       if (node) {
         this.renderNode(node);
       }
@@ -72,7 +70,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     this.width = this.host.nativeElement.clientWidth;
     this.height = this.host.nativeElement.clientHeight - 64;
     this.xNodes = Math.floor(this.width / this.nodeSize);
-    this.yNodes = Math.floor(this.height / this.nodeSize);
+    this.yNodes = Math.floor(this.height / this.nodeSize) - 1;
 
     this.grid.generateNodes(this.xNodes, this.yNodes, this.nodeSize);
     this.changeDetector.detectChanges();
