@@ -11,10 +11,6 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
   const startNode = grid.startNode;
   const targetNode = grid.targetNode;
 
-  console.log(startNode);
-  
-
-
   startNode.g = 0;
   startNode.f = 0;
 
@@ -35,17 +31,19 @@ export function astar(grid: Grid, callbacks: AlgorithmCallbacks, options?: Algor
     }
 
     const neighbors = grid.getNeighbors(node);
-    for (const neighbor of neighbors) {
+    for (let i = 0; i < neighbors.length; ++i) {
+      const neighbor = neighbors[i];
+
       if (neighbor.status === 'closed') {
         continue;
       }
 
       const x = neighbor.x;
       const y = neighbor.y;
-      const tentativeG = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : SQRT2);
+      const g = node.g + (x - node.x === 0 || y - node.y === 0 ? 1 : SQRT2);
 
-      if (neighbor.status !== 'opened' || tentativeG < neighbor.g) {
-        neighbor.g = tentativeG;
+      if (neighbor.status !== 'opened' || g < neighbor.g) {
+        neighbor.g = g;
         neighbor.h = neighbor.h || weight * heuristic(Math.abs(x - targetNode.x), Math.abs(y - targetNode.y));
         neighbor.f = neighbor.g + neighbor.h;
         neighbor.parent = node;

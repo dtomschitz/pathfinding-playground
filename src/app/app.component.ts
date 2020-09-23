@@ -88,6 +88,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   generateMaze(mazeId: string) {
+    this.resetEverything();
     this.grid.generateMaze(mazeId);
   }
 
@@ -102,24 +103,25 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
     const { algorithmId, delay, operationsPerSecond } = this.settings;
     const { path, operations } = this.grid.findPath(algorithmId);
-    console.log(operations);
 
     await this.renderOperations(operations, delay, operationsPerSecond);
-    await this.renderPath(path, 300);
+    await this.renderPath(path);
 
     this.enableMouse();
     this.visualizing$.next(false);
   }
 
-  async renderPath(path: number[][], delay?: number) {
+  async renderPath(path: number[][]) {
     for (const [x, y] of path) {
       this.gridService.fillPixel(x, y, '#1565C0');
-      this.delay(delay);
+      await this.delay(50);
     }
   }
 
   async renderOperations(operations: AlgorithmOperation[], delay?: number, operationsPerSecond?: number) {
-    for (const { x, y, status } of operations) {
+    console.log(operationsPerSecond);
+
+    for (const { x, y } of operations) {
       this.gridService.fillPixel(x, y, '#64B5F6');
       await this.delay(delay / operationsPerSecond);
     }
