@@ -32,21 +32,6 @@ export class DrawingGridService {
     this.updatePixel(x, y, { fillStyle: undefined, icon: undefined });
   }
 
-  resetPixels(skipFn?: (pixel: Pixel) => boolean) {
-    this.pixels = [
-      ...this.pixels.map((pixel) => {
-        if (!skipFn(pixel)) {
-          this.clearPixel(pixel.x, pixel.y);
-          return {
-            id: pixel.id,
-            x: pixel.x,
-            y: pixel.y,
-          };
-        }
-      }),
-    ];
-  }
-
   getPixel(x: number, y: number) {
     return this.pixels.find((pixel) => pixel.x === x && pixel.y === y);
   }
@@ -56,19 +41,19 @@ export class DrawingGridService {
     return this.getPixel(+coordinates[1], +coordinates[0]);
   }
 
-  private updatePixel(x: number, y: number, changes: Partial<Pixel>) {
+  private updatePixel(x: number, y: number, options?: { fillStyle?: string; icon?: PixelIcon }) {
     const id = `${y}-${x}`;
     const pixel = this.pixels.find((pixel) => pixel.id === id);
 
     if (pixel) {
-      /* if (pixel.fillStyle === fillStyle && ) {
+      if (pixel.fillStyle === options.fillStyle) {
         return;
-      }*/
+      }
 
       const index = this.pixels.indexOf(pixel);
       this.pixels[index] = {
         ...pixel,
-        ...changes,
+        ...options,
       };
       this.pixels = [...this.pixels];
     }

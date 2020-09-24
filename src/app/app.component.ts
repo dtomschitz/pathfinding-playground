@@ -8,7 +8,7 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, take, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { AlgorithmOperation, Node, NodeCoordinates, NodeType, PaintingMode, Pixel, Settings } from './models';
 import { DrawingGridService, SettingsService } from './services';
@@ -114,6 +114,8 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   async renderOperations(operations: AlgorithmOperation[], delay?: number, operationsPerSecond?: number) {
+    console.log(operations);
+
     for (const { x, y } of operations) {
       this.gridService.fillPixel(x, y, '#64B5F6');
       await this.delay(delay / operationsPerSecond);
@@ -211,10 +213,10 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   private renderNode(node: Node) {
     if (node.type === NodeType.START || node.type === NodeType.TARGET) {
-      this.renderStartOrTargetNode(node.x, node.y, node.type);
+      //   this.renderStartOrTargetNode(node.x, node.y, node.type);
     } else if (node.type === NodeType.WALL) {
       this.gridService.fillPixel(node.x, node.y, wallColor);
-    } else {
+    } else if (node.type === NodeType.DEFAULT) {
       this.gridService.clearPixel(node.x, node.y);
     }
   }
