@@ -1,9 +1,8 @@
 # Pathfinding Playground
 
+The projects aim was to create an simplified tool for visualizing various path finding algorithms in the browser using Angular as the framework of choice. You can currently choose between the following algorithms for experminting:
+  - A* Algorithm
+  - Dijkstra's Algorithm
+  - Breadth-First Algoritm
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.11.
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
+Try it out for yourself under https://davidddo.github.io/pathfinding-playground/ or run it locally by cloning the project and run it with `ng serve`
