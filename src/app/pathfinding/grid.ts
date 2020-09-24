@@ -57,25 +57,32 @@ export class Grid {
 
     const path = algorithm.fn(this, {
       opened: ({ x, y }) => {
-        /*if (!operations.find((operation) => operation.x === x && operation.y === y && operation.status === 'opened')) {
+        if (!operations.find((operation) => operation.x === x && operation.y === y && operation.status === 'opened')) {
           operations.push({
             x,
             y,
             status: 'opened',
           });
-        }*/
-        operations.push({
+        }
+       /* operations.push({
           x,
           y,
           status: 'opened',
-        });
+        });*/
       },
       closed: ({ x, y }) => {
-        operations.push({
+        if (!operations.find((operation) => operation.x === x && operation.y === y && operation.status === 'closed')) {
+          operations.push({
+            x,
+            y,
+            status: 'closed',
+          });
+        }
+        /*operations.push({
           x,
           y,
           status: 'closed',
-        });
+        });*/
       },
     });
 

@@ -114,8 +114,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   async renderOperations(operations: AlgorithmOperation[], delay?: number, operationsPerSecond?: number) {
-    console.log(operations);
-
     for (const { x, y } of operations) {
       this.gridService.fillPixel(x, y, '#64B5F6');
       await this.delay(delay / operationsPerSecond);
