@@ -19,6 +19,8 @@ const startIcon =
   'M24 4c-7.73 0-14 6.27-14 14 0 10.5 14 26 14 26s14-15.5 14-26c0-7.73-6.27-14-14-14zm0 19c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z';
 const targetIcon = 'M28.8 12L28 8H10v34h4V28h11.2l.8 4h14V12z';
 
+const pathColor = '#1565C0';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -81,8 +83,8 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
       const { x: startX, y: startY } = this.grid.startNode;
       const { x: targetX, y: targetY } = this.grid.targetNode;
 
-      this.gridService.fillPixel(startX, startY, '#1565C0');
-      this.gridService.fillPixel(targetX, targetY, '#1565C0');
+      this.gridService.fillPixel(startX, startY, pathColor);
+      this.gridService.fillPixel(targetX, targetY, pathColor);
       this.isStartAndTargetInitialized = true;
     }
   }
@@ -143,8 +145,13 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     }
 
     if (this.draggedNode) {
-      // this.renderRect(node.x, node.y, '#1565C0');
-      // this.render();
+      this.gridService.fillPixel(x, y, pathColor);
+
+      if (this.hoveringNode) {
+        this.gridService.clearPixel(this.hoveringNode.x, this.hoveringNode.y);
+      }
+
+      this.hoveringNode = node;
       return;
     }
 
