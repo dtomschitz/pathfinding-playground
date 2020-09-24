@@ -132,15 +132,40 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     this.clearCanvas();
 
     ([] as Pixel[]).concat(...pixels).forEach((pixel) => {
+      const { x, y } = pixel;
       if (pixel.fillStyle) {
         this.renderingContext.fillStyle = pixel.fillStyle;
         this.renderingContext.fillRect(
-          pixel.x * this.pixelSize + this.paddingLeft,
-          pixel.y * this.pixelSize + this.paddingTop,
+          x * this.pixelSize + this.paddingLeft,
+          y * this.pixelSize + this.paddingTop,
           this.pixelSize,
           this.pixelSize
         );
       }
+
+      if (pixel.icon) {
+        const { fillStyle, scale, svg } = pixel.icon;
+        const translatedX = x * this.pixelSize + this.paddingLeft;
+        const translatedY = y * this.pixelSize + this.paddingTop;
+
+        this.renderingContext.save();
+        this.renderingContext.translate(translatedX + 4, translatedY + 4);
+        this.renderingContext.fillStyle = fillStyle;
+        this.renderingContext.scale(scale, scale);
+        this.renderingContext.fill(new Path2D(svg));
+        this.renderingContext.restore();
+      }
+
+      /*private renderIcon(x: number, y: number, scale: number, icon: any, color = 'white') {
+    this.gridComponent.renderingContext.save();
+    this.gridComponent.renderingContext.translate(x + 3.5, y + 3.5);
+    this.gridComponent.renderingContext.fillStyle = color;
+    this.gridComponent.renderingContext.scale(scale, scale);
+    this.gridComponent.renderingContext.fill(new Path2D(icon));
+    this.gridComponent.renderingContext.restore();
+
+    this.gridService.render();
+  }*/
     });
 
     this.renderGrid();
@@ -161,20 +186,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.renderingContext.stroke();
-  }
-
-  resetPixels(skipFn?: (pixel: Pixel) => boolean) {
-    /*if (skipFn) {
-      ([] as Pixel[]).concat(...this.pixels).forEach((pixel) => {
-        if (!skipFn(pixel)) {
-          this.clearPixel(pixel.x, pixel.y);
-        }
-      });
-      return;
-    }
-
-    this.generatePixels();
-    this.render();*/
   }
 
   /*fillPixel(x: number, y: number, fillStyle: string) {

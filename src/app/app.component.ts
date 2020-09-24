@@ -15,11 +15,8 @@ import { DrawingGridService, SettingsService } from './services';
 import { GridComponent } from './components';
 import { Grid } from './pathfinding';
 
-const startIcon =
-  'M24 4c-7.73 0-14 6.27-14 14 0 10.5 14 26 14 26s14-15.5 14-26c0-7.73-6.27-14-14-14zm0 19c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z';
-const targetIcon = 'M28.8 12L28 8H10v34h4V28h11.2l.8 4h14V12z';
-
 const pathColor = '#1565C0';
+const wallColor = 'black';
 
 @Component({
   selector: 'app-root',
@@ -82,9 +79,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     if (!this.isStartAndTargetInitialized) {
       const { x: startX, y: startY } = this.grid.startNode;
       const { x: targetX, y: targetY } = this.grid.targetNode;
+      this.renderStartOrTargetNode(startX, startY, NodeType.START);
+      this.renderStartOrTargetNode(targetX, targetY, NodeType.TARGET);
 
-      this.gridService.fillPixel(startX, startY, pathColor);
-      this.gridService.fillPixel(targetX, targetY, pathColor);
       this.isStartAndTargetInitialized = true;
     }
   }
@@ -98,10 +95,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     this.visualizing$.next(true);
     this.disableMouse();
     this.resetPath();
-
-    this.gridComponent.resetPixels(({ x, y }) => {
-      return this.grid.getNode(x, y).type === NodeType.WALL;
-    });
 
     const { algorithmId, delay, operationsPerSecond } = this.settings;
     const { path, operations } = this.grid.findPath(algorithmId);
@@ -145,7 +138,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     }
 
     if (this.draggedNode) {
-      this.gridService.fillPixel(x, y, pathColor);
+      this.renderStartOrTargetNode(x, y, node.type);
 
       if (this.hoveringNode) {
         this.gridService.clearPixel(this.hoveringNode.x, this.hoveringNode.y);
@@ -196,17 +189,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     }
   }
 
-  /*private renderIcon(x: number, y: number, scale: number, icon: any, color = 'white') {
-    this.gridComponent.renderingContext.save();
-    this.gridComponent.renderingContext.translate(x + 3.5, y + 3.5);
-    this.gridComponent.renderingContext.fillStyle = color;
-    this.gridComponent.renderingContext.scale(scale, scale);
-    this.gridComponent.renderingContext.fill(new Path2D(icon));
-    this.gridComponent.renderingContext.restore();
-
-    this.gridService.render();
-  }*/
-
   resetEverything() {
     this.grid.resetNodes(({ type }) => ({
       type: type === NodeType.START || type === NodeType.TARGET ? type : NodeType.DEFAULT,
@@ -228,15 +210,27 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   private renderNode(node: Node) {
-    if (node.type === NodeType.START) {
-      this.gridService.fillPixel(node.x, node.y, '#1565C0');
-    } else if (node.type === NodeType.TARGET) {
-      this.gridService.fillPixel(node.x, node.y, '#1565C0');
+    if (node.type === NodeType.START || node.type === NodeType.TARGET) {
+      this.renderStartOrTargetNode(node.x, node.y, node.type);
     } else if (node.type === NodeType.WALL) {
-      this.gridService.fillPixel(node.x, node.y, 'black');
+      this.gridService.fillPixel(node.x, node.y, wallColor);
     } else {
       this.gridService.clearPixel(node.x, node.y);
     }
+  }
+
+  private renderStartOrTargetNode(x: number, y: number, type: NodeType) {
+    this.gridService.renderPixel(x, y, {
+      fillStyle: pathColor,
+      icon: {
+        svg:
+          type === NodeType.START
+            ? 'M24 4c-7.73 0-14 6.27-14 14 0 10.5 14 26 14 26s14-15.5 14-26c0-7.73-6.27-14-14-14zm0 19c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z'
+            : 'M28.8 12L28 8H10v34h4V28h11.2l.8 4h14V12z',
+        fillStyle: 'white',
+        scale: 0.4,
+      },
+    });
   }
 
   private isNodeStartOrTargetPoint(node: Node) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Pixel } from '../models';
+import { Pixel, PixelIcon } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class DrawingGridService {
@@ -18,12 +18,18 @@ export class DrawingGridService {
     this.isMouseLocked = false;
   }
 
+  renderPixel(x: number, y: number, options?: { fillStyle?: string; icon?: PixelIcon }) {
+    this.updatePixel(x, y, {
+      ...options,
+    });
+  }
+
   fillPixel(x: number, y: number, fillStyle: string) {
-    this.updatePixelFillStyle(`${y}-${x}`, fillStyle);
+    this.updatePixel(x, y, { fillStyle });
   }
 
   clearPixel(x: number, y: number) {
-    this.updatePixelFillStyle(`${y}-${x}`, undefined);
+    this.updatePixel(x, y, { fillStyle: undefined, icon: undefined });
   }
 
   resetPixels(skipFn?: (pixel: Pixel) => boolean) {
@@ -50,18 +56,19 @@ export class DrawingGridService {
     return this.getPixel(+coordinates[1], +coordinates[0]);
   }
 
-  private updatePixelFillStyle(id: string, fillStyle: string) {
+  private updatePixel(x: number, y: number, changes: Partial<Pixel>) {
+    const id = `${y}-${x}`;
     const pixel = this.pixels.find((pixel) => pixel.id === id);
 
     if (pixel) {
-      if (pixel.fillStyle === fillStyle) {
+      /* if (pixel.fillStyle === fillStyle && ) {
         return;
-      }
+      }*/
 
       const index = this.pixels.indexOf(pixel);
       this.pixels[index] = {
         ...pixel,
-        fillStyle,
+        ...changes,
       };
       this.pixels = [...this.pixels];
     }
