@@ -26,6 +26,21 @@ export class DrawingGridService {
     this.updatePixelFillStyle(`${y}-${x}`, undefined);
   }
 
+  resetPixels(skipFn?: (pixel: Pixel) => boolean) {
+    this.pixels = [
+      ...this.pixels.map((pixel) => {
+        if (!skipFn(pixel)) {
+          this.clearPixel(pixel.x, pixel.y);
+          return {
+            id: pixel.id,
+            x: pixel.x,
+            y: pixel.y,
+          };
+        }
+      }),
+    ];
+  }
+
   getPixel(x: number, y: number) {
     return this.pixels.find((pixel) => pixel.x === x && pixel.y === y);
   }
