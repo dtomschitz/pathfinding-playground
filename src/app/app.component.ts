@@ -119,8 +119,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   async renderOperations(operations: AlgorithmOperation[], delay?: number, operationsPerSecond?: number) {
-    console.log(operationsPerSecond);
-
     for (const { x, y } of operations) {
       this.gridService.fillPixel(x, y, '#64B5F6');
       await this.delay(delay / operationsPerSecond);
@@ -244,6 +242,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
       this.grid.updateNode(node.x, node.y, {
         type: newType,
         isPath: false,
+        status: undefined,
       });
     }
   }
