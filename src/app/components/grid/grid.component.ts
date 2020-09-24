@@ -90,7 +90,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.disabled && this.isMouseLocked) {
       const pixel = this.getPixelAt(event.offsetX, event.offsetY);
 
-      if (this.cachedPixel && this.cachedPixel === pixel) {
+      if (this.cachedPixel && this.cachedPixel.x === pixel.x && this.cachedPixel.y === pixel.y) {
         return;
       }
 
